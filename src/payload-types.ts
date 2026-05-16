@@ -71,6 +71,9 @@ export interface Config {
     posts: Post;
     media: Media;
     categories: Category;
+    events: Event;
+    locations: Location;
+    regions: Region;
     users: User;
     redirects: Redirect;
     forms: Form;
@@ -93,6 +96,9 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
+    locations: LocationsSelect<false> | LocationsSelect<true>;
+    regions: RegionsSelect<false> | RegionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
@@ -396,6 +402,10 @@ export interface FolderInterface {
 export interface Category {
   id: string;
   title: string;
+  /**
+   * Badge color used when this category appears on a card.
+   */
+  color: 'teal' | 'pink' | 'purple' | 'orange' | 'blue' | 'amber';
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -783,6 +793,71 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: string;
+  title: string;
+  /**
+   * Mark this event as an official See You There event. Uncheck for user-submitted events (future).
+   */
+  createdBySeeYouThere?: boolean | null;
+  categories: (string | Category)[];
+  description?: string | null;
+  location: string | Location;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations".
+ */
+export interface Location {
+  id: string;
+  title: string;
+  address: {
+    street: string;
+    postalCode?: string | null;
+    city: string;
+    region: string | Region;
+  };
+  categories: (string | Category)[];
+  description?: string | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "regions".
+ */
+export interface Region {
+  id: string;
+  title: string;
+  description?: string | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -986,6 +1061,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'categories';
         value: string | Category;
+      } | null)
+    | ({
+        relationTo: 'events';
+        value: string | Event;
+      } | null)
+    | ({
+        relationTo: 'locations';
+        value: string | Location;
+      } | null)
+    | ({
+        relationTo: 'regions';
+        value: string | Region;
       } | null)
     | ({
         relationTo: 'users';
@@ -1319,6 +1406,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface CategoriesSelect<T extends boolean = true> {
   title?: T;
+  color?: T;
   generateSlug?: T;
   slug?: T;
   parent?: T;
@@ -1330,6 +1418,58 @@ export interface CategoriesSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events_select".
+ */
+export interface EventsSelect<T extends boolean = true> {
+  title?: T;
+  createdBySeeYouThere?: T;
+  categories?: T;
+  description?: T;
+  location?: T;
+  startDate?: T;
+  endDate?: T;
+  startTime?: T;
+  endTime?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations_select".
+ */
+export interface LocationsSelect<T extends boolean = true> {
+  title?: T;
+  address?:
+    | T
+    | {
+        street?: T;
+        postalCode?: T;
+        city?: T;
+        region?: T;
+      };
+  categories?: T;
+  description?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "regions_select".
+ */
+export interface RegionsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  generateSlug?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }
