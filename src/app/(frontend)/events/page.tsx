@@ -3,6 +3,7 @@ import { CalendarDays, MapPin } from 'lucide-react'
 import Link from 'next/link'
 import { getPayload } from 'payload'
 
+import { LikeButton } from '@/components/events/LikeButton'
 import { Badge } from '@/components/ui/badge'
 import {
   SeeYouThereCard,
@@ -15,20 +16,18 @@ import {
   SeeYouThereCardTitle,
 } from '@/components/SeeYouThereCard'
 import { SeeYouThereGrid } from '@/components/SeeYouThereGrid'
-import type { Category, Event, Location } from '@/payload-types'
+import type { Category, Event, Location, User } from '@/payload-types'
 import { cn } from '@/utilities/ui'
 import { categoryColorClass } from '@/utilities/categoryColor'
+import { extractIds } from '@/utilities/extractIds'
+import { formatDate, formatTime } from '@/utilities/formatDateTime'
+import { getOptionalMe } from '@/utilities/getOptionalMe'
 
 export const dynamic = 'force-dynamic'
 
-const formatDate = (value?: string | null) => (value ? new Date(value).toLocaleDateString() : '')
-const formatTime = (value?: string | null) =>
-  value ? new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''
-
 type EventSource = 'syt' | 'community'
 
-const isSource = (value: unknown): value is EventSource =>
-  value === 'syt' || value === 'community'
+const isSource = (value: unknown): value is EventSource => value === 'syt' || value === 'community'
 
 export default async function EventsPage({
   searchParams,
@@ -39,6 +38,8 @@ export default async function EventsPage({
   const source: EventSource = isSource(rawSource) ? rawSource : 'syt'
 
   const payload = await getPayload({ config: configPromise })
+
+  const me: User | null = await getOptionalMe()
 
   const events = await payload.find({
     collection: 'events',
@@ -58,11 +59,7 @@ export default async function EventsPage({
       </div>
 
       {events.docs.length === 0 ? (
-        <p>
-          {source === 'syt'
-            ? 'No See You There events yet.'
-            : 'No community events yet.'}
-        </p>
+        <p>{source === 'syt' ? 'No See You There events yet.' : 'No community events yet.'}</p>
       ) : (
         <SeeYouThereGrid>
           {events.docs.map((event: Event) => {
@@ -73,36 +70,49 @@ export default async function EventsPage({
             const categories = (event.categories ?? []).filter(
               (c): c is Category => typeof c === 'object' && c !== null,
             )
+            const likeIds = extractIds(event.likes)
+            const liked = !!me && likeIds.includes(me.id)
             return (
-              <SeeYouThereCard key={event.id} href={`/events/${event.slug}`}>
-                <SeeYouThereCardOverlay intensity="soft" />
-                <SeeYouThereCardHeader>
-                  <SeeYouThereCardBadges className="flex-wrap">
-                    {categories.map((c) => (
-                      <Badge key={c.id} color={categoryColorClass(c.color)}>
-                        {c.title}
-                      </Badge>
-                    ))}
-                  </SeeYouThereCardBadges>
-                </SeeYouThereCardHeader>
-                <SeeYouThereCardFooter>
-                  <SeeYouThereCardBody>
-                    <SeeYouThereCardTitle>{event.title}</SeeYouThereCardTitle>
-                    {location && (
+              <div key={event.id} className="relative">
+                <div className="absolute top-3 right-3 z-10">
+                  <LikeButton
+                    eventId={String(event.id)}
+                    initialLiked={liked}
+                    initialCount={likeIds.length}
+                    loggedIn={!!me}
+                    showCount={false}
+                  />
+                </div>
+                <SeeYouThereCard href={`/events/${event.slug}`}>
+                  <SeeYouThereCardOverlay intensity="soft" />
+                  <SeeYouThereCardHeader>
+                    <SeeYouThereCardBadges className="flex-wrap">
+                      {categories.map((c) => (
+                        <Badge key={c.id} color={categoryColorClass(c.color)}>
+                          {c.title}
+                        </Badge>
+                      ))}
+                    </SeeYouThereCardBadges>
+                  </SeeYouThereCardHeader>
+                  <SeeYouThereCardFooter>
+                    <SeeYouThereCardBody>
+                      <SeeYouThereCardTitle>{event.title}</SeeYouThereCardTitle>
+                      {location && (
+                        <SeeYouThereCardMeta>
+                          <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                          <span className="truncate">{location.title}</span>
+                        </SeeYouThereCardMeta>
+                      )}
                       <SeeYouThereCardMeta>
-                        <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                        <span className="truncate">{location.title}</span>
+                        <CalendarDays className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                        <span className="truncate">
+                          {formatDate(event.startDate)} • {formatTime(event.startTime)}
+                        </span>
                       </SeeYouThereCardMeta>
-                    )}
-                    <SeeYouThereCardMeta>
-                      <CalendarDays className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                      <span className="truncate">
-                        {formatDate(event.startDate)} • {formatTime(event.startTime)}
-                      </span>
-                    </SeeYouThereCardMeta>
-                  </SeeYouThereCardBody>
-                </SeeYouThereCardFooter>
-              </SeeYouThereCard>
+                    </SeeYouThereCardBody>
+                  </SeeYouThereCardFooter>
+                </SeeYouThereCard>
+              </div>
             )
           })}
         </SeeYouThereGrid>

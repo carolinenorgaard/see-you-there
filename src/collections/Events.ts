@@ -3,6 +3,8 @@ import { slugField } from 'payload'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
+import { likeEndpoints } from '../endpoints/like'
+import { rsvpEndpoints } from '../endpoints/rsvp'
 
 export const Events: CollectionConfig = {
   slug: 'events',
@@ -14,6 +16,25 @@ export const Events: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
+  },
+  endpoints: [...rsvpEndpoints, ...likeEndpoints],
+  hooks: {
+    beforeChange: [
+      ({ req, operation, data }) => {
+        if (operation !== 'create') return data
+        if (req.user?.role !== 'admin') {
+          data.createdBySeeYouThere = false
+          if (req.user) data.createdBy = req.user.id
+        }
+        if (req.user) {
+          const existing = Array.isArray(data.attendees) ? data.attendees : []
+          if (!existing.includes(req.user.id)) {
+            data.attendees = [...existing, req.user.id]
+          }
+        }
+        return data
+      },
+    ],
   },
   fields: [
     {
@@ -109,6 +130,36 @@ export const Events: CollectionConfig = {
           },
         },
       ],
+    },
+    {
+      name: 'attendees',
+      type: 'relationship',
+      relationTo: 'users',
+      hasMany: true,
+      index: true,
+      admin: {
+        description: 'Users who have RSVPed to this event. Managed via the /rsvp endpoint.',
+      },
+    },
+    {
+      name: 'likes',
+      type: 'relationship',
+      relationTo: 'users',
+      hasMany: true,
+      index: true,
+      admin: {
+        description: 'Users who liked this event. Managed via the /like endpoint.',
+      },
+    },
+    {
+      name: 'createdBy',
+      type: 'relationship',
+      relationTo: 'users',
+      index: true,
+      admin: {
+        description: 'User who submitted this event (auto-set for community submissions).',
+        readOnly: true,
+      },
     },
     slugField(),
   ],
