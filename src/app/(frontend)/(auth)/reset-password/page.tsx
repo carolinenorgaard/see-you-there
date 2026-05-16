@@ -1,11 +1,11 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
 import { authFetch } from '@/utilities/auth-fetch'
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const router = useRouter()
   const params = useSearchParams()
   const token = params.get('token') || ''
@@ -31,37 +31,41 @@ export default function ResetPasswordPage() {
   }
 
   if (!token) {
-    return (
-      <div className="container max-w-md pt-24 pb-24">
-        <p>Missing reset token.</p>
-      </div>
-    )
+    return <p>Missing reset token.</p>
   }
 
   return (
+    <form onSubmit={onSubmit} className="flex flex-col gap-4">
+      <label className="flex flex-col gap-1">
+        <span className="text-sm">New password</span>
+        <input
+          type="password"
+          required
+          minLength={8}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="border rounded px-3 py-2"
+        />
+      </label>
+      {error && <p className="text-red-600 text-sm">{error}</p>}
+      <button
+        type="submit"
+        disabled={loading}
+        className="bg-black text-white rounded px-4 py-2 disabled:opacity-50"
+      >
+        {loading ? 'Saving…' : 'Update password'}
+      </button>
+    </form>
+  )
+}
+
+export default function ResetPasswordPage() {
+  return (
     <div className="container max-w-md pt-24 pb-24">
       <h1 className="text-3xl font-semibold mb-6">Reset password</h1>
-      <form onSubmit={onSubmit} className="flex flex-col gap-4">
-        <label className="flex flex-col gap-1">
-          <span className="text-sm">New password</span>
-          <input
-            type="password"
-            required
-            minLength={8}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border rounded px-3 py-2"
-          />
-        </label>
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-black text-white rounded px-4 py-2 disabled:opacity-50"
-        >
-          {loading ? 'Saving…' : 'Update password'}
-        </button>
-      </form>
+      <Suspense fallback={null}>
+        <ResetPasswordForm />
+      </Suspense>
     </div>
   )
 }

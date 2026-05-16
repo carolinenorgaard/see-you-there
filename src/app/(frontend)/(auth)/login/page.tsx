@@ -2,11 +2,11 @@
 
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
 import { authFetch } from '@/utilities/auth-fetch'
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
   const params = useSearchParams()
   const verified = params.get('verified') === '1'
@@ -34,8 +34,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="container max-w-md pt-24 pb-24">
-      <h1 className="text-3xl font-semibold mb-6">Log in</h1>
+    <>
       {verified && (
         <p className="mb-4 text-green-700">Email verified — you can log in now.</p>
       )}
@@ -73,6 +72,17 @@ export default function LoginPage() {
         <Link href="/signup" className="underline">Create an account</Link>
         <Link href="/forgot-password" className="underline">Forgot password?</Link>
       </div>
+    </>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <div className="container max-w-md pt-24 pb-24">
+      <h1 className="text-3xl font-semibold mb-6">Log in</h1>
+      <Suspense fallback={null}>
+        <LoginForm />
+      </Suspense>
     </div>
   )
 }
