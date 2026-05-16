@@ -17,6 +17,10 @@ export default async function ProfilePage() {
     collection: 'users',
     id: user.id,
     depth: 1,
+    joins: {
+      attendingEvents: { limit: 50, sort: '-startDate' },
+      likedEvents: { limit: 50, sort: '-startDate' },
+    },
   })
 
   const attendingDocs = (fullUser.attendingEvents?.docs ?? []) as Event[]

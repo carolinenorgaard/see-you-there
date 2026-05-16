@@ -34,8 +34,8 @@ export function RsvpButton({
       })
       setAttending(!attending)
       router.refresh()
-    } catch {
-      // swallow; UI stays in current state
+    } catch (err) {
+      console.error('RSVP toggle failed', err)
     } finally {
       setLoading(false)
     }

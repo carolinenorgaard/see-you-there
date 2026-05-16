@@ -19,6 +19,22 @@ export const Events: CollectionConfig = {
   },
   endpoints: [...rsvpEndpoints, ...likeEndpoints],
   hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (!data) return data
+        if (data.startDate && data.endDate && new Date(data.endDate) < new Date(data.startDate)) {
+          throw new Error('End date must be on or after start date.')
+        }
+        if (
+          data.startTime &&
+          data.endTime &&
+          new Date(data.endTime) < new Date(data.startTime)
+        ) {
+          throw new Error('End time must be on or after start time.')
+        }
+        return data
+      },
+    ],
     beforeChange: [
       ({ req, operation, data }) => {
         if (operation !== 'create') return data

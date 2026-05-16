@@ -47,8 +47,8 @@ export function LikeButton({
       setLiked(!liked)
       setCount((c) => c + (liked ? -1 : 1))
       router.refresh()
-    } catch {
-      // swallow
+    } catch (err) {
+      console.error('Like toggle failed', err)
     } finally {
       setLoading(false)
     }

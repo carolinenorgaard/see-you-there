@@ -62,7 +62,7 @@ export default async function EventPage({
     where: { event: { equals: event.id } },
     sort: '-createdAt',
     depth: 1,
-    limit: 100,
+    limit: 50,
   })
   const comments = commentsRes.docs as EventComment[]
 
