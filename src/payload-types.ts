@@ -72,6 +72,7 @@ export interface Config {
     media: Media;
     categories: Category;
     events: Event;
+    'event-comments': EventComment;
     locations: Location;
     regions: Region;
     users: User;
@@ -87,6 +88,13 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
+    locations: {
+      events: 'events';
+    };
+    users: {
+      attendingEvents: 'events';
+      likedEvents: 'events';
+    };
     'payload-folders': {
       documentsAndFolders: 'payload-folders' | 'media';
     };
@@ -97,6 +105,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
+    'event-comments': EventCommentsSelect<false> | EventCommentsSelect<true>;
     locations: LocationsSelect<false> | LocationsSelect<true>;
     regions: RegionsSelect<false> | RegionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -430,6 +439,28 @@ export interface Category {
 export interface User {
   id: string;
   name?: string | null;
+  avatar?: (string | null) | Media;
+  bio?: string | null;
+  age?: number | null;
+  zipCode?: string | null;
+  city?: string | null;
+  role?: ('user' | 'admin') | null;
+  /**
+   * Events this user has RSVPed to (read-only).
+   */
+  attendingEvents?: {
+    docs?: (string | Event)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  /**
+   * Events this user has liked (read-only).
+   */
+  likedEvents?: {
+    docs?: (string | Event)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -437,6 +468,8 @@ export interface User {
   resetPasswordExpiration?: string | null;
   salt?: string | null;
   hash?: string | null;
+  _verified?: boolean | null;
+  _verificationToken?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
   sessions?:
@@ -448,6 +481,91 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: string;
+  title: string;
+  /**
+   * Mark this event as an official See You There event. Uncheck for user-submitted events (future).
+   */
+  createdBySeeYouThere?: boolean | null;
+  categories: (string | Category)[];
+  description?: string | null;
+  location: string | Location;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+  /**
+   * Users who have RSVPed to this event. Managed via the /rsvp endpoint.
+   */
+  attendees?: (string | User)[] | null;
+  /**
+   * Users who liked this event. Managed via the /like endpoint.
+   */
+  likes?: (string | User)[] | null;
+  /**
+   * User who submitted this event (auto-set for community submissions).
+   */
+  createdBy?: (string | null) | User;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations".
+ */
+export interface Location {
+  id: string;
+  title: string;
+  address: {
+    street: string;
+    postalCode?: string | null;
+    city: string;
+    region: string | Region;
+  };
+  categories: (string | Category)[];
+  description?: string | null;
+  /**
+   * Events held at this location (read-only).
+   */
+  events?: {
+    docs?: (string | Event)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "regions".
+ */
+export interface Region {
+  id: string;
+  title: string;
+  description?: string | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -793,66 +911,13 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "events".
+ * via the `definition` "event-comments".
  */
-export interface Event {
+export interface EventComment {
   id: string;
-  title: string;
-  /**
-   * Mark this event as an official See You There event. Uncheck for user-submitted events (future).
-   */
-  createdBySeeYouThere?: boolean | null;
-  categories: (string | Category)[];
-  description?: string | null;
-  location: string | Location;
-  startDate: string;
-  endDate: string;
-  startTime: string;
-  endTime: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "locations".
- */
-export interface Location {
-  id: string;
-  title: string;
-  address: {
-    street: string;
-    postalCode?: string | null;
-    city: string;
-    region: string | Region;
-  };
-  categories: (string | Category)[];
-  description?: string | null;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "regions".
- */
-export interface Region {
-  id: string;
-  title: string;
-  description?: string | null;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  event: string | Event;
+  author: string | User;
+  content: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -1065,6 +1130,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'events';
         value: string | Event;
+      } | null)
+    | ({
+        relationTo: 'event-comments';
+        value: string | EventComment;
       } | null)
     | ({
         relationTo: 'locations';
@@ -1435,8 +1504,22 @@ export interface EventsSelect<T extends boolean = true> {
   endDate?: T;
   startTime?: T;
   endTime?: T;
+  attendees?: T;
+  likes?: T;
+  createdBy?: T;
   generateSlug?: T;
   slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-comments_select".
+ */
+export interface EventCommentsSelect<T extends boolean = true> {
+  event?: T;
+  author?: T;
+  content?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1456,6 +1539,7 @@ export interface LocationsSelect<T extends boolean = true> {
       };
   categories?: T;
   description?: T;
+  events?: T;
   generateSlug?: T;
   slug?: T;
   updatedAt?: T;
@@ -1479,6 +1563,14 @@ export interface RegionsSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  avatar?: T;
+  bio?: T;
+  age?: T;
+  zipCode?: T;
+  city?: T;
+  role?: T;
+  attendingEvents?: T;
+  likedEvents?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1486,6 +1578,8 @@ export interface UsersSelect<T extends boolean = true> {
   resetPasswordExpiration?: T;
   salt?: T;
   hash?: T;
+  _verified?: T;
+  _verificationToken?: T;
   loginAttempts?: T;
   lockUntil?: T;
   sessions?:
