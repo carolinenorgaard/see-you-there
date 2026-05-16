@@ -18,3 +18,11 @@ export const formatDateTime = (timestamp: string): string => {
 
   return `${MM}/${DD}/${YYYY}`
 }
+
+export const formatDate = (value?: string | null): string =>
+  value ? new Date(value).toLocaleDateString() : ''
+
+export const formatTime = (value?: string | null): string =>
+  value
+    ? new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    : ''

@@ -4,6 +4,9 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
+import { CommentForm } from '@/components/events/CommentForm'
+import { LikeButton } from '@/components/events/LikeButton'
+import { RsvpButton } from '@/components/events/RsvpButton'
 import { Badge } from '@/components/ui/badge'
 import {
   SeeYouThereCard,
@@ -15,16 +18,12 @@ import {
   SeeYouThereCardOverlay,
   SeeYouThereCardTitle,
 } from '@/components/SeeYouThereCard'
-import type { Event, Location } from '@/payload-types'
+import type { Event, EventComment, Location, User } from '@/payload-types'
+import { extractIds } from '@/utilities/extractIds'
+import { formatDate, formatTime } from '@/utilities/formatDateTime'
+import { getOptionalMe } from '@/utilities/getOptionalMe'
 
 export const dynamic = 'force-dynamic'
-
-const formatDate = (value?: string | null) =>
-  value ? new Date(value).toLocaleDateString() : ''
-const formatTime = (value?: string | null) =>
-  value
-    ? new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    : ''
 
 export default async function EventPage({
   params,
@@ -49,6 +48,23 @@ export default async function EventPage({
     typeof event.location === 'object' && event.location !== null
       ? (event.location as Location)
       : null
+
+  const me: User | null = await getOptionalMe()
+
+  const attendeeIds = extractIds(event.attendees)
+  const attending = !!me && attendeeIds.includes(me.id)
+
+  const likeIds = extractIds(event.likes)
+  const liked = !!me && likeIds.includes(me.id)
+
+  const commentsRes = await payload.find({
+    collection: 'event-comments',
+    where: { event: { equals: event.id } },
+    sort: '-createdAt',
+    depth: 1,
+    limit: 50,
+  })
+  const comments = commentsRes.docs as EventComment[]
 
   return (
     <div className="container pt-24 pb-24">
@@ -98,6 +114,54 @@ export default async function EventPage({
           <p>{event.description}</p>
         </div>
       )}
+
+      <div className="mt-8 max-w-3xl flex items-center gap-3">
+        <RsvpButton
+          eventId={String(event.id)}
+          initialAttending={attending}
+          loggedIn={!!me}
+        />
+        <span className="text-sm text-muted-foreground">
+          {attendeeIds.length} attending
+        </span>
+        <LikeButton
+          eventId={String(event.id)}
+          initialLiked={liked}
+          initialCount={likeIds.length}
+          loggedIn={!!me}
+        />
+      </div>
+
+      <section className="mt-12 max-w-3xl">
+        <h2 className="text-2xl font-semibold mb-4">Comments</h2>
+        {me ? (
+          <CommentForm eventId={String(event.id)} />
+        ) : (
+          <p className="mb-4">
+            <Link href="/login" className="underline">Log in</Link> to comment.
+          </p>
+        )}
+        <ul className="mt-6 flex flex-col gap-4">
+          {comments.length === 0 && (
+            <li className="text-muted-foreground">No comments yet.</li>
+          )}
+          {comments.map((c) => {
+            const author =
+              typeof c.author === 'object' && c.author !== null
+                ? (c.author as User)
+                : null
+            return (
+              <li key={c.id} className="border-t pt-3">
+                <div className="text-sm text-muted-foreground mb-1">
+                  {author?.name || author?.email || 'Someone'} ·{' '}
+                  {c.createdAt ? new Date(c.createdAt).toLocaleString() : ''}
+                </div>
+                <p className="whitespace-pre-wrap">{c.content}</p>
+              </li>
+            )
+          })}
+        </ul>
+      </section>
     </div>
   )
 }

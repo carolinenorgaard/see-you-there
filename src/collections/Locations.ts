@@ -68,6 +68,15 @@ export const Locations: CollectionConfig = {
       name: 'description',
       type: 'textarea',
     },
+    {
+      name: 'events',
+      type: 'join',
+      collection: 'events',
+      on: 'location',
+      admin: {
+        description: 'Events held at this location (read-only).',
+      },
+    },
     slugField(),
   ],
 }
