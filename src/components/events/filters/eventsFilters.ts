@@ -14,11 +14,23 @@ export type EventSource = (typeof EVENT_SOURCES)[number]
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 
+// shallow:false triggers a Next.js router refresh on each write so the
+// server component re-runs the Payload query with the new filters.
+const serverSyncOptions = { shallow: false } as const
+
 export const eventsFilterParsers = {
-  source: parseAsStringLiteral(EVENT_SOURCES).withDefault('syt'),
-  date: parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
-  categories: parseAsArrayOf(parseAsString).withDefault([]),
-  region: parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
+  source: parseAsStringLiteral(EVENT_SOURCES)
+    .withDefault('syt')
+    .withOptions(serverSyncOptions),
+  date: parseAsString
+    .withDefault('')
+    .withOptions({ ...serverSyncOptions, clearOnDefault: true }),
+  categories: parseAsArrayOf(parseAsString)
+    .withDefault([])
+    .withOptions(serverSyncOptions),
+  region: parseAsString
+    .withDefault('')
+    .withOptions({ ...serverSyncOptions, clearOnDefault: true }),
 }
 
 export type ParsedEventFilters = {
