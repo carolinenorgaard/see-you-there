@@ -26,3 +26,16 @@ export const formatTime = (value?: string | null): string =>
   value
     ? new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     : ''
+
+export const toIsoDay = (date: Date): string => {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+export const nextIsoDay = (iso: string): string => {
+  const d = new Date(`${iso}T00:00:00.000Z`)
+  d.setUTCDate(d.getUTCDate() + 1)
+  return d.toISOString().slice(0, 10)
+}

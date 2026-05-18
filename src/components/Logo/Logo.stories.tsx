@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
+
 import { Logo } from './Logo'
 
 const meta: Meta<typeof Logo> = {
@@ -6,11 +7,24 @@ const meta: Meta<typeof Logo> = {
   component: Logo,
   tags: ['autodocs'],
   parameters: { layout: 'centered' },
-  args: { className: 'invert dark:invert-0' },
 }
 
 export default meta
 type Story = StoryObj<typeof Logo>
 
 export const Default: Story = {}
-export const Eager: Story = { args: { loading: 'eager', priority: 'high' } }
+
+export const IconOnly: Story = {
+  args: { iconOnly: true },
+}
+
+export const Light: Story = {
+  args: { light: true },
+  decorators: [
+    (Story) => (
+      <div className="bg-black p-6">
+        <Story />
+      </div>
+    ),
+  ],
+}

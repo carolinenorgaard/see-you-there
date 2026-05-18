@@ -1,29 +1,25 @@
 import clsx from 'clsx'
-import React from 'react'
 
 interface Props {
   className?: string
-  loading?: 'lazy' | 'eager'
-  priority?: 'auto' | 'high' | 'low'
+  /** Hide the "See you there" wordmark and render only the icon. */
+  iconOnly?: boolean
+  /** Use the light-color variant (white text) — for permanently dark surfaces like the footer. */
+  light?: boolean
 }
 
-export const Logo = (props: Props) => {
-  const { loading: loadingFromProps, priority: priorityFromProps, className } = props
-
-  const loading = loadingFromProps || 'lazy'
-  const priority = priorityFromProps || 'low'
-
-  return (
-    /* eslint-disable @next/next/no-img-element */
-    <img
-      alt="Payload Logo"
-      width={193}
-      height={34}
-      loading={loading}
-      fetchPriority={priority}
-      decoding="async"
-      className={clsx('max-w-[9.375rem] w-full h-[34px]', className)}
-      src="https://raw.githubusercontent.com/payloadcms/payload/3.x/packages/ui/src/assets/payload-logo-light.svg"
-    />
-  )
-}
+export const Logo = ({ className, iconOnly = false, light = false }: Props) => (
+  <span
+    className={clsx(
+      'inline-flex items-center gap-2',
+      light ? 'text-white' : 'text-black dark:text-white',
+      className,
+    )}
+  >
+    {/* eslint-disable-next-line @next/next/no-img-element */}
+    <img src="/logo.svg" alt="See you there" width={32} height={30} />
+    {!iconOnly && (
+      <span className="text-base font-bold tracking-tight">See you there</span>
+    )}
+  </span>
+)

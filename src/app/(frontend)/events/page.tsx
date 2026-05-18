@@ -1,10 +1,19 @@
 import configPromise from '@payload-config'
 import { CalendarDays, MapPin } from 'lucide-react'
-import Link from 'next/link'
 import { getPayload } from 'payload'
 
+import { EmptyEventsMessage } from '@/components/events/EmptyEventsMessage'
 import { LikeButton } from '@/components/events/LikeButton'
+import { SourceToggle } from '@/components/events/SourceToggle'
 import { Badge } from '@/components/ui/badge'
+import { CategoryChipRow } from '@/components/events/filters/CategoryChipRow'
+import { DateChipRail } from '@/components/events/filters/DateChipRail'
+import {
+  buildEventsWhere,
+  loadEventsFilters,
+  normalizeEventsFilters,
+} from '@/components/events/filters/eventsFilters'
+import { RegionSelect } from '@/components/events/filters/RegionSelect'
 import {
   SeeYouThereCard,
   SeeYouThereCardBadges,
@@ -16,60 +25,74 @@ import {
   SeeYouThereCardTitle,
 } from '@/components/SeeYouThereCard'
 import { SeeYouThereGrid } from '@/components/SeeYouThereGrid'
-import type { Category, Event, Location, User } from '@/payload-types'
-import { cn } from '@/utilities/ui'
+import type { Category, Event, Location, Region } from '@/payload-types'
 import { categoryColorClass } from '@/utilities/categoryColor'
 import { extractIds } from '@/utilities/extractIds'
 import { formatDate, formatTime } from '@/utilities/formatDateTime'
 import { getOptionalMe } from '@/utilities/getOptionalMe'
+import { populated, populatedList } from '@/utilities/payloadRelations'
 
 export const dynamic = 'force-dynamic'
-
-type EventSource = 'syt' | 'community'
-
-const isSource = (value: unknown): value is EventSource => value === 'syt' || value === 'community'
 
 export default async function EventsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ source?: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
-  const { source: rawSource } = await searchParams
-  const source: EventSource = isSource(rawSource) ? rawSource : 'syt'
+  const filters = normalizeEventsFilters(await loadEventsFilters(searchParams))
 
   const payload = await getPayload({ config: configPromise })
 
-  const me: User | null = await getOptionalMe()
+  const [me, categoriesRes, regionsRes] = await Promise.all([
+    getOptionalMe(),
+    payload.find({
+      collection: 'categories',
+      depth: 0,
+      limit: 100,
+      overrideAccess: false,
+    }),
+    payload.find({
+      collection: 'regions',
+      depth: 0,
+      limit: 200,
+      overrideAccess: false,
+      sort: 'title',
+    }),
+  ])
+
+  const categories = categoriesRes.docs as Category[]
+  const regions = regionsRes.docs as Region[]
 
   const events = await payload.find({
     collection: 'events',
     depth: 1,
     limit: 100,
     overrideAccess: false,
-    where: {
-      createdBySeeYouThere: { equals: source === 'syt' },
-    },
+    where: buildEventsWhere(filters, { categories, regions }),
   })
 
   return (
     <div className="container pt-24 pb-24">
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-4xl font-bold tracking-tight">Event Wall</h1>
-        <SourceToggle active={source} />
+        <SourceToggle active={filters.source} />
+      </div>
+
+      <div className="mb-8 space-y-4">
+        <DateChipRail />
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          {categories.length > 0 && <CategoryChipRow categories={categories} />}
+          {regions.length > 0 && <RegionSelect regions={regions} />}
+        </div>
       </div>
 
       {events.docs.length === 0 ? (
-        <p>{source === 'syt' ? 'No See You There events yet.' : 'No community events yet.'}</p>
+        <EmptyEventsMessage filters={filters} />
       ) : (
         <SeeYouThereGrid>
           {events.docs.map((event: Event) => {
-            const location =
-              typeof event.location === 'object' && event.location !== null
-                ? (event.location as Location)
-                : null
-            const categories = (event.categories ?? []).filter(
-              (c): c is Category => typeof c === 'object' && c !== null,
-            )
+            const location = populated<Location>(event.location)
+            const categories = populatedList<Category>(event.categories)
             const likeIds = extractIds(event.likes)
             const liked = !!me && likeIds.includes(me.id)
             return (
@@ -117,40 +140,6 @@ export default async function EventsPage({
           })}
         </SeeYouThereGrid>
       )}
-    </div>
-  )
-}
-
-const SourceToggle = ({ active }: { active: EventSource }) => {
-  const options: { value: EventSource; label: string }[] = [
-    { value: 'syt', label: 'See You There' },
-    { value: 'community', label: 'Community' },
-  ]
-  return (
-    <div
-      role="tablist"
-      aria-label="Filter events by source"
-      className="inline-flex rounded-full border border-neutral-200 bg-neutral-100 p-1"
-    >
-      {options.map((opt) => {
-        const isActive = opt.value === active
-        return (
-          <Link
-            key={opt.value}
-            href={`/events?source=${opt.value}`}
-            role="tab"
-            aria-selected={isActive}
-            className={cn(
-              'rounded-full px-4 py-1.5 text-sm font-medium transition',
-              isActive
-                ? 'bg-white text-neutral-900 shadow-sm'
-                : 'text-neutral-600 hover:text-neutral-900',
-            )}
-          >
-            {opt.label}
-          </Link>
-        )
-      })}
     </div>
   )
 }

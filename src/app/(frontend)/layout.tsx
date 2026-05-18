@@ -4,6 +4,7 @@ import { cn } from '@/utilities/ui'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 import { Plus_Jakarta_Sans } from 'next/font/google'
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import React from 'react'
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -38,17 +39,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <body>
-        <Providers>
-          <AdminBar
-            adminBarProps={{
-              preview: isEnabled,
-            }}
-          />
+        <NuqsAdapter>
+          <Providers>
+            <AdminBar
+              adminBarProps={{
+                preview: isEnabled,
+              }}
+            />
 
-          <Header />
-          {children}
-          <Footer />
-        </Providers>
+            <Header />
+            {children}
+            <Footer />
+          </Providers>
+        </NuqsAdapter>
       </body>
     </html>
   )
