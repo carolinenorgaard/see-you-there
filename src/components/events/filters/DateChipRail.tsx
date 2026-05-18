@@ -24,9 +24,9 @@ const buildDateRailChips = (): Chip[] => {
     d.setDate(today.getDate() + i)
     chips.push({
       iso: toIsoDay(d),
-      weekday: d.toLocaleDateString(undefined, { weekday: 'short' }),
+      weekday: d.toLocaleDateString('da-DK', { weekday: 'short' }),
       day: d.getDate(),
-      label: i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : undefined,
+      label: i === 0 ? 'I dag' : undefined,
     })
   }
   return chips
@@ -48,7 +48,7 @@ export const DateChipRail = () => {
           chipState(!activeDate),
         )}
       >
-        All
+        Alle
       </button>
       {chips.map((chip) => {
         const isActive = activeDate === chip.iso
