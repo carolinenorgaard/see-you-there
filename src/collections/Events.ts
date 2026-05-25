@@ -78,6 +78,11 @@ export const Events: CollectionConfig = {
       index: true,
     },
     {
+      name: 'image',
+      type: 'upload',
+      relationTo: 'media',
+    },
+    {
       name: 'description',
       type: 'textarea',
     },

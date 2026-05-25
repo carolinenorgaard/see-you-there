@@ -20,12 +20,13 @@ import {
   SeeYouThereCardBody,
   SeeYouThereCardFooter,
   SeeYouThereCardHeader,
+  SeeYouThereCardImage,
   SeeYouThereCardMeta,
   SeeYouThereCardOverlay,
   SeeYouThereCardTitle,
 } from '@/components/SeeYouThereCard'
 import { SeeYouThereGrid } from '@/components/SeeYouThereGrid'
-import type { Category, Event, Location, Region } from '@/payload-types'
+import type { Category, Event, Location, Media, Region } from '@/payload-types'
 import { categoryColorClass } from '@/utilities/categoryColor'
 import { extractIds } from '@/utilities/extractIds'
 import { formatDate, formatTime } from '@/utilities/formatDateTime'
@@ -93,6 +94,7 @@ export default async function EventsPage({
           {events.docs.map((event: Event) => {
             const location = populated<Location>(event.location)
             const categories = populatedList<Category>(event.categories)
+            const image = populated<Media>(event.image)
             const likeIds = extractIds(event.likes)
             const liked = !!me && likeIds.includes(me.id)
             return (
@@ -107,6 +109,9 @@ export default async function EventsPage({
                   />
                 </div>
                 <SeeYouThereCard href={`/events/${event.slug}`}>
+                  {image?.url && (
+                    <SeeYouThereCardImage src={image.url} alt={image.alt ?? event.title} />
+                  )}
                   <SeeYouThereCardOverlay intensity="soft" />
                   <SeeYouThereCardHeader>
                     <SeeYouThereCardBadges className="flex-wrap">

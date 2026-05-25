@@ -9,13 +9,15 @@ import {
   SeeYouThereCardBody,
   SeeYouThereCardFooter,
   SeeYouThereCardHeader,
+  SeeYouThereCardImage,
   SeeYouThereCardMeta,
   SeeYouThereCardOverlay,
   SeeYouThereCardTitle,
 } from '@/components/SeeYouThereCard'
 import { SeeYouThereGrid } from '@/components/SeeYouThereGrid'
-import type { Category, Location, Region } from '@/payload-types'
+import type { Category, Location, Media, Region } from '@/payload-types'
 import { categoryColorClass } from '@/utilities/categoryColor'
+import { populated } from '@/utilities/payloadRelations'
 
 export const dynamic = 'force-dynamic'
 
@@ -42,12 +44,16 @@ export default async function LocationsPage() {
             const categories = (location.categories ?? []).filter(
               (c): c is Category => typeof c === 'object' && c !== null,
             )
+            const image = populated<Media>(location.image)
 
             return (
               <SeeYouThereCard
                 key={location.id}
                 href={location.slug ? `/locations/${location.slug}` : undefined}
               >
+                {image?.url && (
+                  <SeeYouThereCardImage src={image.url} alt={image.alt ?? location.title} />
+                )}
                 <SeeYouThereCardOverlay intensity="soft" />
                 <SeeYouThereCardHeader>
                   <SeeYouThereCardBadges className="flex-wrap">
