@@ -14,11 +14,13 @@ import {
   SeeYouThereCardBody,
   SeeYouThereCardFooter,
   SeeYouThereCardHeader,
+  SeeYouThereCardImage,
   SeeYouThereCardMeta,
   SeeYouThereCardOverlay,
   SeeYouThereCardTitle,
 } from '@/components/SeeYouThereCard'
-import type { Event, EventComment, Location, User } from '@/payload-types'
+import type { Event, EventComment, Location, Media, User } from '@/payload-types'
+import { populated } from '@/utilities/payloadRelations'
 import { extractIds } from '@/utilities/extractIds'
 import { formatDate, formatTime } from '@/utilities/formatDateTime'
 import { getOptionalMe } from '@/utilities/getOptionalMe'
@@ -48,6 +50,7 @@ export default async function EventPage({
     typeof event.location === 'object' && event.location !== null
       ? (event.location as Location)
       : null
+  const image = populated<Media>(event.image)
 
   const me: User | null = await getOptionalMe()
 
@@ -69,6 +72,9 @@ export default async function EventPage({
   return (
     <div className="container pt-24 pb-24">
       <SeeYouThereCard aspect="aspect-[16/7]" className="mb-10">
+        {image?.url && (
+          <SeeYouThereCardImage src={image.url} alt={image.alt ?? event.title} />
+        )}
         <SeeYouThereCardOverlay />
         <SeeYouThereCardHeader>
           <SeeYouThereCardBadges>

@@ -10,13 +10,15 @@ import {
   SeeYouThereCardBody,
   SeeYouThereCardFooter,
   SeeYouThereCardHeader,
+  SeeYouThereCardImage,
   SeeYouThereCardMeta,
   SeeYouThereCardOverlay,
   SeeYouThereCardTitle,
 } from '@/components/SeeYouThereCard'
 import { SeeYouThereGrid } from '@/components/SeeYouThereGrid'
-import type { Event, Location } from '@/payload-types'
+import type { Event, Location, Media } from '@/payload-types'
 import { formatDate, formatTime } from '@/utilities/formatDateTime'
+import { populated } from '@/utilities/payloadRelations'
 
 export const dynamic = 'force-dynamic'
 
@@ -40,10 +42,14 @@ export default async function LocationPage({
   if (!location) notFound()
 
   const events = (location.events?.docs ?? []) as Event[]
+  const heroImage = populated<Media>(location.image)
 
   return (
     <div className="container pt-24 pb-24">
       <SeeYouThereCard aspect="aspect-[16/7]" className="mb-10">
+        {heroImage?.url && (
+          <SeeYouThereCardImage src={heroImage.url} alt={heroImage.alt ?? location.title} />
+        )}
         <SeeYouThereCardOverlay />
         <SeeYouThereCardHeader>
           <SeeYouThereCardBadges>
@@ -70,8 +76,13 @@ export default async function LocationPage({
         <p className="text-muted-foreground">No events yet.</p>
       ) : (
         <SeeYouThereGrid>
-          {events.map((event) => (
+          {events.map((event) => {
+            const eventImage = populated<Media>(event.image)
+            return (
             <SeeYouThereCard key={event.id} href={`/events/${event.slug}`}>
+              {eventImage?.url && (
+                <SeeYouThereCardImage src={eventImage.url} alt={eventImage.alt ?? event.title} />
+              )}
               <SeeYouThereCardOverlay intensity="soft" />
               <SeeYouThereCardFooter>
                 <SeeYouThereCardBody>
@@ -85,7 +96,8 @@ export default async function LocationPage({
                 </SeeYouThereCardBody>
               </SeeYouThereCardFooter>
             </SeeYouThereCard>
-          ))}
+            )
+          })}
         </SeeYouThereGrid>
       )}
     </div>

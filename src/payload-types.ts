@@ -494,6 +494,7 @@ export interface Event {
    */
   createdBySeeYouThere?: boolean | null;
   categories: (string | Category)[];
+  image?: (string | null) | Media;
   description?: string | null;
   location: string | Location;
   startDate: string;
@@ -534,6 +535,7 @@ export interface Location {
     region: string | Region;
   };
   categories: (string | Category)[];
+  image?: (string | null) | Media;
   description?: string | null;
   /**
    * Events held at this location (read-only).
@@ -1498,6 +1500,7 @@ export interface EventsSelect<T extends boolean = true> {
   title?: T;
   createdBySeeYouThere?: T;
   categories?: T;
+  image?: T;
   description?: T;
   location?: T;
   startDate?: T;
@@ -1538,6 +1541,7 @@ export interface LocationsSelect<T extends boolean = true> {
         region?: T;
       };
   categories?: T;
+  image?: T;
   description?: T;
   events?: T;
   generateSlug?: T;
