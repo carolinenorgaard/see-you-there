@@ -24,20 +24,20 @@ function ResetPasswordForm() {
       })
       router.push('/login')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Reset failed')
+      setError(err instanceof Error ? err.message : 'Nulstilling mislykkedes')
     } finally {
       setLoading(false)
     }
   }
 
   if (!token) {
-    return <p>Missing reset token.</p>
+    return <p>Manglende nulstillingstoken.</p>
   }
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
       <label className="flex flex-col gap-1">
-        <span className="text-sm">New password</span>
+        <span className="text-sm">Ny adgangskode</span>
         <input
           type="password"
           required
@@ -53,7 +53,7 @@ function ResetPasswordForm() {
         disabled={loading}
         className="bg-black text-white rounded px-4 py-2 disabled:opacity-50"
       >
-        {loading ? 'Saving…' : 'Update password'}
+        {loading ? 'Gemmer…' : 'Opdater adgangskode'}
       </button>
     </form>
   )
@@ -62,7 +62,7 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
   return (
     <div className="container max-w-md pt-24 pb-24">
-      <h1 className="text-3xl font-semibold mb-6">Reset password</h1>
+      <h1 className="text-3xl font-semibold mb-6">Nulstil adgangskode</h1>
       <Suspense fallback={null}>
         <ResetPasswordForm />
       </Suspense>

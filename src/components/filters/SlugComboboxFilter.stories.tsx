@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 
 import type { Region } from '@/payload-types'
-import { RegionSelect } from './RegionSelect'
+
+import { SlugComboboxFilter } from './SlugComboboxFilter'
 
 const regions: Region[] = [
   { id: 1, title: 'Copenhagen', slug: 'copenhagen' } as unknown as Region,
@@ -10,21 +11,29 @@ const regions: Region[] = [
   { id: 4, title: 'Aalborg', slug: 'aalborg' } as unknown as Region,
 ]
 
-const meta: Meta<typeof RegionSelect> = {
-  title: 'Filters/RegionSelect',
-  component: RegionSelect,
+const meta: Meta<typeof SlugComboboxFilter<Region>> = {
+  title: 'Filters/SlugComboboxFilter',
+  component: SlugComboboxFilter,
   tags: ['autodocs'],
   parameters: { layout: 'padded' },
 }
 
 export default meta
-type Story = StoryObj<typeof RegionSelect>
+type Story = StoryObj<typeof SlugComboboxFilter<Region>>
+
+const baseArgs = {
+  items: regions,
+  paramKey: 'region',
+  allLabel: 'Alle regioner',
+  searchPlaceholder: 'Søg efter region…',
+  ariaLabel: 'Filtrér efter region',
+}
 
 export const NoneSelected: Story = {
-  args: { regions },
+  args: baseArgs,
 }
 
 export const RegionSelected: Story = {
-  args: { regions },
+  args: baseArgs,
   parameters: { nuqs: { searchParams: '?region=copenhagen' } },
 }

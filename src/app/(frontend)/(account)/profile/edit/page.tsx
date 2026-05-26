@@ -65,20 +65,20 @@ export default function ProfileEditPage() {
       router.push('/profile')
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Save failed')
+      setError(err instanceof Error ? err.message : 'Kunne ikke gemme')
     } finally {
       setLoading(false)
     }
   }
 
-  if (!me) return <div className="container pt-24 pb-24">Loading…</div>
+  if (!me) return <div className="container pt-24 pb-24">Indlæser…</div>
 
   return (
     <div className="container max-w-md pt-24 pb-24">
-      <h1 className="text-3xl font-semibold mb-6">Edit profile</h1>
+      <h1 className="text-3xl font-semibold mb-6">Rediger profil</h1>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <label className="flex flex-col gap-1">
-          <span className="text-sm">Name</span>
+          <span className="text-sm">Navn</span>
           <input
             type="text"
             value={name}
@@ -88,7 +88,7 @@ export default function ProfileEditPage() {
         </label>
         <div className="flex gap-3">
           <label className="flex flex-col gap-1 w-24">
-            <span className="text-sm">Age</span>
+            <span className="text-sm">Alder</span>
             <input
               type="number"
               min={0}
@@ -99,7 +99,7 @@ export default function ProfileEditPage() {
             />
           </label>
           <label className="flex flex-col gap-1 w-28">
-            <span className="text-sm">Zip code</span>
+            <span className="text-sm">Postnr.</span>
             <input
               type="text"
               value={zipCode}
@@ -108,7 +108,7 @@ export default function ProfileEditPage() {
             />
           </label>
           <label className="flex flex-col gap-1 flex-1">
-            <span className="text-sm">City</span>
+            <span className="text-sm">By</span>
             <input
               type="text"
               value={city}
@@ -132,7 +132,7 @@ export default function ProfileEditPage() {
           disabled={loading}
           className="bg-black text-white rounded px-4 py-2 disabled:opacity-50"
         >
-          {loading ? 'Saving…' : 'Save'}
+          {loading ? 'Gemmer…' : 'Gem'}
         </button>
       </form>
     </div>

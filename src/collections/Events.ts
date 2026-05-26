@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { slugField } from 'payload'
+import { slugField, ValidationError } from 'payload'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
@@ -20,18 +20,39 @@ export const Events: CollectionConfig = {
   endpoints: [...rsvpEndpoints, ...likeEndpoints],
   hooks: {
     beforeValidate: [
-      ({ data }) => {
+      ({ data, req }) => {
         if (!data) return data
-        if (data.startDate && data.endDate && new Date(data.endDate) < new Date(data.startDate)) {
-          throw new Error('End date must be on or after start date.')
+        if (!data.startDate || !data.endDate) return data
+
+        const start = new Date(data.startDate)
+        const end = new Date(data.endDate)
+        const errors: { message: string; path: string }[] = []
+
+        if (end < start) {
+          errors.push({ path: 'endDate', message: 'End date must be on or after start date.' })
+        } else {
+          const sameDay =
+            start.getUTCFullYear() === end.getUTCFullYear() &&
+            start.getUTCMonth() === end.getUTCMonth() &&
+            start.getUTCDate() === end.getUTCDate()
+
+          if (
+            sameDay &&
+            data.startTime &&
+            data.endTime &&
+            new Date(data.endTime) < new Date(data.startTime)
+          ) {
+            errors.push({
+              path: 'endTime',
+              message: 'End time must be on or after start time when the event ends on the same day.',
+            })
+          }
         }
-        if (
-          data.startTime &&
-          data.endTime &&
-          new Date(data.endTime) < new Date(data.startTime)
-        ) {
-          throw new Error('End time must be on or after start time.')
+
+        if (errors.length > 0) {
+          throw new ValidationError({ collection: 'events', errors, req })
         }
+
         return data
       },
     ],

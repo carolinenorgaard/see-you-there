@@ -1,6 +1,6 @@
 'use client'
 
-import { useQueryState } from 'nuqs'
+import { useQueryStates } from 'nuqs'
 
 import { toIsoDay } from '@/utilities/formatDateTime'
 import { cn } from '@/utilities/ui'
@@ -33,7 +33,11 @@ const buildDateRailChips = (): Chip[] => {
 }
 
 export const DateChipRail = () => {
-  const [rawDate, setDate] = useQueryState('date', eventsFilterParsers.date)
+  const [{ date: rawDate }, setStates] = useQueryStates({
+    date: eventsFilterParsers.date,
+    page: eventsFilterParsers.page,
+  })
+  const setDate = (value: string | null) => setStates({ date: value, page: null })
   const activeDate = rawDate || null
   const chips = buildDateRailChips()
 

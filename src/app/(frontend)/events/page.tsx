@@ -13,7 +13,8 @@ import {
   normalizeEventsFilters,
 } from '@/components/events/filters/eventsFilters'
 import { CategoryChipRow } from '@/components/filters/CategoryChipRow'
-import { RegionSelect } from '@/components/filters/RegionSelect'
+import { SlugComboboxFilter } from '@/components/filters/SlugComboboxFilter'
+import { QueryPagination } from '@/components/Pagination/QueryPagination'
 import {
   SeeYouThereCard,
   SeeYouThereCardBadges,
@@ -33,6 +34,8 @@ import { formatDate, formatTime } from '@/utilities/formatDateTime'
 import { getOptionalMe } from '@/utilities/getOptionalMe'
 import { populated, populatedList } from '@/utilities/payloadRelations'
 
+const PAGE_SIZE = 24
+
 export const dynamic = 'force-dynamic'
 
 export default async function EventsPage({
@@ -40,11 +43,13 @@ export default async function EventsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
-  const filters = normalizeEventsFilters(await loadEventsFilters(searchParams))
+  const rawFilters = await loadEventsFilters(searchParams)
+  const filters = normalizeEventsFilters(rawFilters)
+  const page = Math.max(1, rawFilters.page)
 
   const payload = await getPayload({ config: configPromise })
 
-  const [me, categoriesRes, regionsRes] = await Promise.all([
+  const [me, categoriesRes, regionsRes, locationsRes] = await Promise.all([
     getOptionalMe(),
     payload.find({
       collection: 'categories',
@@ -59,24 +64,34 @@ export default async function EventsPage({
       overrideAccess: false,
       sort: 'title',
     }),
+    payload.find({
+      collection: 'locations',
+      depth: 0,
+      limit: 500,
+      overrideAccess: false,
+      sort: 'title',
+      select: { title: true, slug: true },
+    }),
   ])
 
   const categories = categoriesRes.docs as Category[]
   const regions = regionsRes.docs as Region[]
+  const locations = locationsRes.docs as Location[]
 
   const events = await payload.find({
     collection: 'events',
     depth: 2,
-    limit: 100,
+    limit: PAGE_SIZE,
+    page,
     overrideAccess: false,
     sort: 'startDate',
-    where: buildEventsWhere(filters, { categories, regions }),
+    where: buildEventsWhere(filters, { categories, regions, locations }),
   })
 
   return (
     <div className="container pt-24 pb-24">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-4xl font-bold tracking-tight">Event Wall</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Begivenhedsvæg</h1>
         <SourceToggle active={filters.source} />
       </div>
 
@@ -84,7 +99,26 @@ export default async function EventsPage({
         <DateChipRail />
         <div className="flex flex-wrap items-center justify-between gap-4">
           {categories.length > 0 && <CategoryChipRow categories={categories} />}
-          {regions.length > 0 && <RegionSelect regions={regions} />}
+          <div className="flex flex-wrap items-center gap-2">
+            {regions.length > 0 && (
+              <SlugComboboxFilter
+                items={regions}
+                paramKey="region"
+                allLabel="Alle regioner"
+                searchPlaceholder="Søg efter region…"
+                ariaLabel="Filtrér efter region"
+              />
+            )}
+            {locations.length > 0 && (
+              <SlugComboboxFilter
+                items={locations}
+                paramKey="location"
+                allLabel="Alle lokationer"
+                searchPlaceholder="Søg efter lokation…"
+                ariaLabel="Filtrér efter lokation"
+              />
+            )}
+          </div>
         </div>
       </div>
 
@@ -145,6 +179,10 @@ export default async function EventsPage({
             )
           })}
         </SeeYouThereGrid>
+      )}
+
+      {events.totalPages > 1 && events.page && (
+        <QueryPagination page={events.page} totalPages={events.totalPages} />
       )}
     </div>
   )

@@ -28,7 +28,7 @@ export function LikeButton({
     return (
       <a
         href="/login"
-        aria-label="Log in to like this event"
+        aria-label="Log ind for at like denne begivenhed"
         className="inline-flex items-center gap-2 rounded px-3 py-2 border border-neutral-200 bg-white text-neutral-900"
       >
         <Heart className="h-4 w-4" />

@@ -1,4 +1,4 @@
-import { parseAsArrayOf, parseAsString } from 'nuqs/server'
+import { parseAsArrayOf, parseAsInteger, parseAsString } from 'nuqs/server'
 
 // shallow:false triggers a Next.js router refresh on each write so the
 // server component re-runs the Payload query with the new filters.
@@ -8,18 +8,29 @@ export const categoriesParser = parseAsArrayOf(parseAsString)
   .withDefault([])
   .withOptions(serverSyncOptions)
 
-export const regionParser = parseAsString
+export const slugParser = parseAsString
   .withDefault('')
+  .withOptions({ ...serverSyncOptions, clearOnDefault: true })
+
+export const regionParser = slugParser
+export const locationParser = slugParser
+
+export const pageParser = parseAsInteger
+  .withDefault(1)
   .withOptions({ ...serverSyncOptions, clearOnDefault: true })
 
 export const normalizeCategorySlugs = (raw: string[]): string[] => raw.filter(Boolean)
 
-export const normalizeRegionSlug = (raw: string): string | null => raw || null
+export const normalizeSlug = (raw: string): string | null => raw || null
 
-export const resolveIdsBySlug = <T extends { id: string | number; slug?: string | null }>(
-  slugs: string[],
-  items: T[],
-): T['id'][] => {
+type SlugItem = { id: string | number; slug?: string | null }
+
+export const resolveIdsBySlug = <T extends SlugItem>(slugs: string[], items: T[]): T['id'][] => {
   const set = new Set(slugs)
   return items.filter((i) => i.slug && set.has(i.slug)).map((i) => i.id)
 }
+
+export const resolveIdBySlug = <T extends SlugItem>(
+  slug: string | null,
+  items: T[],
+): T['id'] | null => (slug ? resolveIdsBySlug([slug], items)[0] ?? null : null)
