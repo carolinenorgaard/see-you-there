@@ -1,11 +1,10 @@
 import configPromise from '@payload-config'
-import { CalendarDays, MapPin } from 'lucide-react'
 import { getPayload } from 'payload'
 
 import { EmptyEventsMessage } from '@/components/events/EmptyEventsMessage'
+import { EventCard } from '@/components/events/EventCard'
 import { LikeButton } from '@/components/events/LikeButton'
 import { SourceToggle } from '@/components/events/SourceToggle'
-import { Badge } from '@/components/ui/badge'
 import { DateChipRail } from '@/components/events/filters/DateChipRail'
 import {
   buildEventsWhere,
@@ -15,24 +14,10 @@ import {
 import { CategoryChipRow } from '@/components/filters/CategoryChipRow'
 import { SlugComboboxFilter } from '@/components/filters/SlugComboboxFilter'
 import { QueryPagination } from '@/components/Pagination/QueryPagination'
-import {
-  SeeYouThereCard,
-  SeeYouThereCardBadges,
-  SeeYouThereCardBody,
-  SeeYouThereCardFooter,
-  SeeYouThereCardHeader,
-  SeeYouThereCardImage,
-  SeeYouThereCardMeta,
-  SeeYouThereCardOverlay,
-  SeeYouThereCardTitle,
-} from '@/components/SeeYouThereCard'
 import { SeeYouThereGrid } from '@/components/SeeYouThereGrid'
-import type { Category, Event, Location, Media, Region } from '@/payload-types'
-import { categoryColorClass } from '@/utilities/categoryColor'
+import type { Category, Event, Location, Region } from '@/payload-types'
 import { extractIds } from '@/utilities/extractIds'
-import { formatDate, formatTime } from '@/utilities/formatDateTime'
 import { getOptionalMe } from '@/utilities/getOptionalMe'
-import { populated, populatedList } from '@/utilities/payloadRelations'
 
 const PAGE_SIZE = 24
 
@@ -127,55 +112,23 @@ export default async function EventsPage({
       ) : (
         <SeeYouThereGrid>
           {events.docs.map((event: Event) => {
-            const location = populated<Location>(event.location)
-            const categories = populatedList<Category>(event.categories)
-            const image = populated<Media>(event.image) ?? populated<Media>(location?.image)
             const likeIds = extractIds(event.likes)
             const liked = !!me && likeIds.includes(me.id)
             return (
-              <div key={event.id} className="relative">
-                <div className="absolute top-3 right-3 z-10">
+              <EventCard
+                key={event.id}
+                event={event}
+                action={
                   <LikeButton
                     eventId={String(event.id)}
                     initialLiked={liked}
                     initialCount={likeIds.length}
                     loggedIn={!!me}
                     showCount={false}
+                    iconOnly
                   />
-                </div>
-                <SeeYouThereCard href={`/events/${event.slug}`}>
-                  {image?.url && (
-                    <SeeYouThereCardImage src={image.url} alt={image.alt ?? event.title} />
-                  )}
-                  <SeeYouThereCardOverlay intensity="soft" />
-                  <SeeYouThereCardHeader>
-                    <SeeYouThereCardBadges className="flex-wrap">
-                      {categories.map((c) => (
-                        <Badge key={c.id} color={categoryColorClass(c.color)}>
-                          {c.title}
-                        </Badge>
-                      ))}
-                    </SeeYouThereCardBadges>
-                  </SeeYouThereCardHeader>
-                  <SeeYouThereCardFooter>
-                    <SeeYouThereCardBody>
-                      <SeeYouThereCardTitle>{event.title}</SeeYouThereCardTitle>
-                      {location && (
-                        <SeeYouThereCardMeta>
-                          <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                          <span className="truncate">{location.title}</span>
-                        </SeeYouThereCardMeta>
-                      )}
-                      <SeeYouThereCardMeta>
-                        <CalendarDays className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                        <span className="truncate">
-                          {formatDate(event.startDate)} • {formatTime(event.startTime)}
-                        </span>
-                      </SeeYouThereCardMeta>
-                    </SeeYouThereCardBody>
-                  </SeeYouThereCardFooter>
-                </SeeYouThereCard>
-              </div>
+                }
+              />
             )
           })}
         </SeeYouThereGrid>
