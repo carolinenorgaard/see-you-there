@@ -5,10 +5,12 @@ import React from 'react'
 
 import type { Page, Post } from '@/payload-types'
 
-type CMSLinkType = {
+type CMSLinkType = Omit<
+  React.ComponentPropsWithoutRef<typeof Link>,
+  'href' | 'children' | 'type' | 'label'
+> & {
   appearance?: 'inline' | ButtonProps['variant']
   children?: React.ReactNode
-  className?: string
   label?: string | null
   newTab?: boolean | null
   reference?: {
@@ -20,7 +22,7 @@ type CMSLinkType = {
   url?: string | null
 }
 
-export const CMSLink: React.FC<CMSLinkType> = (props) => {
+export const CMSLink = React.forwardRef<HTMLAnchorElement, CMSLinkType>((props, ref) => {
   const {
     type,
     appearance = 'inline',
@@ -31,6 +33,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     reference,
     size: sizeFromProps,
     url,
+    ...rest
   } = props
 
   const href =
@@ -45,10 +48,9 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
   const size = appearance === 'link' ? 'clear' : sizeFromProps
   const newTabProps = newTab ? { rel: 'noopener noreferrer', target: '_blank' } : {}
 
-  /* Ensure we don't break any styles set by richText */
   if (appearance === 'inline') {
     return (
-      <Link className={cn(className)} href={href || url || ''} {...newTabProps}>
+      <Link ref={ref} className={cn(className)} href={href} {...newTabProps} {...rest}>
         {label && label}
         {children && children}
       </Link>
@@ -57,10 +59,12 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
 
   return (
     <Button asChild className={className} size={size} variant={appearance}>
-      <Link className={cn(className)} href={href || url || ''} {...newTabProps}>
+      <Link ref={ref} className={cn(className)} href={href} {...newTabProps} {...rest}>
         {label && label}
         {children && children}
       </Link>
     </Button>
   )
-}
+})
+
+CMSLink.displayName = 'CMSLink'
