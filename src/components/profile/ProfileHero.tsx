@@ -16,7 +16,6 @@ export type ProfileHeroProps = {
   attendingCount: number
   likedCount: number
   editHref?: string
-  logoutHref?: string
 }
 
 const computeInitials = (name: string): string =>
@@ -33,7 +32,6 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
   attendingCount,
   likedCount,
   editHref = '/profile/edit',
-  logoutHref = '/logout',
 }) => {
   const displayName = user.name || user.email
   const initials = computeInitials(displayName)
@@ -83,13 +81,15 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
                 Rediger profil
               </Link>
             </Button>
-            <Button
-              asChild
-              variant="ghost"
-              className="text-white hover:bg-white/10 hover:text-white"
-            >
-              <Link href={logoutHref}>Log ud</Link>
-            </Button>
+            <form action="/logout" method="POST">
+              <Button
+                type="submit"
+                variant="ghost"
+                className="text-white hover:bg-white/10 hover:text-white"
+              >
+                Log ud
+              </Button>
+            </form>
           </div>
         </div>
 
