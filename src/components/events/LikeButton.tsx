@@ -12,12 +12,14 @@ export function LikeButton({
   initialCount,
   loggedIn,
   showCount = true,
+  iconOnly = false,
 }: {
   eventId: string
   initialLiked: boolean
   initialCount: number
   loggedIn: boolean
   showCount?: boolean
+  iconOnly?: boolean
 }) {
   const router = useRouter()
   const [liked, setLiked] = useState(initialLiked)
@@ -53,6 +55,26 @@ export function LikeButton({
     } finally {
       setLoading(false)
     }
+  }
+
+  if (iconOnly) {
+    const label = liked ? 'Fjern like' : 'Like denne begivenhed'
+    return (
+      <button
+        onClick={toggle}
+        disabled={loading}
+        aria-label={label}
+        aria-pressed={liked}
+        title={label}
+        className={`inline-flex h-9 w-9 items-center justify-center rounded-full border shadow-sm disabled:opacity-50 ${
+          liked
+            ? 'bg-pink-500 border-pink-500 text-white hover:bg-pink-600'
+            : 'bg-white border-neutral-200 text-neutral-900 hover:bg-neutral-100'
+        }`}
+      >
+        <Heart className={`h-4 w-4 ${liked ? 'fill-current' : ''}`} />
+      </button>
+    )
   }
 
   return (
