@@ -69,6 +69,7 @@ export default async function EventsPage({
     depth: 2,
     limit: 100,
     overrideAccess: false,
+    sort: 'startDate',
     where: buildEventsWhere(filters, { categories, regions }),
   })
 

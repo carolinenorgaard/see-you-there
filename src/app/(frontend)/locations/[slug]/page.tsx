@@ -45,7 +45,9 @@ export default async function LocationPage({
   const location = result.docs[0] as Location | undefined
   if (!location) notFound()
 
-  const events = (location.events?.docs ?? []) as Event[]
+  const events = ((location.events?.docs ?? []) as Event[])
+    .slice()
+    .sort((a, b) => (a.startDate ?? '').localeCompare(b.startDate ?? ''))
   const heroImage = populated<Media>(location.image)
 
   const user = await getOptionalMe()
