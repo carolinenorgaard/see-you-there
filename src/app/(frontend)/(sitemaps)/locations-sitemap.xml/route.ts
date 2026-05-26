@@ -5,23 +5,17 @@ import { unstable_cache } from 'next/cache'
 
 import { getServerSideURL } from '@/utilities/getURL'
 
-const getPostsSitemap = unstable_cache(
+const getLocationsSitemap = unstable_cache(
   async () => {
     const payload = await getPayload({ config })
     const SITE_URL = getServerSideURL()
 
     const results = await payload.find({
-      collection: 'posts',
+      collection: 'locations',
       overrideAccess: false,
-      draft: false,
       depth: 0,
       limit: 1000,
       pagination: false,
-      where: {
-        _status: {
-          equals: 'published',
-        },
-      },
       select: {
         slug: true,
         updatedAt: true,
@@ -32,23 +26,23 @@ const getPostsSitemap = unstable_cache(
 
     const sitemap = results.docs
       ? results.docs
-          .filter((post) => Boolean(post?.slug))
-          .map((post) => ({
-            loc: `${SITE_URL}/posts/${post?.slug}`,
-            lastmod: post.updatedAt || dateFallback,
+          .filter((location) => Boolean(location?.slug))
+          .map((location) => ({
+            loc: `${SITE_URL}/locations/${location?.slug}`,
+            lastmod: location.updatedAt || dateFallback,
           }))
       : []
 
     return sitemap
   },
-  ['posts-sitemap'],
+  ['locations-sitemap'],
   {
-    tags: ['posts-sitemap'],
+    tags: ['locations-sitemap'],
   },
 )
 
 export async function GET() {
-  const sitemap = await getPostsSitemap()
+  const sitemap = await getLocationsSitemap()
 
   return getServerSideSitemap(sitemap)
 }
