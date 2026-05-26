@@ -21,7 +21,7 @@ export function RsvpButton({
   if (!loggedIn) {
     return (
       <a href="/login" className="inline-block bg-black text-white rounded px-4 py-2">
-        Log in to attend
+        Log ind for at deltage
       </a>
     )
   }
@@ -47,7 +47,7 @@ export function RsvpButton({
       disabled={loading}
       className={`rounded px-4 py-2 ${attending ? 'bg-gray-200 text-black' : 'bg-black text-white'} disabled:opacity-50`}
     >
-      {loading ? '…' : attending ? 'Cancel RSVP' : 'Attend'}
+      {loading ? '…' : attending ? 'Annullér tilmelding' : 'Deltag'}
     </button>
   )
 }

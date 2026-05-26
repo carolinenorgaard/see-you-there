@@ -24,7 +24,7 @@ export default function SignupPage() {
       })
       setDone(true)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Sign-up failed')
+      setError(err instanceof Error ? err.message : 'Oprettelse mislykkedes')
     } finally {
       setLoading(false)
     }
@@ -33,13 +33,13 @@ export default function SignupPage() {
   if (done) {
     return (
       <div className="container max-w-md pt-24 pb-24">
-        <h1 className="text-3xl font-semibold mb-4">Check your email</h1>
+        <h1 className="text-3xl font-semibold mb-4">Tjek din mail</h1>
         <p>
-          We sent a verification link to <strong>{email}</strong>. Click it to
-          activate your account, then log in.
+          Vi har sendt et bekræftelseslink til <strong>{email}</strong>. Klik på
+          det for at aktivere din konto, og log derefter ind.
         </p>
         <Link href="/login" className="underline mt-4 inline-block">
-          Back to log in
+          Tilbage til login
         </Link>
       </div>
     )
@@ -47,10 +47,10 @@ export default function SignupPage() {
 
   return (
     <div className="container max-w-md pt-24 pb-24">
-      <h1 className="text-3xl font-semibold mb-6">Create account</h1>
+      <h1 className="text-3xl font-semibold mb-6">Opret konto</h1>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <label className="flex flex-col gap-1">
-          <span className="text-sm">Name</span>
+          <span className="text-sm">Navn</span>
           <input
             type="text"
             required
@@ -70,7 +70,7 @@ export default function SignupPage() {
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-sm">Password</span>
+          <span className="text-sm">Adgangskode</span>
           <input
             type="password"
             required
@@ -86,11 +86,11 @@ export default function SignupPage() {
           disabled={loading}
           className="bg-black text-white rounded px-4 py-2 disabled:opacity-50"
         >
-          {loading ? 'Creating…' : 'Sign up'}
+          {loading ? 'Opretter…' : 'Opret konto'}
         </button>
       </form>
       <div className="mt-6 text-sm">
-        <Link href="/login" className="underline">Already have an account? Log in</Link>
+        <Link href="/login" className="underline">Har du allerede en konto? Log ind</Link>
       </div>
     </div>
   )

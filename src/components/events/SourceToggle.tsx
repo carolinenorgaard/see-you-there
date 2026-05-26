@@ -11,7 +11,7 @@ const options: { value: EventSource; label: string }[] = [
 export const SourceToggle = ({ active }: { active: EventSource }) => (
   <div
     role="tablist"
-    aria-label="Filter events by source"
+    aria-label="Filtrér begivenheder efter kilde"
     className="inline-flex rounded-full border border-neutral-200 bg-neutral-100 p-1"
   >
     {options.map(({ value, label }) => {

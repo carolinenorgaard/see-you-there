@@ -78,7 +78,7 @@ export default async function EventPage({
         <SeeYouThereCardOverlay />
         <SeeYouThereCardHeader>
           <SeeYouThereCardBadges>
-            <Badge color="bg-pink-600">Event</Badge>
+            <Badge color="bg-pink-600">Begivenhed</Badge>
           </SeeYouThereCardBadges>
         </SeeYouThereCardHeader>
         <SeeYouThereCardFooter>
@@ -128,7 +128,7 @@ export default async function EventPage({
           loggedIn={!!me}
         />
         <span className="text-sm text-muted-foreground">
-          {attendeeIds.length} attending
+          {attendeeIds.length} deltager
         </span>
         <LikeButton
           eventId={String(event.id)}
@@ -139,17 +139,17 @@ export default async function EventPage({
       </div>
 
       <section className="mt-12 max-w-3xl">
-        <h2 className="text-2xl font-semibold mb-4">Comments</h2>
+        <h2 className="text-2xl font-semibold mb-4">Kommentarer</h2>
         {me ? (
           <CommentForm eventId={String(event.id)} />
         ) : (
           <p className="mb-4">
-            <Link href="/login" className="underline">Log in</Link> to comment.
+            <Link href="/login" className="underline">Log ind</Link> for at kommentere.
           </p>
         )}
         <ul className="mt-6 flex flex-col gap-4">
           {comments.length === 0 && (
-            <li className="text-muted-foreground">No comments yet.</li>
+            <li className="text-muted-foreground">Ingen kommentarer endnu.</li>
           )}
           {comments.map((c) => {
             const author =
@@ -159,7 +159,7 @@ export default async function EventPage({
             return (
               <li key={c.id} className="border-t pt-3">
                 <div className="text-sm text-muted-foreground mb-1">
-                  {author?.name || author?.email || 'Someone'} ·{' '}
+                  {author?.name || author?.email || 'Nogen'} ·{' '}
                   {c.createdAt ? new Date(c.createdAt).toLocaleString() : ''}
                 </div>
                 <p className="whitespace-pre-wrap">{c.content}</p>

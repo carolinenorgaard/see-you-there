@@ -62,7 +62,7 @@ export function NewEventForm({
         router.push('/events?source=community')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Submit failed')
+      setError(err instanceof Error ? err.message : 'Indsendelse mislykkedes')
     } finally {
       setLoading(false)
     }
@@ -71,7 +71,7 @@ export function NewEventForm({
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
       <label className="flex flex-col gap-1">
-        <span className="text-sm">Title</span>
+        <span className="text-sm">Titel</span>
         <input
           type="text"
           required
@@ -82,7 +82,7 @@ export function NewEventForm({
       </label>
 
       <label className="flex flex-col gap-1">
-        <span className="text-sm">Description</span>
+        <span className="text-sm">Beskrivelse</span>
         <textarea
           rows={4}
           value={description}
@@ -93,7 +93,7 @@ export function NewEventForm({
 
       {!lockLocation && (
         <label className="flex flex-col gap-1">
-          <span className="text-sm">Location</span>
+          <span className="text-sm">Lokation</span>
           <select
             required
             value={locationId}
@@ -110,7 +110,7 @@ export function NewEventForm({
       )}
 
       <fieldset className="flex flex-col gap-2">
-        <legend className="text-sm">Categories</legend>
+        <legend className="text-sm">Kategorier</legend>
         <div className="flex flex-wrap gap-2">
           {categories.map((c) => {
             const active = categoryIds.includes(c.id)
@@ -130,7 +130,7 @@ export function NewEventForm({
 
       <div className="grid grid-cols-2 gap-3">
         <label className="flex flex-col gap-1">
-          <span className="text-sm">Start date</span>
+          <span className="text-sm">Startdato</span>
           <input
             type="date"
             required
@@ -140,7 +140,7 @@ export function NewEventForm({
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-sm">End date</span>
+          <span className="text-sm">Slutdato</span>
           <input
             type="date"
             required
@@ -150,7 +150,7 @@ export function NewEventForm({
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-sm">Start time</span>
+          <span className="text-sm">Starttidspunkt</span>
           <input
             type="time"
             required
@@ -160,7 +160,7 @@ export function NewEventForm({
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-sm">End time</span>
+          <span className="text-sm">Sluttidspunkt</span>
           <input
             type="time"
             required
@@ -178,7 +178,7 @@ export function NewEventForm({
         disabled={loading || categoryIds.length === 0}
         className="bg-black text-white rounded px-4 py-2 self-start disabled:opacity-50"
       >
-        {loading ? 'Submitting…' : 'Submit event'}
+        {loading ? 'Indsender…' : 'Indsend begivenhed'}
       </button>
     </form>
   )

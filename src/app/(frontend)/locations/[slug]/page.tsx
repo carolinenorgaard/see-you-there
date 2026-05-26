@@ -61,7 +61,7 @@ export default async function LocationPage({
         <SeeYouThereCardOverlay />
         <SeeYouThereCardHeader>
           <SeeYouThereCardBadges>
-            <Badge color="bg-teal-600">Location</Badge>
+            <Badge color="bg-teal-600">Lokation</Badge>
           </SeeYouThereCardBadges>
         </SeeYouThereCardHeader>
         <SeeYouThereCardFooter>
@@ -79,9 +79,9 @@ export default async function LocationPage({
         </div>
       )}
 
-      <h2 className="text-2xl font-semibold mb-4">Events at {location.title}</h2>
+      <h2 className="text-2xl font-semibold mb-4">Begivenheder på {location.title}</h2>
       {events.length === 0 ? (
-        <p className="text-muted-foreground">No events yet.</p>
+        <p className="text-muted-foreground">Ingen begivenheder endnu.</p>
       ) : (
         <SeeYouThereGrid>
           {events.map((event) => {
@@ -110,10 +110,10 @@ export default async function LocationPage({
       )}
 
       <section className="mt-16 max-w-2xl">
-        <h2 className="text-2xl font-semibold mb-2">Submit an event at {location.title}</h2>
+        <h2 className="text-2xl font-semibold mb-2">Indsend en begivenhed på {location.title}</h2>
         <p className="text-muted-foreground mb-6">
-          Share something you&apos;re hosting or know about. It will appear under the Community tab
-          on the events page.
+          Del noget, du selv afholder eller har kendskab til. Det vises under fanen Community
+          på begivenhedssiden.
         </p>
         {user ? (
           <NewEventFormServer
@@ -122,10 +122,10 @@ export default async function LocationPage({
           />
         ) : (
           <div className="border rounded p-6 bg-muted/30">
-            <p className="mb-4">You need to be logged in to submit an event.</p>
+            <p className="mb-4">Du skal være logget ind for at indsende en begivenhed.</p>
             <Button asChild>
               <Link href={`/login?redirect=${encodeURIComponent(`/locations/${slug}`)}`}>
-                Log in to create an event
+                Log ind for at oprette en begivenhed
               </Link>
             </Button>
           </div>

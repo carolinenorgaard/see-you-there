@@ -18,8 +18,8 @@ export default async function VerifyPage({
 
   return (
     <div className="container max-w-md pt-24 pb-24">
-      <h1 className="text-3xl font-semibold mb-4">Verification failed</h1>
-      <p>The link is invalid or has expired.</p>
+      <h1 className="text-3xl font-semibold mb-4">Bekræftelse mislykkedes</h1>
+      <p>Linket er ugyldigt eller udløbet.</p>
     </div>
   )
 }

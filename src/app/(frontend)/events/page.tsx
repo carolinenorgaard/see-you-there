@@ -76,7 +76,7 @@ export default async function EventsPage({
   return (
     <div className="container pt-24 pb-24">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-4xl font-bold tracking-tight">Event Wall</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Begivenhedsvæg</h1>
         <SourceToggle active={filters.source} />
       </div>
 

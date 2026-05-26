@@ -21,7 +21,7 @@ export default function ForgotPasswordPage() {
       })
       setDone(true)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Request failed')
+      setError(err instanceof Error ? err.message : 'Anmodning mislykkedes')
     } finally {
       setLoading(false)
     }
@@ -30,15 +30,15 @@ export default function ForgotPasswordPage() {
   if (done) {
     return (
       <div className="container max-w-md pt-24 pb-24">
-        <h1 className="text-3xl font-semibold mb-4">Check your email</h1>
-        <p>If an account exists for {email}, we sent a reset link.</p>
+        <h1 className="text-3xl font-semibold mb-4">Tjek din mail</h1>
+        <p>Hvis der findes en konto for {email}, har vi sendt et link til nulstilling.</p>
       </div>
     )
   }
 
   return (
     <div className="container max-w-md pt-24 pb-24">
-      <h1 className="text-3xl font-semibold mb-6">Forgot password</h1>
+      <h1 className="text-3xl font-semibold mb-6">Glemt adgangskode</h1>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <label className="flex flex-col gap-1">
           <span className="text-sm">Email</span>
@@ -56,7 +56,7 @@ export default function ForgotPasswordPage() {
           disabled={loading}
           className="bg-black text-white rounded px-4 py-2 disabled:opacity-50"
         >
-          {loading ? 'Sending…' : 'Send reset link'}
+          {loading ? 'Sender…' : 'Send nulstillingslink'}
         </button>
       </form>
     </div>

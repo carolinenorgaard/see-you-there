@@ -24,7 +24,7 @@ export function CommentForm({ eventId }: { eventId: string }) {
       setContent('')
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to post')
+      setError(err instanceof Error ? err.message : 'Kunne ikke sende')
     } finally {
       setLoading(false)
     }
@@ -37,7 +37,7 @@ export function CommentForm({ eventId }: { eventId: string }) {
         maxLength={2000}
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        placeholder="Write a comment…"
+        placeholder="Skriv en kommentar…"
         className="border rounded px-3 py-2"
       />
       {error && <p className="text-red-600 text-sm">{error}</p>}
@@ -46,7 +46,7 @@ export function CommentForm({ eventId }: { eventId: string }) {
         disabled={loading || !content.trim()}
         className="bg-black text-white rounded px-4 py-2 self-start disabled:opacity-50"
       >
-        {loading ? 'Posting…' : 'Post'}
+        {loading ? 'Sender…' : 'Send'}
       </button>
     </form>
   )

@@ -82,7 +82,7 @@ export const FormBlock: React.FC<
             setIsLoading(false)
 
             setError({
-              message: res.errors?.[0]?.message || 'Internal Server Error',
+              message: res.errors?.[0]?.message || 'Intern serverfejl',
               status: res.status,
             })
 
@@ -103,7 +103,7 @@ export const FormBlock: React.FC<
           console.warn(err)
           setIsLoading(false)
           setError({
-            message: 'Something went wrong.',
+            message: 'Noget gik galt.',
           })
         }
       }
@@ -123,7 +123,7 @@ export const FormBlock: React.FC<
           {!isLoading && hasSubmitted && confirmationType === 'message' && (
             <RichText data={confirmationMessage} />
           )}
-          {isLoading && !hasSubmitted && <p>Loading, please wait...</p>}
+          {isLoading && !hasSubmitted && <p>Indlæser, vent venligst...</p>}
           {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
           {!hasSubmitted && (
             <form id={formID} onSubmit={handleSubmit(onSubmit)}>

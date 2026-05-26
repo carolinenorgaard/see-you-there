@@ -29,7 +29,7 @@ function LoginForm() {
       router.push(safeRedirect)
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed')
+      setError(err instanceof Error ? err.message : 'Login mislykkedes')
     } finally {
       setLoading(false)
     }
@@ -38,7 +38,7 @@ function LoginForm() {
   return (
     <>
       {verified && (
-        <p className="mb-4 text-green-700">Email verified — you can log in now.</p>
+        <p className="mb-4 text-green-700">Email bekræftet — du kan logge ind nu.</p>
       )}
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <label className="flex flex-col gap-1">
@@ -52,7 +52,7 @@ function LoginForm() {
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-sm">Password</span>
+          <span className="text-sm">Adgangskode</span>
           <input
             type="password"
             required
@@ -67,12 +67,12 @@ function LoginForm() {
           disabled={loading}
           className="bg-black text-white rounded px-4 py-2 disabled:opacity-50"
         >
-          {loading ? 'Logging in…' : 'Log in'}
+          {loading ? 'Logger ind…' : 'Log ind'}
         </button>
       </form>
       <div className="mt-6 text-sm flex flex-col gap-1">
-        <Link href="/signup" className="underline">Create an account</Link>
-        <Link href="/forgot-password" className="underline">Forgot password?</Link>
+        <Link href="/signup" className="underline">Opret en konto</Link>
+        <Link href="/forgot-password" className="underline">Glemt adgangskode?</Link>
       </div>
     </>
   )
@@ -81,7 +81,7 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <div className="container max-w-md pt-24 pb-24">
-      <h1 className="text-3xl font-semibold mb-6">Log in</h1>
+      <h1 className="text-3xl font-semibold mb-6">Log ind</h1>
       <Suspense fallback={null}>
         <LoginForm />
       </Suspense>
