@@ -37,6 +37,7 @@ const PaginationLink = ({ className, isActive, size = 'icon', ...props }: Pagina
         size,
         variant: isActive ? 'outline' : 'ghost',
       }),
+      'cursor-pointer',
       className,
     )}
     {...props}
