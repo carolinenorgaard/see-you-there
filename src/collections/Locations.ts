@@ -3,6 +3,7 @@ import { slugField } from 'payload'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
+import { revalidateLocation, revalidateLocationDelete } from './hooks/revalidateLocation'
 
 export const Locations: CollectionConfig = {
   slug: 'locations',
@@ -14,6 +15,10 @@ export const Locations: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
+  },
+  hooks: {
+    afterChange: [revalidateLocation],
+    afterDelete: [revalidateLocationDelete],
   },
   fields: [
     {

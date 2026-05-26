@@ -5,6 +5,7 @@ import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
 import { likeEndpoints } from '../endpoints/like'
 import { rsvpEndpoints } from '../endpoints/rsvp'
+import { revalidateEvent, revalidateEventDelete } from './hooks/revalidateEvent'
 
 export const Events: CollectionConfig = {
   slug: 'events',
@@ -19,6 +20,8 @@ export const Events: CollectionConfig = {
   },
   endpoints: [...rsvpEndpoints, ...likeEndpoints],
   hooks: {
+    afterChange: [revalidateEvent],
+    afterDelete: [revalidateEventDelete],
     beforeValidate: [
       ({ data, req }) => {
         if (!data) return data
