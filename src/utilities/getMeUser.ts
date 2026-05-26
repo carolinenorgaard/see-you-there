@@ -1,5 +1,5 @@
 import configPromise from '@payload-config'
-import { cookies, headers as getHeaders } from 'next/headers'
+import { headers as getHeaders } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 
@@ -9,24 +9,20 @@ export const getMeUser = async (args?: {
   nullUserRedirect?: string
   validUserRedirect?: string
 }): Promise<{
-  token: string
   user: User
 }> => {
   const { nullUserRedirect, validUserRedirect } = args || {}
   const payload = await getPayload({ config: configPromise })
   const { user } = await payload.auth({ headers: await getHeaders() })
-  const token = (await cookies()).get('payload-token')?.value
 
   if (validUserRedirect && user) {
     redirect(validUserRedirect)
   }
 
-  if (nullUserRedirect && !user) {
-    redirect(nullUserRedirect)
+  if (!user) {
+    if (nullUserRedirect) redirect(nullUserRedirect)
+    throw new Error('getMeUser: no user and no nullUserRedirect provided')
   }
 
-  return {
-    token: token!,
-    user: user as User,
-  }
+  return { user }
 }
