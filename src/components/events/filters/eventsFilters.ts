@@ -1,11 +1,14 @@
-import {
-  createLoader,
-  parseAsArrayOf,
-  parseAsString,
-  parseAsStringLiteral,
-} from 'nuqs/server'
+import { createLoader, parseAsString, parseAsStringLiteral } from 'nuqs/server'
 import type { Where } from 'payload'
 
+import {
+  categoriesParser,
+  normalizeCategorySlugs,
+  normalizeRegionSlug,
+  regionParser,
+  resolveIdsBySlug,
+  serverSyncOptions,
+} from '@/components/filters/sharedFilterParsers'
 import type { Category, Region } from '@/payload-types'
 import { nextIsoDay } from '@/utilities/formatDateTime'
 
@@ -14,10 +17,6 @@ export type EventSource = (typeof EVENT_SOURCES)[number]
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 
-// shallow:false triggers a Next.js router refresh on each write so the
-// server component re-runs the Payload query with the new filters.
-const serverSyncOptions = { shallow: false } as const
-
 export const eventsFilterParsers = {
   source: parseAsStringLiteral(EVENT_SOURCES)
     .withDefault('syt')
@@ -25,12 +24,8 @@ export const eventsFilterParsers = {
   date: parseAsString
     .withDefault('')
     .withOptions({ ...serverSyncOptions, clearOnDefault: true }),
-  categories: parseAsArrayOf(parseAsString)
-    .withDefault([])
-    .withOptions(serverSyncOptions),
-  region: parseAsString
-    .withDefault('')
-    .withOptions({ ...serverSyncOptions, clearOnDefault: true }),
+  categories: categoriesParser,
+  region: regionParser,
 }
 
 export type ParsedEventFilters = {
@@ -47,8 +42,8 @@ export const normalizeEventsFilters = (
 ): ParsedEventFilters => ({
   source: raw.source,
   date: raw.date && ISO_DATE.test(raw.date) ? raw.date : null,
-  categorySlugs: raw.categories.filter(Boolean),
-  regionSlug: raw.region || null,
+  categorySlugs: normalizeCategorySlugs(raw.categories),
+  regionSlug: normalizeRegionSlug(raw.region),
 })
 
 export const hasActiveFilters = (filters: ParsedEventFilters): boolean =>
@@ -58,12 +53,10 @@ export const buildEventsWhere = (
   filters: ParsedEventFilters,
   { categories, regions }: { categories: Category[]; regions: Region[] },
 ): Where => {
-  // Resolve URL slugs to IDs so the Payload query hits the indexed
-  // relationship fields instead of joining through .slug text columns.
-  const categoryIds = categories
-    .filter((c) => c.slug && filters.categorySlugs.includes(c.slug))
-    .map((c) => c.id)
-  const regionId = regions.find((r) => r.slug === filters.regionSlug)?.id ?? null
+  const categoryIds = resolveIdsBySlug(filters.categorySlugs, categories)
+  const regionId = filters.regionSlug
+    ? resolveIdsBySlug([filters.regionSlug], regions)[0] ?? null
+    : null
 
   const where: Where = {
     createdBySeeYouThere: { equals: filters.source === 'syt' },
@@ -82,4 +75,3 @@ export const buildEventsWhere = (
   }
   return where
 }
-

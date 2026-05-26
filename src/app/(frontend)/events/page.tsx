@@ -6,14 +6,14 @@ import { EmptyEventsMessage } from '@/components/events/EmptyEventsMessage'
 import { LikeButton } from '@/components/events/LikeButton'
 import { SourceToggle } from '@/components/events/SourceToggle'
 import { Badge } from '@/components/ui/badge'
-import { CategoryChipRow } from '@/components/events/filters/CategoryChipRow'
 import { DateChipRail } from '@/components/events/filters/DateChipRail'
 import {
   buildEventsWhere,
   loadEventsFilters,
   normalizeEventsFilters,
 } from '@/components/events/filters/eventsFilters'
-import { RegionSelect } from '@/components/events/filters/RegionSelect'
+import { CategoryChipRow } from '@/components/filters/CategoryChipRow'
+import { RegionSelect } from '@/components/filters/RegionSelect'
 import {
   SeeYouThereCard,
   SeeYouThereCardBadges,
@@ -66,9 +66,10 @@ export default async function EventsPage({
 
   const events = await payload.find({
     collection: 'events',
-    depth: 1,
+    depth: 2,
     limit: 100,
     overrideAccess: false,
+    sort: 'startDate',
     where: buildEventsWhere(filters, { categories, regions }),
   })
 
@@ -94,7 +95,7 @@ export default async function EventsPage({
           {events.docs.map((event: Event) => {
             const location = populated<Location>(event.location)
             const categories = populatedList<Category>(event.categories)
-            const image = populated<Media>(event.image)
+            const image = populated<Media>(event.image) ?? populated<Media>(location?.image)
             const likeIds = extractIds(event.likes)
             const liked = !!me && likeIds.includes(me.id)
             return (

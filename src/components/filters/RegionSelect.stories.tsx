@@ -11,7 +11,7 @@ const regions: Region[] = [
 ]
 
 const meta: Meta<typeof RegionSelect> = {
-  title: 'Events/Filters/RegionSelect',
+  title: 'Filters/RegionSelect',
   component: RegionSelect,
   tags: ['autodocs'],
   parameters: { layout: 'padded' },

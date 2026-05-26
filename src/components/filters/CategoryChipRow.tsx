@@ -6,13 +6,11 @@ import { Badge } from '@/components/ui/badge'
 import type { Category } from '@/payload-types'
 import { categoryColorClass } from '@/utilities/categoryColor'
 import { cn } from '@/utilities/ui'
-import { eventsFilterParsers } from './eventsFilters'
+
+import { categoriesParser } from './sharedFilterParsers'
 
 export const CategoryChipRow = ({ categories }: { categories: Category[] }) => {
-  const [activeSlugs, setCategories] = useQueryState(
-    'categories',
-    eventsFilterParsers.categories,
-  )
+  const [activeSlugs, setCategories] = useQueryState('categories', categoriesParser)
 
   const toggle = (slug: string) => {
     const next = activeSlugs.includes(slug)
@@ -24,13 +22,14 @@ export const CategoryChipRow = ({ categories }: { categories: Category[] }) => {
   return (
     <div className="flex flex-wrap gap-2">
       {categories.map((c) => {
-        if (!c.slug) return null
-        const isActive = activeSlugs.includes(c.slug)
+        const slug = c.slug
+        if (!slug) return null
+        const isActive = activeSlugs.includes(slug)
         return (
           <button
             key={c.id}
             type="button"
-            onClick={() => toggle(c.slug as string)}
+            onClick={() => toggle(slug)}
             aria-pressed={isActive}
             className={cn(
               'rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30',

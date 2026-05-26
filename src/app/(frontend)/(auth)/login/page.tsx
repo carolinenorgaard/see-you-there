@@ -10,6 +10,8 @@ function LoginForm() {
   const router = useRouter()
   const params = useSearchParams()
   const verified = params.get('verified') === '1'
+  const redirectTo = params.get('redirect')
+  const safeRedirect = redirectTo?.startsWith('/') && !redirectTo.startsWith('//') ? redirectTo : '/profile'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -24,7 +26,7 @@ function LoginForm() {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       })
-      router.push('/profile')
+      router.push(safeRedirect)
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
