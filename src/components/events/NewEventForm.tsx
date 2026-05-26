@@ -16,9 +16,11 @@ const toISO = (date: string, time: string) => {
 export function NewEventForm({
   locations,
   categories,
+  lockLocation = false,
 }: {
   locations: Option[]
   categories: Option[]
+  lockLocation?: boolean
 }) {
   const router = useRouter()
   const [title, setTitle] = useState('')
@@ -89,21 +91,23 @@ export function NewEventForm({
         />
       </label>
 
-      <label className="flex flex-col gap-1">
-        <span className="text-sm">Location</span>
-        <select
-          required
-          value={locationId}
-          onChange={(e) => setLocationId(e.target.value)}
-          className="border rounded px-3 py-2"
-        >
-          {locations.map((l) => (
-            <option key={l.id} value={l.id}>
-              {l.title}
-            </option>
-          ))}
-        </select>
-      </label>
+      {!lockLocation && (
+        <label className="flex flex-col gap-1">
+          <span className="text-sm">Location</span>
+          <select
+            required
+            value={locationId}
+            onChange={(e) => setLocationId(e.target.value)}
+            className="border rounded px-3 py-2"
+          >
+            {locations.map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.title}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
 
       <fieldset className="flex flex-col gap-2">
         <legend className="text-sm">Categories</legend>

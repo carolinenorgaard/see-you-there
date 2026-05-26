@@ -1,9 +1,10 @@
 import configPromise from '@payload-config'
 import { CalendarDays } from 'lucide-react'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-import { Badge } from '@/components/ui/badge'
+import { NewEventFormServer } from '@/components/events/NewEventFormServer'
 import {
   SeeYouThereCard,
   SeeYouThereCardBadges,
@@ -16,8 +17,11 @@ import {
   SeeYouThereCardTitle,
 } from '@/components/SeeYouThereCard'
 import { SeeYouThereGrid } from '@/components/SeeYouThereGrid'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import type { Event, Location, Media } from '@/payload-types'
 import { formatDate, formatTime } from '@/utilities/formatDateTime'
+import { getOptionalMe } from '@/utilities/getOptionalMe'
 import { populated } from '@/utilities/payloadRelations'
 
 export const dynamic = 'force-dynamic'
@@ -43,6 +47,8 @@ export default async function LocationPage({
 
   const events = (location.events?.docs ?? []) as Event[]
   const heroImage = populated<Media>(location.image)
+
+  const user = await getOptionalMe()
 
   return (
     <div className="container pt-24 pb-24">
@@ -100,6 +106,29 @@ export default async function LocationPage({
           })}
         </SeeYouThereGrid>
       )}
+
+      <section className="mt-16 max-w-2xl">
+        <h2 className="text-2xl font-semibold mb-2">Submit an event at {location.title}</h2>
+        <p className="text-muted-foreground mb-6">
+          Share something you&apos;re hosting or know about. It will appear under the Community tab
+          on the events page.
+        </p>
+        {user ? (
+          <NewEventFormServer
+            locations={[{ id: String(location.id), title: location.title }]}
+            lockLocation
+          />
+        ) : (
+          <div className="border rounded p-6 bg-muted/30">
+            <p className="mb-4">You need to be logged in to submit an event.</p>
+            <Button asChild>
+              <Link href={`/login?redirect=${encodeURIComponent(`/locations/${slug}`)}`}>
+                Log in to create an event
+              </Link>
+            </Button>
+          </div>
+        )}
+      </section>
     </div>
   )
 }
