@@ -2,13 +2,13 @@ import configPromise from '@payload-config'
 import { MapPin } from 'lucide-react'
 import { getPayload } from 'payload'
 
-import { CategoryChipRow } from '@/components/locations/filters/CategoryChipRow'
+import { CategoryChipRow } from '@/components/filters/CategoryChipRow'
+import { RegionSelect } from '@/components/filters/RegionSelect'
 import {
   buildLocationsWhere,
   loadLocationsFilters,
   normalizeLocationsFilters,
 } from '@/components/locations/filters/locationsFilters'
-import { RegionSelect } from '@/components/locations/filters/RegionSelect'
 import RichText from '@/components/RichText'
 import { Badge } from '@/components/ui/badge'
 import {

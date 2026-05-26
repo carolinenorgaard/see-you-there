@@ -1,43 +1,40 @@
-import { createLoader, parseAsArrayOf, parseAsString } from 'nuqs/server'
+import { createLoader } from 'nuqs/server'
 import type { Where } from 'payload'
 
+import {
+  categoriesParser,
+  normalizeCategorySlugs,
+  normalizeRegionSlug,
+  regionParser,
+  resolveIdsBySlug,
+} from '@/components/filters/sharedFilterParsers'
 import type { Category, Region } from '@/payload-types'
 
-// shallow:false triggers a Next.js router refresh on each write so the
-// server component re-runs the Payload query with the new filters.
-const serverSyncOptions = { shallow: false } as const
-
-export const locationsFilterParsers = {
-  categories: parseAsArrayOf(parseAsString)
-    .withDefault([])
-    .withOptions(serverSyncOptions),
-  region: parseAsString
-    .withDefault('')
-    .withOptions({ ...serverSyncOptions, clearOnDefault: true }),
-}
+export const loadLocationsFilters = createLoader({
+  categories: categoriesParser,
+  region: regionParser,
+})
 
 export type ParsedLocationFilters = {
   categorySlugs: string[]
   regionSlug: string | null
 }
 
-export const loadLocationsFilters = createLoader(locationsFilterParsers)
-
 export const normalizeLocationsFilters = (
   raw: Awaited<ReturnType<typeof loadLocationsFilters>>,
 ): ParsedLocationFilters => ({
-  categorySlugs: raw.categories.filter(Boolean),
-  regionSlug: raw.region || null,
+  categorySlugs: normalizeCategorySlugs(raw.categories),
+  regionSlug: normalizeRegionSlug(raw.region),
 })
 
 export const buildLocationsWhere = (
   filters: ParsedLocationFilters,
   { categories, regions }: { categories: Category[]; regions: Region[] },
 ): Where => {
-  const categoryIds = categories
-    .filter((c) => c.slug && filters.categorySlugs.includes(c.slug))
-    .map((c) => c.id)
-  const regionId = regions.find((r) => r.slug === filters.regionSlug)?.id ?? null
+  const categoryIds = resolveIdsBySlug(filters.categorySlugs, categories)
+  const regionId = filters.regionSlug
+    ? resolveIdsBySlug([filters.regionSlug], regions)[0] ?? null
+    : null
 
   const where: Where = {}
   if (categoryIds.length) {

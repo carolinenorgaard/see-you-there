@@ -13,7 +13,7 @@ const categories: Category[] = [
 ]
 
 const meta: Meta<typeof CategoryChipRow> = {
-  title: 'Events/Filters/CategoryChipRow',
+  title: 'Filters/CategoryChipRow',
   component: CategoryChipRow,
   tags: ['autodocs'],
   parameters: { layout: 'padded' },
