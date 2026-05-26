@@ -85,7 +85,7 @@ export default async function LocationPage({
       ) : (
         <SeeYouThereGrid>
           {events.map((event) => {
-            const eventImage = populated<Media>(event.image)
+            const eventImage = populated<Media>(event.image) ?? heroImage
             return (
             <SeeYouThereCard key={event.id} href={`/events/${event.slug}`}>
               {eventImage?.url && (
