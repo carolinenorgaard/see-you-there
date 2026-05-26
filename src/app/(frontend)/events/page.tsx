@@ -13,7 +13,7 @@ import {
   normalizeEventsFilters,
 } from '@/components/events/filters/eventsFilters'
 import { CategoryChipRow } from '@/components/filters/CategoryChipRow'
-import { RegionSelect } from '@/components/filters/RegionSelect'
+import { SlugComboboxFilter } from '@/components/filters/SlugComboboxFilter'
 import { QueryPagination } from '@/components/Pagination/QueryPagination'
 import {
   SeeYouThereCard,
@@ -49,7 +49,7 @@ export default async function EventsPage({
 
   const payload = await getPayload({ config: configPromise })
 
-  const [me, categoriesRes, regionsRes] = await Promise.all([
+  const [me, categoriesRes, regionsRes, locationsRes] = await Promise.all([
     getOptionalMe(),
     payload.find({
       collection: 'categories',
@@ -64,10 +64,19 @@ export default async function EventsPage({
       overrideAccess: false,
       sort: 'title',
     }),
+    payload.find({
+      collection: 'locations',
+      depth: 0,
+      limit: 500,
+      overrideAccess: false,
+      sort: 'title',
+      select: { title: true, slug: true },
+    }),
   ])
 
   const categories = categoriesRes.docs as Category[]
   const regions = regionsRes.docs as Region[]
+  const locations = locationsRes.docs as Location[]
 
   const events = await payload.find({
     collection: 'events',
@@ -76,7 +85,7 @@ export default async function EventsPage({
     page,
     overrideAccess: false,
     sort: 'startDate',
-    where: buildEventsWhere(filters, { categories, regions }),
+    where: buildEventsWhere(filters, { categories, regions, locations }),
   })
 
   return (
@@ -90,7 +99,26 @@ export default async function EventsPage({
         <DateChipRail />
         <div className="flex flex-wrap items-center justify-between gap-4">
           {categories.length > 0 && <CategoryChipRow categories={categories} />}
-          {regions.length > 0 && <RegionSelect regions={regions} />}
+          <div className="flex flex-wrap items-center gap-2">
+            {regions.length > 0 && (
+              <SlugComboboxFilter
+                items={regions}
+                paramKey="region"
+                allLabel="Alle regioner"
+                searchPlaceholder="Søg efter region…"
+                ariaLabel="Filtrér efter region"
+              />
+            )}
+            {locations.length > 0 && (
+              <SlugComboboxFilter
+                items={locations}
+                paramKey="location"
+                allLabel="Alle lokationer"
+                searchPlaceholder="Søg efter lokation…"
+                ariaLabel="Filtrér efter lokation"
+              />
+            )}
+          </div>
         </div>
       </div>
 

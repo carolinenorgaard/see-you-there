@@ -3,7 +3,7 @@ import { MapPin } from 'lucide-react'
 import { getPayload } from 'payload'
 
 import { CategoryChipRow } from '@/components/filters/CategoryChipRow'
-import { RegionSelect } from '@/components/filters/RegionSelect'
+import { SlugComboboxFilter } from '@/components/filters/SlugComboboxFilter'
 import {
   buildLocationsWhere,
   loadLocationsFilters,
@@ -73,7 +73,15 @@ export default async function LocationsPage({
       <RichText data={hostEventIntro} enableGutter={false} className="mb-10 max-w-3xl" />
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         {categories.length > 0 && <CategoryChipRow categories={categories} />}
-        {regions.length > 0 && <RegionSelect regions={regions} />}
+        {regions.length > 0 && (
+          <SlugComboboxFilter
+            items={regions}
+            paramKey="region"
+            allLabel="Alle regioner"
+            searchPlaceholder="Søg efter region…"
+            ariaLabel="Filtrér efter region"
+          />
+        )}
       </div>
       {locations.docs.length === 0 ? (
         <p>Ingen lokationer fundet.</p>

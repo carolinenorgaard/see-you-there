@@ -4,8 +4,9 @@ import type { Where } from 'payload'
 import {
   categoriesParser,
   normalizeCategorySlugs,
-  normalizeRegionSlug,
+  normalizeSlug,
   regionParser,
+  resolveIdBySlug,
   resolveIdsBySlug,
 } from '@/components/filters/sharedFilterParsers'
 import type { Category, Region } from '@/payload-types'
@@ -24,7 +25,7 @@ export const normalizeLocationsFilters = (
   raw: Awaited<ReturnType<typeof loadLocationsFilters>>,
 ): ParsedLocationFilters => ({
   categorySlugs: normalizeCategorySlugs(raw.categories),
-  regionSlug: normalizeRegionSlug(raw.region),
+  regionSlug: normalizeSlug(raw.region),
 })
 
 export const buildLocationsWhere = (
@@ -32,9 +33,7 @@ export const buildLocationsWhere = (
   { categories, regions }: { categories: Category[]; regions: Region[] },
 ): Where => {
   const categoryIds = resolveIdsBySlug(filters.categorySlugs, categories)
-  const regionId = filters.regionSlug
-    ? resolveIdsBySlug([filters.regionSlug], regions)[0] ?? null
-    : null
+  const regionId = resolveIdBySlug(filters.regionSlug, regions)
 
   const where: Where = {}
   if (categoryIds.length) {
