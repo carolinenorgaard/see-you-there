@@ -66,7 +66,7 @@ export default async function EventsPage({
 
   const events = await payload.find({
     collection: 'events',
-    depth: 1,
+    depth: 2,
     limit: 100,
     overrideAccess: false,
     where: buildEventsWhere(filters, { categories, regions }),
@@ -94,7 +94,7 @@ export default async function EventsPage({
           {events.docs.map((event: Event) => {
             const location = populated<Location>(event.location)
             const categories = populatedList<Category>(event.categories)
-            const image = populated<Media>(event.image)
+            const image = populated<Media>(event.image) ?? populated<Media>(location?.image)
             const likeIds = extractIds(event.likes)
             const liked = !!me && likeIds.includes(me.id)
             return (

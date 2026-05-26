@@ -38,7 +38,7 @@ export default async function EventPage({
   const result = await payload.find({
     collection: 'events',
     where: { slug: { equals: slug } },
-    depth: 1,
+    depth: 2,
     limit: 1,
     overrideAccess: false,
   })
@@ -50,7 +50,7 @@ export default async function EventPage({
     typeof event.location === 'object' && event.location !== null
       ? (event.location as Location)
       : null
-  const image = populated<Media>(event.image)
+  const image = populated<Media>(event.image) ?? populated<Media>(location?.image)
 
   const me: User | null = await getOptionalMe()
 
