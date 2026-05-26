@@ -2,6 +2,13 @@ import configPromise from '@payload-config'
 import { MapPin } from 'lucide-react'
 import { getPayload } from 'payload'
 
+import { CategoryChipRow } from '@/components/locations/filters/CategoryChipRow'
+import {
+  buildLocationsWhere,
+  loadLocationsFilters,
+  normalizeLocationsFilters,
+} from '@/components/locations/filters/locationsFilters'
+import { RegionSelect } from '@/components/locations/filters/RegionSelect'
 import RichText from '@/components/RichText'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -24,20 +31,50 @@ import { hostEventIntro } from './content'
 
 export const dynamic = 'force-dynamic'
 
-export default async function LocationsPage() {
+export default async function LocationsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
+  const filters = normalizeLocationsFilters(await loadLocationsFilters(searchParams))
+
   const payload = await getPayload({ config: configPromise })
+
+  const [categoriesRes, regionsRes] = await Promise.all([
+    payload.find({
+      collection: 'categories',
+      depth: 0,
+      limit: 100,
+      overrideAccess: false,
+    }),
+    payload.find({
+      collection: 'regions',
+      depth: 0,
+      limit: 200,
+      overrideAccess: false,
+      sort: 'title',
+    }),
+  ])
+
+  const categories = categoriesRes.docs as Category[]
+  const regions = regionsRes.docs as Region[]
 
   const locations = await payload.find({
     collection: 'locations',
     depth: 1,
     limit: 100,
     overrideAccess: false,
+    where: buildLocationsWhere(filters, { categories, regions }),
   })
 
   return (
     <div className="container pt-24 pb-24">
       <h1 className="mb-8 text-4xl font-bold tracking-tight">Lokationer</h1>
       <RichText data={hostEventIntro} enableGutter={false} className="mb-10 max-w-3xl" />
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+        {categories.length > 0 && <CategoryChipRow categories={categories} />}
+        {regions.length > 0 && <RegionSelect regions={regions} />}
+      </div>
       {locations.docs.length === 0 ? (
         <p>Ingen lokationer fundet.</p>
       ) : (
@@ -45,7 +82,7 @@ export default async function LocationsPage() {
           {locations.docs.map((location: Location) => {
             const region =
               typeof location.address.region === 'object' ? (location.address.region as Region) : null
-            const categories = (location.categories ?? []).filter(
+            const locationCategories = (location.categories ?? []).filter(
               (c): c is Category => typeof c === 'object' && c !== null,
             )
             const image = populated<Media>(location.image)
@@ -61,7 +98,7 @@ export default async function LocationsPage() {
                 <SeeYouThereCardOverlay intensity="soft" />
                 <SeeYouThereCardHeader>
                   <SeeYouThereCardBadges className="flex-wrap">
-                    {categories.map((c) => (
+                    {locationCategories.map((c) => (
                       <Badge key={c.id} color={categoryColorClass(c.color)}>
                         {c.title}
                       </Badge>
