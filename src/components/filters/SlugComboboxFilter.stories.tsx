@@ -12,7 +12,7 @@ const regions: Region[] = [
 ]
 
 const meta: Meta<typeof SlugComboboxFilter<Region>> = {
-  title: 'Filters/RegionSelect',
+  title: 'Filters/SlugComboboxFilter',
   component: SlugComboboxFilter,
   tags: ['autodocs'],
   parameters: { layout: 'padded' },

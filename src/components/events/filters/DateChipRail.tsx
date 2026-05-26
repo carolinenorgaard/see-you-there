@@ -1,7 +1,6 @@
 'use client'
 
 import { useQueryStates } from 'nuqs'
-import { useMemo } from 'react'
 
 import { toIsoDay } from '@/utilities/formatDateTime'
 import { cn } from '@/utilities/ui'
@@ -40,7 +39,7 @@ export const DateChipRail = () => {
   })
   const setDate = (value: string | null) => setStates({ date: value, page: null })
   const activeDate = rawDate || null
-  const chips = useMemo(buildDateRailChips, [])
+  const chips = buildDateRailChips()
 
   return (
     <div className="-mx-2 flex gap-2 overflow-x-auto px-2 py-1">

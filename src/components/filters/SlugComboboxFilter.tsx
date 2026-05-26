@@ -88,7 +88,7 @@ export const SlugComboboxFilter = <T extends Item>({
                 return (
                   <CommandItem
                     key={item.id}
-                    value={`${slug} ${item.title}`}
+                    value={item.title}
                     onSelect={() => choose(slug)}
                   >
                     <span className="flex-1 truncate">{item.title}</span>
