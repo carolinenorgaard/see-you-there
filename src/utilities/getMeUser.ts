@@ -1,43 +1,28 @@
-import { cookies } from 'next/headers'
+import configPromise from '@payload-config'
+import { headers as getHeaders } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { getPayload } from 'payload'
 
 import type { User } from '../payload-types'
-import { getClientSideURL } from './getURL'
 
 export const getMeUser = async (args?: {
   nullUserRedirect?: string
   validUserRedirect?: string
 }): Promise<{
-  token: string
   user: User
 }> => {
   const { nullUserRedirect, validUserRedirect } = args || {}
-  const cookieStore = await cookies()
-  const token = cookieStore.get('payload-token')?.value
+  const payload = await getPayload({ config: configPromise })
+  const { user } = await payload.auth({ headers: await getHeaders() })
 
-  const meUserReq = await fetch(`${getClientSideURL()}/api/users/me`, {
-    headers: {
-      Authorization: `JWT ${token}`,
-    },
-  })
-
-  const {
-    user,
-  }: {
-    user: User
-  } = await meUserReq.json()
-
-  if (validUserRedirect && meUserReq.ok && user) {
+  if (validUserRedirect && user) {
     redirect(validUserRedirect)
   }
 
-  if (nullUserRedirect && (!meUserReq.ok || !user)) {
-    redirect(nullUserRedirect)
+  if (!user) {
+    if (nullUserRedirect) redirect(nullUserRedirect)
+    throw new Error('getMeUser: no user and no nullUserRedirect provided')
   }
 
-  // Token will exist here because if it doesn't the user will be redirected
-  return {
-    token: token!,
-    user,
-  }
+  return { user }
 }

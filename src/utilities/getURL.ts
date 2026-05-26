@@ -9,6 +9,17 @@ export const getServerSideURL = () => {
   )
 }
 
+export const getAllowedOrigins = (): string[] => {
+  const urls = new Set<string>()
+  if (process.env.NEXT_PUBLIC_SERVER_URL) urls.add(process.env.NEXT_PUBLIC_SERVER_URL)
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL)
+    urls.add(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`)
+  if (process.env.VERCEL_BRANCH_URL) urls.add(`https://${process.env.VERCEL_BRANCH_URL}`)
+  if (process.env.VERCEL_URL) urls.add(`https://${process.env.VERCEL_URL}`)
+  if (urls.size === 0) urls.add('http://localhost:3000')
+  return [...urls]
+}
+
 export const getClientSideURL = () => {
   if (canUseDOM) {
     const protocol = window.location.protocol

@@ -19,7 +19,7 @@ import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
-import { getServerSideURL } from './utilities/getURL'
+import { getAllowedOrigins, getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -80,7 +80,8 @@ export default buildConfig({
       })
     : consoleEmailAdapter,
   collections: [Pages, Posts, Media, Categories, Events, EventComments, Locations, Regions, Users],
-  cors: [getServerSideURL()].filter(Boolean),
+  cors: getAllowedOrigins(),
+  csrf: getAllowedOrigins(),
   globals: [Header, Footer],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
