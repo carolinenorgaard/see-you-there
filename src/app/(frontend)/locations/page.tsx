@@ -2,6 +2,7 @@ import configPromise from '@payload-config'
 import { MapPin } from 'lucide-react'
 import { getPayload } from 'payload'
 
+import RichText from '@/components/RichText'
 import { Badge } from '@/components/ui/badge'
 import {
   SeeYouThereCard,
@@ -19,6 +20,8 @@ import type { Category, Location, Media, Region } from '@/payload-types'
 import { categoryColorClass } from '@/utilities/categoryColor'
 import { populated } from '@/utilities/payloadRelations'
 
+import { hostEventIntro } from './content'
+
 export const dynamic = 'force-dynamic'
 
 export default async function LocationsPage() {
@@ -33,9 +36,10 @@ export default async function LocationsPage() {
 
   return (
     <div className="container pt-24 pb-24">
-      <h1 className="mb-8 text-4xl font-bold tracking-tight">Locations</h1>
+      <h1 className="mb-8 text-4xl font-bold tracking-tight">Lokationer</h1>
+      <RichText data={hostEventIntro} enableGutter={false} className="mb-10 max-w-3xl" />
       {locations.docs.length === 0 ? (
-        <p>No locations found.</p>
+        <p>Ingen lokationer fundet.</p>
       ) : (
         <SeeYouThereGrid>
           {locations.docs.map((location: Location) => {
