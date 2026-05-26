@@ -5,6 +5,7 @@ import {
   categoriesParser,
   normalizeCategorySlugs,
   normalizeRegionSlug,
+  pageParser,
   regionParser,
   resolveIdsBySlug,
   serverSyncOptions,
@@ -20,12 +21,13 @@ const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 export const eventsFilterParsers = {
   source: parseAsStringLiteral(EVENT_SOURCES)
     .withDefault('syt')
-    .withOptions(serverSyncOptions),
+    .withOptions({ ...serverSyncOptions, clearOnDefault: true }),
   date: parseAsString
     .withDefault('')
     .withOptions({ ...serverSyncOptions, clearOnDefault: true }),
   categories: categoriesParser,
   region: regionParser,
+  page: pageParser,
 }
 
 export type ParsedEventFilters = {

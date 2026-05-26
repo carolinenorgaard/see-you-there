@@ -14,6 +14,7 @@ import {
 } from '@/components/events/filters/eventsFilters'
 import { CategoryChipRow } from '@/components/filters/CategoryChipRow'
 import { RegionSelect } from '@/components/filters/RegionSelect'
+import { QueryPagination } from '@/components/Pagination/QueryPagination'
 import {
   SeeYouThereCard,
   SeeYouThereCardBadges,
@@ -33,6 +34,8 @@ import { formatDate, formatTime } from '@/utilities/formatDateTime'
 import { getOptionalMe } from '@/utilities/getOptionalMe'
 import { populated, populatedList } from '@/utilities/payloadRelations'
 
+const PAGE_SIZE = 24
+
 export const dynamic = 'force-dynamic'
 
 export default async function EventsPage({
@@ -40,7 +43,9 @@ export default async function EventsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
-  const filters = normalizeEventsFilters(await loadEventsFilters(searchParams))
+  const rawFilters = await loadEventsFilters(searchParams)
+  const filters = normalizeEventsFilters(rawFilters)
+  const page = Math.max(1, rawFilters.page)
 
   const payload = await getPayload({ config: configPromise })
 
@@ -67,7 +72,8 @@ export default async function EventsPage({
   const events = await payload.find({
     collection: 'events',
     depth: 2,
-    limit: 100,
+    limit: PAGE_SIZE,
+    page,
     overrideAccess: false,
     sort: 'startDate',
     where: buildEventsWhere(filters, { categories, regions }),
@@ -145,6 +151,10 @@ export default async function EventsPage({
             )
           })}
         </SeeYouThereGrid>
+      )}
+
+      {events.totalPages > 1 && events.page && (
+        <QueryPagination page={events.page} totalPages={events.totalPages} />
       )}
     </div>
   )

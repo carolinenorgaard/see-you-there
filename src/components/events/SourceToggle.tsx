@@ -1,6 +1,8 @@
-import Link from 'next/link'
+'use client'
 
-import type { EventSource } from '@/components/events/filters/eventsFilters'
+import { useQueryStates } from 'nuqs'
+
+import { eventsFilterParsers, type EventSource } from '@/components/events/filters/eventsFilters'
 import { cn } from '@/utilities/ui'
 
 const options: { value: EventSource; label: string }[] = [
@@ -8,30 +10,40 @@ const options: { value: EventSource; label: string }[] = [
   { value: 'community', label: 'Community' },
 ]
 
-export const SourceToggle = ({ active }: { active: EventSource }) => (
-  <div
-    role="tablist"
-    aria-label="Filtrér begivenheder efter kilde"
-    className="inline-flex rounded-full border border-neutral-200 bg-neutral-100 p-1"
-  >
-    {options.map(({ value, label }) => {
-      const isActive = value === active
-      return (
-        <Link
-          key={value}
-          href={`/events?source=${value}`}
-          role="tab"
-          aria-selected={isActive}
-          className={cn(
-            'rounded-full px-4 py-1.5 text-sm font-medium transition',
-            isActive
-              ? 'bg-white text-neutral-900 shadow-sm'
-              : 'text-neutral-600 hover:text-neutral-900',
-          )}
-        >
-          {label}
-        </Link>
-      )
-    })}
-  </div>
-)
+export const SourceToggle = ({ active }: { active: EventSource }) => {
+  const [, setStates] = useQueryStates({
+    source: eventsFilterParsers.source,
+    page: eventsFilterParsers.page,
+  })
+
+  return (
+    <div
+      role="tablist"
+      aria-label="Filtrér begivenheder efter kilde"
+      className="inline-flex rounded-full border border-neutral-200 bg-neutral-100 p-1"
+    >
+      {options.map(({ value, label }) => {
+        const isActive = value === active
+        return (
+          <button
+            key={value}
+            type="button"
+            role="tab"
+            aria-selected={isActive}
+            onClick={() => {
+              void setStates({ source: value, page: null })
+            }}
+            className={cn(
+              'rounded-full px-4 py-1.5 text-sm font-medium transition',
+              isActive
+                ? 'bg-white text-neutral-900 shadow-sm'
+                : 'text-neutral-600 hover:text-neutral-900',
+            )}
+          >
+            {label}
+          </button>
+        )
+      })}
+    </div>
+  )
+}

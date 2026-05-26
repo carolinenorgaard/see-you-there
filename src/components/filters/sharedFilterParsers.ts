@@ -1,4 +1,4 @@
-import { parseAsArrayOf, parseAsString } from 'nuqs/server'
+import { parseAsArrayOf, parseAsInteger, parseAsString } from 'nuqs/server'
 
 // shallow:false triggers a Next.js router refresh on each write so the
 // server component re-runs the Payload query with the new filters.
@@ -10,6 +10,10 @@ export const categoriesParser = parseAsArrayOf(parseAsString)
 
 export const regionParser = parseAsString
   .withDefault('')
+  .withOptions({ ...serverSyncOptions, clearOnDefault: true })
+
+export const pageParser = parseAsInteger
+  .withDefault(1)
   .withOptions({ ...serverSyncOptions, clearOnDefault: true })
 
 export const normalizeCategorySlugs = (raw: string[]): string[] => raw.filter(Boolean)
