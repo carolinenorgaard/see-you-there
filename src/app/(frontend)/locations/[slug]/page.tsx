@@ -26,11 +26,7 @@ import { populated } from '@/utilities/payloadRelations'
 
 export const dynamic = 'force-dynamic'
 
-export default async function LocationPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}) {
+export default async function LocationPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const payload = await getPayload({ config: configPromise })
 
@@ -87,33 +83,33 @@ export default async function LocationPage({
           {events.map((event) => {
             const eventImage = populated<Media>(event.image) ?? heroImage
             return (
-            <SeeYouThereCard key={event.id} href={`/events/${event.slug}`}>
-              {eventImage?.url && (
-                <SeeYouThereCardImage src={eventImage.url} alt={eventImage.alt ?? event.title} />
-              )}
-              <SeeYouThereCardOverlay intensity="soft" />
-              <SeeYouThereCardFooter>
-                <SeeYouThereCardBody>
-                  <SeeYouThereCardTitle>{event.title}</SeeYouThereCardTitle>
-                  <SeeYouThereCardMeta>
-                    <CalendarDays className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                    <span className="truncate">
-                      {formatDate(event.startDate)} • {formatTime(event.startTime)}
-                    </span>
-                  </SeeYouThereCardMeta>
-                </SeeYouThereCardBody>
-              </SeeYouThereCardFooter>
-            </SeeYouThereCard>
+              <SeeYouThereCard key={event.id} href={`/events/${event.slug}`}>
+                {eventImage?.url && (
+                  <SeeYouThereCardImage src={eventImage.url} alt={eventImage.alt ?? event.title} />
+                )}
+                <SeeYouThereCardOverlay intensity="soft" />
+                <SeeYouThereCardFooter>
+                  <SeeYouThereCardBody>
+                    <SeeYouThereCardTitle>{event.title}</SeeYouThereCardTitle>
+                    <SeeYouThereCardMeta>
+                      <CalendarDays className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                      <span className="truncate">
+                        {formatDate(event.startDate)} • {formatTime(event.startTime)}
+                      </span>
+                    </SeeYouThereCardMeta>
+                  </SeeYouThereCardBody>
+                </SeeYouThereCardFooter>
+              </SeeYouThereCard>
             )
           })}
         </SeeYouThereGrid>
       )}
 
       <section className="mt-16 max-w-2xl">
-        <h2 className="text-2xl font-semibold mb-2">Indsend en begivenhed på {location.title}</h2>
+        <h2 className="text-2xl font-semibold mb-2">Opret en begivenhed på {location.title}</h2>
         <p className="text-muted-foreground mb-6">
-          Del noget, du selv afholder eller har kendskab til. Det vises under fanen Community
-          på begivenhedssiden.
+          Del noget, du selv afholder eller har kendskab til. Det vises under fanen Community på
+          begivenhedssiden.
         </p>
         {user ? (
           <NewEventFormServer
