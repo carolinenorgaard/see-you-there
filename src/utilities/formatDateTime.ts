@@ -20,11 +20,17 @@ export const formatDateTime = (timestamp: string): string => {
 }
 
 export const formatDate = (value?: string | null): string =>
-  value ? new Date(value).toLocaleDateString() : ''
+  value
+    ? new Date(value).toLocaleDateString('da-DK', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })
+    : ''
 
 export const formatTime = (value?: string | null): string =>
   value
-    ? new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    ? new Date(value).toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' })
     : ''
 
 export const toIsoDay = (date: Date): string => {
