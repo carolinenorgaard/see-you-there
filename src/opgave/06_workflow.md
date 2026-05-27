@@ -33,7 +33,7 @@ Når jeg får lavet flere afgrænsede stykker arbejde på samme dag (refactor, n
 **Undtagelse**: når en PR løser noget særligt eller introducerer en større feature, får den en beskrivende titel i stedet. Eksempler fra historikken:
 
 - `Add Storybook with stories and GitHub Pages deploy` — introducerede et helt nyt værktøj og en deployment-pipeline.
-- `keep users logged in across navigations on Vercel` — fixede to sammenhængende auth-bugs der kun ramte produktion (beskrevet i `03_problemløsning.md`).
+- `keep users logged in across navigations on Vercel` — fixede to sammenhængende auth-bugs der kun ramte produktion (beskrevet i `04_problemløsning.md`).
 
 Tommelfingerreglen er: hvis PR'en gør én ting og kan beskrives i én sætning, fortjener den en rigtig titel. Hvis den samler "dagens arbejde" på tværs af flere små ting, får den dato-formatet.
 
