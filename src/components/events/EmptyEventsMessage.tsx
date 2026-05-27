@@ -15,5 +15,5 @@ export const EmptyEventsMessage = ({ filters }: { filters: ParsedEventFilters })
       ? 'Ingen See You There begivenheder endnu.'
       : 'Ingen community begivenheder endnu.'
 
-  return <p className="text-neutral-600">{message}</p>
+  return <p className="text-muted-foreground">{message}</p>
 }

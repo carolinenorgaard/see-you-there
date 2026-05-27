@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { useState } from 'react'
 
+import { Button } from '@/components/ui/button'
+import { FormError } from '@/components/ui/form-error'
 import { authFetch } from '@/utilities/auth-fetch'
 
 export default function SignupPage() {
@@ -80,14 +82,10 @@ export default function SignupPage() {
             className="border rounded px-3 py-2"
           />
         </label>
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-black text-white rounded px-4 py-2 disabled:opacity-50"
-        >
+        <FormError message={error} />
+        <Button type="submit" disabled={loading} className="self-start">
           {loading ? 'Opretter…' : 'Opret konto'}
-        </button>
+        </Button>
       </form>
       <div className="mt-6 text-sm">
         <Link href="/login" className="underline">Har du allerede en konto? Log ind</Link>

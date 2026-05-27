@@ -46,7 +46,8 @@ export const PageRange: React.FC<{
 
   return (
     <div className={[className, 'font-semibold'].filter(Boolean).join(' ')}>
-      {(typeof totalDocs === 'undefined' || totalDocs === 0) && 'Søgningen gav ingen resultater.'}
+      {(typeof totalDocs === 'undefined' || totalDocs === 0) &&
+        `Ingen ${(plural || 'resultater').toLowerCase()} at vise.`}
       {typeof totalDocs !== 'undefined' &&
         totalDocs > 0 &&
         `Viser ${indexStart}${indexStart > 0 ? ` - ${indexEnd}` : ''} af ${totalDocs} ${

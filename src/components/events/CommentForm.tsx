@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
+import { Button } from '@/components/ui/button'
+import { FormError } from '@/components/ui/form-error'
 import { authFetch } from '@/utilities/auth-fetch'
 
 export function CommentForm({ eventId }: { eventId: string }) {
@@ -40,14 +42,10 @@ export function CommentForm({ eventId }: { eventId: string }) {
         placeholder="Skriv en kommentar…"
         className="border rounded px-3 py-2"
       />
-      {error && <p className="text-red-600 text-sm">{error}</p>}
-      <button
-        type="submit"
-        disabled={loading || !content.trim()}
-        className="bg-black text-white rounded px-4 py-2 self-start disabled:opacity-50"
-      >
+      <FormError message={error} />
+      <Button type="submit" disabled={loading || !content.trim()} className="self-start">
         {loading ? 'Sender…' : 'Send'}
-      </button>
+      </Button>
     </form>
   )
 }

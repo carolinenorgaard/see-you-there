@@ -8,6 +8,7 @@ import { CommentForm } from '@/components/events/CommentForm'
 import { LikeButton } from '@/components/events/LikeButton'
 import { RsvpButton } from '@/components/events/RsvpButton'
 import { Badge } from '@/components/ui/badge'
+import { categoryColorClass } from '@/utilities/categoryColor'
 import {
   SeeYouThereCard,
   SeeYouThereCardBadges,
@@ -78,7 +79,7 @@ export default async function EventPage({
         <SeeYouThereCardOverlay />
         <SeeYouThereCardHeader>
           <SeeYouThereCardBadges>
-            <Badge color="bg-pink-600">Begivenhed</Badge>
+            <Badge color={categoryColorClass('pink')}>Begivenhed</Badge>
           </SeeYouThereCardBadges>
         </SeeYouThereCardHeader>
         <SeeYouThereCardFooter>

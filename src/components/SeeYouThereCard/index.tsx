@@ -21,7 +21,7 @@ const SeeYouThereCard: React.FC<CardRootProps> = ({
     <article
       data-slot="syt-card"
       className={cn(
-        'group relative w-full overflow-hidden rounded-3xl bg-neutral-900 text-white shadow-sm',
+        'group relative w-full overflow-hidden rounded-3xl bg-card-invert text-card-invert-foreground shadow-sm',
         aspect,
         className,
       )}
@@ -35,7 +35,7 @@ const SeeYouThereCard: React.FC<CardRootProps> = ({
     return (
       <Link
         href={href}
-        className="block rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+        className="block rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {content}
       </Link>
@@ -140,7 +140,7 @@ const SeeYouThereCardMeta: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
 }) => (
   <div
     data-slot="syt-card-meta"
-    className={cn('flex items-center gap-1.5 text-sm text-white/90', className)}
+    className={cn('flex items-center gap-1.5 text-sm text-card-invert-foreground/90', className)}
     {...props}
   />
 )

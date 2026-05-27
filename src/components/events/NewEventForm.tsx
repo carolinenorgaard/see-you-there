@@ -3,7 +3,11 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
+import { Button } from '@/components/ui/button'
+import { FormError } from '@/components/ui/form-error'
 import { authFetch } from '@/utilities/auth-fetch'
+import { togglePillClasses } from '@/utilities/togglePillClasses'
+import { cn } from '@/utilities/ui'
 
 type Option = { id: string; title: string }
 
@@ -119,7 +123,10 @@ export function NewEventForm({
                 type="button"
                 key={c.id}
                 onClick={() => toggleCategory(c.id)}
-                className={`rounded-full px-3 py-1 text-sm border ${active ? 'bg-black text-white border-black' : 'bg-white text-black'}`}
+                className={cn(
+                  'rounded-full border px-3 py-1 text-sm transition',
+                  togglePillClasses(active),
+                )}
               >
                 {c.title}
               </button>
@@ -171,15 +178,11 @@ export function NewEventForm({
         </label>
       </div>
 
-      {error && <p className="text-red-600 text-sm">{error}</p>}
+      <FormError message={error} />
 
-      <button
-        type="submit"
-        disabled={loading || categoryIds.length === 0}
-        className="bg-black text-white rounded px-4 py-2 self-start disabled:opacity-50"
-      >
+      <Button type="submit" disabled={loading || categoryIds.length === 0} className="self-start">
         {loading ? 'Indsender…' : 'Indsend begivenhed'}
-      </button>
+      </Button>
     </form>
   )
 }

@@ -20,6 +20,7 @@ import { SeeYouThereGrid } from '@/components/SeeYouThereGrid'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { Event, Location, Media } from '@/payload-types'
+import { categoryColorClass } from '@/utilities/categoryColor'
 import { formatDate, formatTime } from '@/utilities/formatDateTime'
 import { getOptionalMe } from '@/utilities/getOptionalMe'
 import { populated } from '@/utilities/payloadRelations'
@@ -57,7 +58,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
         <SeeYouThereCardOverlay />
         <SeeYouThereCardHeader>
           <SeeYouThereCardBadges>
-            <Badge color="bg-teal-600">Lokation</Badge>
+            <Badge color={categoryColorClass('teal')}>Lokation</Badge>
           </SeeYouThereCardBadges>
         </SeeYouThereCardHeader>
         <SeeYouThereCardFooter>

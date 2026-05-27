@@ -1,10 +1,14 @@
 'use client'
 
 import { Check, X } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
+import { Button } from '@/components/ui/button'
 import { authFetch } from '@/utilities/auth-fetch'
+import { pillShapeClasses, togglePillClasses } from '@/utilities/togglePillClasses'
+import { cn } from '@/utilities/ui'
 
 export function RsvpButton({
   eventId,
@@ -23,9 +27,9 @@ export function RsvpButton({
 
   if (!loggedIn) {
     return (
-      <a href="/login" className="inline-block bg-black text-white rounded px-4 py-2">
-        Log ind for at deltage
-      </a>
+      <Button asChild>
+        <Link href="/login">Log ind for at deltage</Link>
+      </Button>
     )
   }
 
@@ -57,11 +61,7 @@ export function RsvpButton({
         aria-label={label}
         aria-pressed={attending}
         title={label}
-        className={`inline-flex h-9 w-9 items-center justify-center rounded-full border shadow-sm disabled:opacity-50 ${
-          attending
-            ? 'bg-black border-black text-white hover:bg-neutral-800'
-            : 'bg-white border-neutral-200 text-neutral-900 hover:bg-neutral-100'
-        }`}
+        className={cn(pillShapeClasses(true), 'disabled:opacity-50', togglePillClasses(attending))}
       >
         {attending ? <X className="h-4 w-4" /> : <Check className="h-4 w-4" />}
       </button>
@@ -69,12 +69,8 @@ export function RsvpButton({
   }
 
   return (
-    <button
-      onClick={submit}
-      disabled={loading}
-      className={`rounded px-4 py-2 ${attending ? 'bg-gray-200 text-black' : 'bg-black text-white'} disabled:opacity-50`}
-    >
+    <Button onClick={submit} disabled={loading} variant={attending ? 'secondary' : 'default'}>
       {loading ? '…' : attending ? 'Annullér tilmelding' : 'Deltag'}
-    </button>
+    </Button>
   )
 }

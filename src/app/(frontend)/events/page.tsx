@@ -82,7 +82,7 @@ export default async function EventsPage({
 
       <div className="mb-8 space-y-4">
         <DateChipRail />
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
           {categories.length > 0 && <CategoryChipRow categories={categories} />}
           <div className="flex flex-wrap items-center gap-2">
             {regions.length > 0 && (

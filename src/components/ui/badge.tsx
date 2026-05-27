@@ -7,13 +7,13 @@ export type BadgeSize = 'sm' | 'md'
 export type BadgeProps = React.HTMLAttributes<HTMLSpanElement> & {
   variant?: BadgeVariant
   size?: BadgeSize
-  /** Tailwind background-color class — only applied when variant is "solid" (e.g. "bg-teal-600"). */
+  /** Tailwind background+text class — only applied when variant is "solid". Prefer `categoryColorClass(color)` over raw strings. */
   color?: string
   asChild?: boolean
 }
 
 const variantClasses: Record<BadgeVariant, string> = {
-  solid: 'text-white',
+  solid: '',
   glass: 'bg-white/70 text-black backdrop-blur-md',
   translucent: 'bg-white/20 text-white backdrop-blur-sm',
   outline: 'border border-white/40 text-white',
@@ -39,7 +39,7 @@ export const Badge: React.FC<BadgeProps> = ({
         'inline-flex items-center rounded-full font-bold leading-none whitespace-nowrap',
         sizeClasses[size],
         variantClasses[variant],
-        variant === 'solid' && (color ?? 'bg-neutral-900'),
+        variant === 'solid' && (color ?? 'bg-card-invert text-card-invert-foreground'),
         className,
       )}
       {...props}

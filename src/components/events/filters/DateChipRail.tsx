@@ -3,17 +3,13 @@
 import { useQueryStates } from 'nuqs'
 
 import { toIsoDay } from '@/utilities/formatDateTime'
+import { togglePillClasses } from '@/utilities/togglePillClasses'
 import { cn } from '@/utilities/ui'
 import { eventsFilterParsers } from './eventsFilters'
 
 const DAYS_AHEAD = 14
 
 type Chip = { iso: string; weekday: string; day: number; label?: string }
-
-const chipState = (isActive: boolean) =>
-  isActive
-    ? 'border-neutral-900 bg-neutral-900 text-white'
-    : 'border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400'
 
 const buildDateRailChips = (): Chip[] => {
   const today = new Date()
@@ -49,7 +45,7 @@ export const DateChipRail = () => {
         aria-pressed={!activeDate}
         className={cn(
           'flex h-14 shrink-0 items-center rounded-full border px-4 text-xs font-semibold transition',
-          chipState(!activeDate),
+          togglePillClasses(!activeDate),
         )}
       >
         Alle
@@ -64,9 +60,7 @@ export const DateChipRail = () => {
             aria-pressed={isActive}
             className={cn(
               'flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-full border text-[10px] font-semibold uppercase tracking-wide transition',
-              isActive
-                ? 'border-neutral-900 bg-neutral-900 text-white'
-                : 'border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400',
+              togglePillClasses(isActive),
             )}
             title={chip.label ?? `${chip.weekday} ${chip.day}`}
           >
