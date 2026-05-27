@@ -1,13 +1,9 @@
 # Problemløsning
 
 ## Brugeroprettelse
-En af de første tekniske udfordringer var at håndtere brugeroprettelse og login på en måde, der både er sikker og enkel at vedligeholde. I stedet for at bygge et auth-system fra bunden valgte jeg at bruge Payloads indbyggede `users`-collection, som leverer hashing af passwords, sessions og rolle-baseret adgangskontrol ud af kassen.
+En af de første tekniske udfordringer var at håndtere brugeroprettelse og login på en måde, der både er sikker og enkel at vedligeholde. I stedet for at bygge et auth-system fra bunden valgte jeg at bruge Payloads indbyggede `users`-collection, som leverer hashing af passwords, sessions og rolle-baseret adgangskontrol ud af kassen. Det er en bevidst beslutning om at læne sig op ad et veletableret framework's defaults frem for at finde på noget selv på et sikkerhedsfølsomt område, hvor egne fejl kan have store konsekvenser.
 
-Konkrete beslutninger undervejs:
-- **Cookie-baseret session frem for token i localStorage**, fordi `httpOnly`-cookies ikke kan tilgås fra JavaScript og dermed begrænser angrebsfladen for XSS.
-- **`/logout` er begrænset til POST**, så et prefetch af et `<Link href="/logout">` ikke utilsigtet kan logge brugeren ud.
-- **Brug af Payloads `payload.auth`** i stedet for at lave et internt fetch til `/api/users/me` — det undgår unødvendige HTTP-kald og potentielle problemer med cookie-videresendelse i server components.
-- **CSRF-konfiguration** der tillader Vercels preview-URL'er, så test af pull requests fungerer uden at åbne for vilkårlige origins i produktion.
+Den eneste tilpasning jeg har lavet oven på Payloads default-auth er at begrænse `/logout` til `POST`. Det skyldes en konkret bug jeg opdagede i produktion: et `<Link href="/logout">` blev prefetchet af Next.js i produktion (men ikke i dev) og loggede dermed brugeren ud bare ved at rendere siden. Den ændring er beskrevet i en commit-besked, så den ikke utilsigtet bliver rullet tilbage.
 
 Jeg overvejer stadig på sigt at skifte til **Clerk** som auth-leverandør. Jeg har ikke selv arbejdet med det endnu, men har set flere udviklere omtale det positivt — særligt for de færdige UI-komponenter, sociale logins og den indbyggede håndtering af sessions og MFA. Det er noget, jeg gerne vil undersøge nærmere i fremtiden. På det nuværende POC-stadie vurderer jeg dog, at Payloads indbyggede auth er tilstrækkeligt, og at det ikke giver mening at trække en ekstern auth-tjeneste ind, før jeg ved mere om, hvilke krav projektet reelt får.
 
