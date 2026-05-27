@@ -1,6 +1,6 @@
 # Arkitektur
 
-## Nuværende stack
+## Stack
 
 ### Payload
 Payload udgør kernen af projektet. Det er et Node-baseret headless CMS (Content Management System), der fungerer særdeles godt sammen med Next.js. Jeg ser det som en fordel, at både frontend og backend er skrevet i JavaScript/TypeScript, så jeg ikke skal skifte mellem to forskellige sprog under udviklingen.
@@ -30,10 +30,15 @@ Det fleksible skema passer godt til et CMS-drevet projekt, fordi datamodellen of
 
 MongoDB Atlas er en managed hosting-løsning til MongoDB, der tilbyder et gratis cluster, som passer til en prototype i denne størrelse.
 
-### Authentication
+## Authentication
 Til brugeroprettelse og login bruger jeg Payloads indbyggede `users`-collection, som leverer hashing af passwords, sessions og rolle-baseret adgangskontrol ud af kassen. Det er en bevidst beslutning om at læne sig op ad et veletableret framework's defaults frem for at finde på noget selv på et sikkerhedsfølsomt område, hvor egne fejl kan have store konsekvenser.
 
-Den eneste tilpasning jeg har lavet oven på Payloads default-auth er at begrænse `/logout` til `POST`. Det skyldes en konkret bug jeg opdagede i produktion: et `<Link href="/logout">` blev prefetchet af Next.js i produktion (men ikke i dev) og loggede dermed brugeren ud bare ved at rendere siden. Den ændring er beskrevet i en commit-besked, så den ikke utilsigtet bliver rullet tilbage.
+### Clerk som muligt alternativ
+Jeg har ikke selv arbejdet med Clerk endnu, men har set flere udviklere omtale det positivt — særligt for de færdige UI-komponenter, sociale logins og den indbyggede håndtering af sessions og MFA. På POC-stadiet vurderer jeg dog at Payloads indbyggede auth er tilstrækkeligt, og at det ikke giver mening at trække en ekstern auth-tjeneste ind, før jeg ved mere om, hvilke krav projektet reelt får.
+
+## Drift og platform
+
+Hvor stacken handler om *hvad* applikationen er bygget af, handler det her afsnit om *hvor* den kører — den eksterne infrastruktur, jeg ikke selv drifter, men har valgt og konfigureret.
 
 ### Hosting
 Applikationen hostes på **Vercel**, som er den anbefalede platform til Next.js. Det giver automatiske preview-deployments pr. pull request, indbygget CDN og et gratis hobby-tier, der er rigeligt til en prototype.
@@ -54,7 +59,7 @@ På sigt er der to retninger, jeg vil overveje:
 - Skifte til en dedikeret transaktionel mail-udbyder som **Resend**, hvis Payload fortsat skal stå for auth-flowet.
 - Hvis mails udelukkende handler om brugeroprettelse og password-reset, kan det give mere mening at lade en auth-leverandør som **Clerk** håndtere det hele, så jeg helt slipper for at vedligeholde mail-templates og SMTP-konfiguration selv.
 
-### Diagram over teknisk arkitektur
+## Diagram over teknisk arkitektur
 
 ```mermaid
 flowchart LR
@@ -94,7 +99,7 @@ Systemet har to UI-flader: den offentlige frontend, som almindelige brugere mød
 
 Uploads af billeder fra admin-UI'et går gennem Payload, som videresender filen til Vercel Blob via `@payloadcms/storage-vercel-blob`. Når et billede senere skal vises på sitet, returnerer Payload bare URL'en til Blob-filen — selve billed-bytes går ikke gennem Payload.
 
-### Datamodel — events knyttet til steder
+## Datamodel — events knyttet til steder
 
 ```mermaid
 flowchart LR
@@ -143,4 +148,3 @@ Valget om at gøre Storybook (og ikke Figma) til den autoritative kilde er en be
 ## Hvad skulle måske have været anderledes
 - **PostgreSQL i stedet for MongoDB**: Hvis datamodellen viser sig at have mange tværgående relationer (fx events ↔ steder ↔ brugere ↔ kommentarer), kunne en relationel database have gjort visse forespørgsler enklere. Payload understøtter PostgreSQL, så det er et muligt skifte senere.
 - **PWA fra starten**: Offline-funktionalitet kunne med fordel være tænkt ind tidligere, så service workers og caching-strategier kunne bygges som en del af arkitekturen frem for som en senere tilføjelse.
-- **Clerk i stedet for Payloads indbyggede auth**: Jeg har ikke selv arbejdet med Clerk endnu, men har set flere udviklere omtale det positivt — særligt for de færdige UI-komponenter, sociale logins og den indbyggede håndtering af sessions og MFA. På POC-stadiet vurderer jeg dog at Payloads indbyggede auth er tilstrækkeligt, og at det ikke giver mening at trække en ekstern auth-tjeneste ind, før jeg ved mere om, hvilke krav projektet reelt får.

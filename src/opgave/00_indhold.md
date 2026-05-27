@@ -14,8 +14,11 @@ Hvem platformen er bygget til, og hvilke use cases der drev featurevalg.
 - [Use cases der drev featurevalg](./02_målgruppe_og_design.md#use-cases-der-drev-featurevalg)
 
 ## [3. Arkitektur](./03_arkitektur.md)
-Den tekniske stack (Payload, Next.js, MongoDB, auth, hosting, storage, mail), diagrammer over system- og datamodel, designsystemet på frontenden, og hvad jeg har valgt fra.
-- [Nuværende stack](./03_arkitektur.md#nuværende-stack)
+Stack og driftsplatform, diagrammer over system- og datamodel, designsystemet på frontenden, og hvad jeg har valgt fra.
+- [Stack](./03_arkitektur.md#stack)
+- [Drift og platform](./03_arkitektur.md#drift-og-platform)
+- [Diagram over teknisk arkitektur](./03_arkitektur.md#diagram-over-teknisk-arkitektur)
+- [Datamodel — events knyttet til steder](./03_arkitektur.md#datamodel--events-knyttet-til-steder)
 - [Designsystem og værktøjer](./03_arkitektur.md#designsystem-og-værktøjer)
 - [Hvad valgte jeg fra](./03_arkitektur.md#hvad-valgte-jeg-fra)
 - [Hvad skulle måske have været anderledes](./03_arkitektur.md#hvad-skulle-måske-have-været-anderledes)

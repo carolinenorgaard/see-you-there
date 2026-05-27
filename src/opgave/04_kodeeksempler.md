@@ -337,3 +337,38 @@ export const Users: CollectionConfig = {
 Bemærk *field-level access* på `role`-feltet. En bruger har `update`-adgang til sit eget user-dokument via `adminOrSelf`, men `role`-feltet har sin egen, snævrere regel: kun admins. Det betyder at selv om en bruger forsøger at sende en `PATCH` med `{ role: 'admin' }`, vil Payload håndhæve regelen på feltet og afvise ændringen — privilege escalation er afværget på datalaget i stedet for at være afhængig af at frontend-koden husker at skjule feltet.
 
 Resultatet er at frontend-koden er mere uskyldig: jeg kan kalde `payload.find({ collection: 'users', overrideAccess: false })` og stole på at Payload allerede har filtreret dokumenter væk som den aktuelle bruger ikke må se. Det er den slags ting et headless CMS er bygget til at give gratis, hvis man husker at slå `overrideAccess` *fra* når kaldet sker på vegne af en almindelig bruger.
+
+## 7. Logout som POST-only — en bug der lærte mig om prefetch
+
+Et af de mere lærerige uheld på projektet handlede ikke om en algoritme eller en datamodel, men om noget så banalt som hvilken HTTP-metode et logout-endpoint accepterer. Den oprindelige opsætning lod logout virke på et `GET`, og linket i headeren så uskyldigt ud:
+
+```tsx
+// Den oprindelige (problematiske) variant
+<Link href="/logout">Log ud</Link>
+```
+
+I dev så alt fint ud. Først efter et deploy opdagede jeg, at brugerne blev logget ud helt uden at klikke på noget. Årsagen var Next.js' `<Link>`-prefetch: i produktion prefetcher Next.js automatisk de links der bliver synlige i viewporten, så navigationen føles instant. Den prefetch er et `GET`-kald — og fordi mit logout-endpoint svarede på `GET`, var det nok at *rendere* et link til `/logout` for at logge brugeren ud. I dev sker prefetch ikke som standard, hvilket er grunden til at jeg ikke havde set det lokalt.
+
+Fixet var at gøre logout strengt `POST`-only og lade frontend submitte en lille form i stedet for at navigere til et link:
+
+```ts
+// src/app/(frontend)/(auth)/logout/route.ts
+import { NextResponse } from 'next/server'
+import { getServerSideURL } from '@/utilities/getURL'
+
+export async function POST(req: Request) {
+  const cookie = req.headers.get('cookie') || ''
+  await fetch(`${getServerSideURL()}/api/users/logout`, {
+    method: 'POST',
+    headers: { cookie },
+  }).catch(() => null)
+
+  const res = NextResponse.redirect(new URL('/', req.url), { status: 303 })
+  res.cookies.set('payload-token', '', { path: '/', maxAge: 0 })
+  return res
+}
+```
+
+Der er ingen `GET`-eksport — så et prefetch (eller en bruger der bare skriver `/logout` i adressefeltet) får en `405 Method Not Allowed` og ændrer ingenting. Sessionen kan kun afsluttes ved et eksplicit `POST`.
+
+Pointen er ikke kun den konkrete fejl, men princippet bag: **state-changing operationer hører ikke hjemme på `GET`**. Det er en af de ældre regler i HTTP-verdenen (idempotens, [RFC 9110 §9.2.1](https://www.rfc-editor.org/rfc/rfc9110#section-9.2.1)), og prefetch er præcis det scenarie reglen findes for at beskytte imod — sammen med browserens history-restore, link-previews i chat-klienter, og search engine crawlers. Hvis jeg havde tænkt på det fra starten, var bug'en aldrig opstået; men nu sidder den til gengæld godt fast som en ting jeg ikke kommer til at glemme igen.
