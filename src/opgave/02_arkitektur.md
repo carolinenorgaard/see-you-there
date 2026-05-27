@@ -100,6 +100,7 @@ Kernen i datamodellen er, at en **Event** altid hører til ét **Location** (rel
 Diagrammet udelader **Media**-collectionen (som leverer billed-uploads til Locations, Events og Users) samt Payloads CMS-kollektioner (`Posts`, `Pages`, `Header`/`Footer`-globals), som ikke er en del af event-domænet.
 
 ## Hvad valgte jeg fra
+- **WordPress**: Selvom vi blev introduceret til WordPress i skolen, virkede det ikke som den rigtige løsning her. Meget af konfigurationen lever inde i WordPress-admin'en — temaer, plugins, custom fields — og er dermed ikke synlig i kodebasen eller i Git-historikken. Payload er en *developer first*-platform hvor collections, hooks og adgangsregler defineres i TypeScript-filer der bor i repo'et. Det gør et projekt langt lettere at overskue, at code-review, og at rulle tilbage hvis noget går galt, fordi alle ændringer ligger som commits.
 - **Andre headless CMS'er som Sanity og Strapi**: Sanity har et stærkt redaktørmiljø, men frontend og backend er adskilt på en måde, der ville have krævet mere opsætning. Strapi minder om Payload, men jeg fandt Payloads udvikleroplevelse og TypeScript-integration mere overbevisende.
 - **Custom backend i Express + separat React-frontend**: Ville give fuld fleksibilitet, men også markant mere boilerplate (auth, admin-UI, validering m.m.). På et projekt af denne størrelse er det ikke en god prioritering.
 - **Native app eller React Native**: Fravalgt for at fokusere på én kodebase. Hvis behovet opstår, kan en PWA dække mange af de samme behov uden at skulle vedligeholde to platforme.
