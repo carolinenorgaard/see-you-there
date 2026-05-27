@@ -71,7 +71,7 @@ export function LikeButton({
       className={cn(
         'inline-flex items-center justify-center gap-2 border shadow-sm transition disabled:opacity-50',
         iconOnly ? 'h-9 w-9 rounded-full' : 'rounded-md px-3 py-2',
-        togglePillClasses(liked, 'category-pink'),
+        togglePillClasses(liked, 'pink'),
       )}
     >
       <Heart className={cn('h-4 w-4', liked && 'fill-current')} />

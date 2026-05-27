@@ -59,7 +59,7 @@ export async function Footer() {
                   aria-label={label}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-cream/80 transition hover:border-white hover:text-cream"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-cream/15 text-cream/80 transition hover:border-cream hover:text-cream"
                 >
                   <Icon className="h-4 w-4" />
                 </a>
@@ -106,7 +106,7 @@ export async function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 md:flex-row md:items-center md:justify-between">
+        <div className="mt-12 flex flex-col gap-4 border-t border-cream/10 pt-6 md:flex-row md:items-center md:justify-between">
           <p className="text-xs text-cream/60">
             © {year} See You There. Alle rettigheder forbeholdes.
           </p>
