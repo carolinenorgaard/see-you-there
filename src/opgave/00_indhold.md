@@ -12,7 +12,6 @@ Hvem platformen er bygget til, og hvilke use cases der drev featurevalg.
 - [Primær målgruppe](./02_målgruppe_og_design.md#primær-målgruppe)
 - [Sekundære brugere](./02_målgruppe_og_design.md#sekundære-brugere)
 - [Use cases der drev featurevalg](./02_målgruppe_og_design.md#use-cases-der-drev-featurevalg)
-- [Hvad jeg ikke nåede](./02_målgruppe_og_design.md#hvad-jeg-ikke-nåede)
 
 ## [3. Arkitektur](./03_arkitektur.md)
 Den tekniske stack (Payload, Next.js, MongoDB), diagrammer over system- og datamodel, designsystemet på frontenden, og hvad jeg har valgt fra.
@@ -48,6 +47,7 @@ Tjek af krav fra intro mod den færdige løsning, læring fra teknisk arbejde og
 - [Lever projektet op til kravene fra 01?](./07_refleksion.md#lever-projektet-op-til-kravene-fra-01)
 - [Hvad jeg lærte teknisk](./07_refleksion.md#hvad-jeg-lærte-teknisk)
 - [Hvad jeg lærte om processen](./07_refleksion.md#hvad-jeg-lærte-om-processen)
+- [Hvad jeg ikke nåede](./07_refleksion.md#hvad-jeg-ikke-nåede)
 - [Hvad jeg ville lave anderledes hvis jeg startede forfra](./07_refleksion.md#hvad-jeg-ville-lave-anderledes-hvis-jeg-startede-forfra)
 - [Næste skridt](./07_refleksion.md#næste-skridt)
 - [Konklusion](./07_refleksion.md#konklusion)

@@ -24,6 +24,15 @@ I [01_intro.md](./01_intro.md) opstillede jeg fem krav til løsningen. Her er en
 
 **At skrive dokumentationen undervejs er en form for tænkning**. Jeg påbegyndte denne opgavetekst tidligt i forløbet og udvidede den løbende, frem for at vente til slutningen. Det betød at jeg blev tvunget til at sætte ord på *hvorfor* jeg havde valgt noget, mens valget stadig var friskt — og det fangede mig flere gange i at have valgt noget af forkerte grunde, hvor jeg så kunne nå at lave det om.
 
+## Hvad jeg ikke nåede
+
+For at være ærlig om hvor projektet stadig er tyndt — bevidste fravalg på POC-stadiet, men ting der står øverst på listen hvis projektet bevæger sig mod lancering:
+
+- **Ingen brugertests**: alle antagelser om brugeren er informerede gæt frem for målte indsigter.
+- **Ingen formelle personas eller customer journeys**: jeg har én bruger i hovedet, ikke team-validerede artefakter.
+- **Begrænset indholdsmoderation-design**: hvordan ser admin-UI'et ud når det er en redaktør, der ikke er udvikler, der skal moderere et upassende kommentar? Ikke afklaret.
+- **Ingen systematisk tilgængeligheds-test**: jeg er bevidst om vigtigheden, men har ikke kørt formelle audits (Lighthouse, axe-core) eller skærmlæser-tests og kan derfor ikke dokumentere at sitet overholder WCAG.
+
 ## Hvad jeg ville lave anderledes hvis jeg startede forfra
 
 - **PWA fra starten** (gentaget fra 03). Offline-funktionalitet og install-to-homescreen er ting jeg tror brugerne ville sætte pris på, og det er sværere at retroficere ind end at planlægge for fra dag 1.

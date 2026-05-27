@@ -25,13 +25,4 @@ For at holde scope stramt har jeg taget udgangspunkt i tre konkrete brugersituat
 
 Designsystemet og frontendens værktøjer (Figma, Storybook, Tailwind, shadcn) er beskrevet sammen med resten af stack'en i [03_arkitektur.md](./03_arkitektur.md#designsystem-og-værktøjer).
 
-## Hvad jeg ikke nåede
-
-For at være ærlig om hvor designet stadig er tyndt:
-
-- **Ingen brugertests**: alle antagelser om brugeren er informerede gæt frem for målte indsigter.
-- **Ingen formelle personas eller customer journeys**: jeg har én bruger i hovedet, ikke et team-validerede artefakter.
-- **Begrænset indholdsmoderation-design**: hvordan ser admin-UI'et ud når det er en redaktør der ikke er udvikler, der skal moderere et upassende kommentar? Ikke afklaret.
-- **Ingen systematisk tilgængeligheds-test**: jeg er bevidst om vigtigheden, men har ikke kørt formelle audits (Lighthouse, axe-core) eller skærmlæser-tests og kan derfor ikke dokumentere at sitet overholder WCAG.
-
-Det er bevidste fravalg på POC-stadiet, men de fire står øverst på listen hvis projektet bevæger sig mod lancering.
+De ærlige fravalg på design-domænet (manglende brugertests, formelle personas, moderation-design og a11y-tests) er samlet med projektets øvrige retrospektive fravalg i [07_refleksion.md](./07_refleksion.md#hvad-jeg-ikke-nåede).
