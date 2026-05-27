@@ -8,17 +8,16 @@ Projektets vision, krav til løsningen, og overvejelser om webapp vs. native vs.
 - [Overvejelser](./01_intro.md#overvejelser)
 
 ## [2. Målgruppe og design](./02_målgruppe_og_design.md)
-Hvem platformen er bygget til, hvilke use cases der drev featurevalg, og designsystemet bag UI'et.
+Hvem platformen er bygget til, og hvilke use cases der drev featurevalg.
 - [Primær målgruppe](./02_målgruppe_og_design.md#primær-målgruppe)
 - [Sekundære brugere](./02_målgruppe_og_design.md#sekundære-brugere)
 - [Use cases der drev featurevalg](./02_målgruppe_og_design.md#use-cases-der-drev-featurevalg)
-- [Designsystem og værktøjer](./02_målgruppe_og_design.md#designsystem-og-værktøjer)
-- [Tilgængelighed som designvalg](./02_målgruppe_og_design.md#tilgængelighed-som-designvalg)
 - [Hvad jeg ikke nåede](./02_målgruppe_og_design.md#hvad-jeg-ikke-nåede)
 
 ## [3. Arkitektur](./03_arkitektur.md)
-Den tekniske stack (Payload, Next.js, MongoDB), diagrammer over system- og datamodel, og hvad jeg har valgt fra.
+Den tekniske stack (Payload, Next.js, MongoDB), diagrammer over system- og datamodel, designsystemet på frontenden, og hvad jeg har valgt fra.
 - [Nuværende stack](./03_arkitektur.md#nuværende-stack)
+- [Designsystem og værktøjer](./03_arkitektur.md#designsystem-og-værktøjer)
 - [Hvad valgte jeg fra](./03_arkitektur.md#hvad-valgte-jeg-fra)
 - [Hvad skulle måske have været anderledes](./03_arkitektur.md#hvad-skulle-måske-have-været-anderledes)
 
