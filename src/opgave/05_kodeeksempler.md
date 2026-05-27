@@ -244,6 +244,8 @@ export const buildLocationsWhere = (
 
 URL'en bruger menneske-læselige `slug`'s (`?categories=jazz,koncert`), mens Payload internt arbejder med `id`'s. `resolveIdsBySlug` mapper imellem dem. Sidegevinsterne ved at have state i URL'en er gratis: browserens fremad/tilbage-knapper virker, en filtreret side kan bookmarkes, og søgemaskiner får faktiske URL'er at indeksere — i modsætning til en SPA med usynlige client-side filtre.
 
+Det samme resultat kunne i princippet være opnået med en håndskrevet `linkBuilder`-funktion der serialiserer filtre til en query string, kombineret med Next.js' indbyggede `searchParams` i server components. Det ville fjerne en dependency, men ville samtidig betyde at jeg selv skulle holde styr på parsing, defaults, type-safety og immutable updates på tværs af events- og locations-siderne. `nuqs` giver mig alt det ud af kassen i ét konsistent API, som både server og client komponenter bruger på samme måde — og det er den ensartethed jeg har prioriteret over at undgå én ekstra dependency.
+
 ## 5. Validering af events med et `beforeValidate`-hook
 
 En af de største fordele ved Payload — sammenlignet med en custom Express-backend — er at forretningsregler hører hjemme på datalaget i stedet for i hver formular. På `events`-collectionen har jeg lagt et `beforeValidate`-hook der sikrer at slutdatoen aldrig kan ligge før startdatoen, og at sluttiden ikke kan ligge før starttiden hvis eventet ender samme dag.
