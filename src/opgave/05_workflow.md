@@ -28,7 +28,7 @@ Jeg har bevidst valgt en let-genkendelig, **dato-baseret navngivning** for de fl
 26-05-2026.7      ← syvende PR samme dag
 ```
 
-Når jeg får lavet flere afgrænsede stykker arbejde på samme dag (refactor, ny feature, lille bugfix), åbner jeg en PR pr. stykke i stedet for at samle det hele i én stor PR. Suffixet `.2`, `.3` osv. holder titlerne unikke og sorter naturligt kronologisk i GitHub's PR-liste. Det er en meget pragmatisk navngivning — den fortæller ikke hvad PR'en indeholder, kun *hvornår* den blev lavet — men koblet med Conventional Commits inde i selve PR'en (se nedenfor) er det nok til at jeg kan finde tilbage til en given ændring.
+Når jeg får lavet flere afgrænsede stykker arbejde på samme dag (refactor, ny feature, lille bugfix), åbner jeg en PR pr. stykke i stedet for at samle det hele i én stor PR. Suffixet `.2`, `.3` osv. holder titlerne unikke og sorter naturligt kronologisk i GitHub's PR-liste. Det er en meget pragmatisk navngivning — den fortæller ikke hvad PR'en indeholder, kun _hvornår_ den blev lavet — men koblet med Conventional Commits inde i selve PR'en (se nedenfor) er det nok til at jeg kan finde tilbage til en given ændring.
 
 **Undtagelse**: når en PR løser noget særligt eller introducerer en større feature, får den en beskrivende titel i stedet. Eksempler fra historikken:
 
@@ -50,14 +50,16 @@ Tommelfingerreglen er: hvis PR'en gør én ting og kan beskrives i én sætning,
 ## Hvad der virker, og hvad jeg ville lave anderledes på et team
 
 **Det virker fordi**:
+
 - Hver ændring har et review-trin (selv hvis det er mig selv der reviewer), så jeg fanger fejl inden produktion.
 - Hver PR får sin egen preview-deployment, så jeg tester på et rigtigt URL i stedet for kun på `localhost`.
 - Historikken på `main` er en serie af merge-commits der hver svarer til en testet, deployet ændring.
 
 **Hvad jeg ville ændre i et team-setup**:
+
 - **Korte, beskrivende branch-navne pr. feature** (`feature/profile-redesign`, `fix/event-validation`) i stedet for at hænge alt på `develop`. Med flere udviklere er en enkelt langlivet branch en flaskehals.
 - **Required reviews** og branch protection på `main`, så ingen kan merge uden mindst én anden persons godkendelse.
-- **CI-pipeline** der kører lint, typecheck og tests på hver PR. Lige nu er der ingen automatisk gate — jeg har kørt `npm run lint` og `npm test` lokalt, men det er en disciplin der bør være automatiseret.
+- **CI-pipeline** der kører lint, typecheck og tests på hver PR. Lige nu er der ingen automatisk gate — jeg har kørt `npm run lint` lokalt, men det er en disciplin der bør være automatiseret.
 - **Beskrivende PR-titler** i stedet for dato-format, så det er muligt at scanne PR-listen og se hvad hver ændring gjorde, uden at skulle åbne den enkelte PR.
 
 Dato-formatet er en bevidst forenkling der passer til et solo-projekt i POC-fasen. Hvis platformen vokser, eller hvis andre udviklere kommer ind på projektet, er det første jeg ville lægge om.

@@ -4,11 +4,11 @@
 
 I [01_intro.md](./01_intro.md) opstillede jeg fem krav til løsningen. Her er en ærlig status pr. krav:
 
-- **"Sitet skal fungere både på desktop og mobil"** — *opfyldt*. Tailwind-baseret responsive design, og hele Storybook-komponent-biblioteket er udviklet med en mobil-first tankegang. En burger-menu kom på plads sent (PR `26-05-2026.5`) for at lukke det sidste hul på mobil.
-- **"Let for brugeren at få overblik over hvad der sker"** — *delvist opfyldt*. Begivenhedsvæggen og location-siden har filtre og kategori-chips, men jeg har ikke en kort/map-visning, som er den feature der mest direkte ville svare på "tæt på mig". Det er det første jeg ville bygge næste gang.
-- **"Tryg og gennemsigtig"** — *delvist opfyldt*. Auth-flowet er sikkert (httpOnly-cookies, CSRF, korrekt POST på logout), og adgangskontrol er håndhævet på datalaget. Men den **sociale** tryghed — at se hvem der står bag et event, hvem der har deltaget før, og hvordan moderation foregår — er stadig tynd. Det er primært et produktarbejde, ikke et teknisk arbejde, men det er værd at være ærlig om.
-- **"Skal kunne fungere i flere lande på sigt"** — *forberedt, ikke implementeret*. Datamodellen har `Regions` som en selvstændig collection knyttet til locations, så geografi er ikke hardcoded til Danmark. Men der er ingen sprog-håndtering eller multi-locale endnu, og Payload understøtter det out-of-the-box via deres localization-funktion, så det vil være ligetil at tilføje når behovet opstår.
-- **"Nemt for kommende udviklere og administratorer at navigere"** — *opfyldt*. Hele projektet er TypeScript-typet end-to-end via Payloads auto-genererede typer, der er en CLAUDE.md-skill der dokumenterer Payload-konventioner, og denne opgavetekst i sig selv fungerer som onboarding for en ny udvikler der træder ind på projektet.
+- **"Sitet skal fungere både på desktop og mobil"** — _opfyldt_. Tailwind-baseret responsive design, og hele Storybook-komponent-biblioteket er udviklet med en mobil-first tankegang. En burger-menu kom på plads sent (PR `26-05-2026.5`) for at lukke det sidste hul på mobil.
+- **"Let for brugeren at få overblik over hvad der sker"** — _delvist opfyldt_. Begivenhedsvæggen og location-siden har filtre og kategori-chips, men jeg har ikke en kort/map-visning, som er den feature der mest direkte ville svare på "tæt på mig". Det er det første jeg ville bygge næste gang.
+- **"Tryg og gennemsigtig"** — _delvist opfyldt_. Auth-flowet er sikkert (httpOnly-cookies, CSRF, korrekt POST på logout), og adgangskontrol er håndhævet på datalaget. Men den **sociale** tryghed — at se hvem der står bag et event, hvem der har deltaget før, og hvordan moderation foregår — er stadig tynd. Det er primært et produktarbejde, ikke et teknisk arbejde, men det er værd at være ærlig om.
+- **"Skal kunne fungere i flere lande på sigt"** — _forberedt, ikke implementeret_. Datamodellen har `Regions` som en selvstændig collection knyttet til locations, så geografi er ikke hardcoded til Danmark. Men der er ingen sprog-håndtering eller multi-locale endnu, og Payload understøtter det out-of-the-box via deres localization-funktion, så det vil være ligetil at tilføje når behovet opstår.
+- **"Nemt for kommende udviklere og administratorer at navigere"** — _opfyldt_. Hele projektet er TypeScript-typet end-to-end via Payloads auto-genererede typer, der er en CLAUDE.md-skill der dokumenterer Payload-konventioner, og denne opgavetekst i sig selv fungerer som onboarding for en ny udvikler der træder ind på projektet.
 
 ## Hvad jeg lærte teknisk
 
@@ -22,7 +22,7 @@ I [01_intro.md](./01_intro.md) opstillede jeg fem krav til løsningen. Her er en
 
 **Mange små PR'er slår få store**. Min historik viser flere dage med 5–7 PR'er — det blev en disciplin der gjorde det nemmere at fange fejl i preview-deployments, fordi diff'en var overskuelig nok til at jeg gad åbne preview-URL'en for hver. Den dag jeg vidste at en `<Link>`-prefetch logger brugere ud, var en lille fokuseret PR (PR #14) — havde det været en stor blandet PR, ville den slags subtile fejl have druknet i støj.
 
-**At skrive dokumentationen undervejs er en form for tænkning**. Jeg påbegyndte denne opgavetekst tidligt i forløbet og udvidede den løbende, frem for at vente til slutningen. Det betød at jeg blev tvunget til at sætte ord på *hvorfor* jeg havde valgt noget, mens valget stadig var friskt — og det fangede mig flere gange i at have valgt noget af forkerte grunde, hvor jeg så kunne nå at lave det om.
+**At skrive dokumentationen undervejs er en form for tænkning**. Jeg påbegyndte denne opgavetekst tidligt i forløbet og udvidede den løbende, frem for at vente til slutningen. Det betød at jeg blev tvunget til at sætte ord på _hvorfor_ jeg havde valgt noget, mens valget stadig var friskt — og det fangede mig flere gange i at have valgt noget af forkerte grunde, hvor jeg så kunne nå at lave det om.
 
 ## Hvad jeg ikke nåede
 

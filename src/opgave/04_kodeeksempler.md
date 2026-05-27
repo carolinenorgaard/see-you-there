@@ -22,7 +22,12 @@ export const likeEndpoints = buildToggleEndpoints({
 
 ```ts
 // src/endpoints/toggleRelationship.ts (forkortet)
-export const buildToggleEndpoints = ({ basePath, collection, field, responseKey }: ToggleConfig): Endpoint[] => [
+export const buildToggleEndpoints = ({
+  basePath,
+  collection,
+  field,
+  responseKey,
+}: ToggleConfig): Endpoint[] => [
   {
     path: basePath,
     method: 'post',
@@ -34,7 +39,8 @@ export const buildToggleEndpoints = ({ basePath, collection, field, responseKey 
       const userId = req.user.id
       if (!current.includes(userId)) {
         await req.payload.update({
-          collection, id,
+          collection,
+          id,
           data: { [field]: [...current, userId] } as never,
           overrideAccess: true,
         })
@@ -46,7 +52,7 @@ export const buildToggleEndpoints = ({ basePath, collection, field, responseKey 
 ]
 ```
 
-To detaljer er værd at bemærke: `overrideAccess: true` bruges fordi vi allerede har valideret `req.user` selv — vi har bevidst lukket op for at almindelige brugere kan opdatere et event, men *kun* via den her smalle vej. Og `depth: 0` gør at relationerne returneres som rene ID'er i stedet for fuldt joinede dokumenter, hvilket er hurtigere og holder `extractIds`-hjælperens arbejde enkelt (den håndterer både objekter med `.id` og bare IDs som fallback, men med `depth: 0` bliver det stort set en pass-through).
+To detaljer er værd at bemærke: `overrideAccess: true` bruges fordi vi allerede har valideret `req.user` selv — vi har bevidst lukket op for at almindelige brugere kan opdatere et event, men _kun_ via den her smalle vej. Og `depth: 0` gør at relationerne returneres som rene ID'er i stedet for fuldt joinede dokumenter, hvilket er hurtigere og holder `extractIds`-hjælperens arbejde enkelt (den håndterer både objekter med `.id` og bare IDs som fallback, men med `depth: 0` bliver det stort set en pass-through).
 
 På frontend er `LikeButton` en client component. Mens kaldet er undervejs disables knappen via en `loading`-flag; først når serveren har bekræftet ændringen, opdateres den lokale state og `router.refresh()` får den omkringliggende server component til at re-rendere.
 
@@ -77,15 +83,25 @@ En oplagt forbedring senere er at flytte til en faktisk optimistic update med Re
 
 ## 2. SeeYouThereCard — compound component i shadcn-stil
 
-Et event-card og et location-card har det samme visuelle skelet: baggrundsbillede, mørk gradient i bunden, badges i toppen, titel og meta i bunden. Men indholdet er forskelligt — et event har en dato- og tidslinje samt en like-knap, mens et location har en region-badge og en adresselinje. I stedet for at lave én komponent med 15 props eller to næsten ens komponenter, byggede jeg `SeeYouThereCard` som en *compound component* — en lille familie af sub-komponenter der composeres på callsiten. Det er det samme mønster shadcn/ui og Radix bruger.
+Et event-card og et location-card har det samme visuelle skelet: baggrundsbillede, mørk gradient i bunden, badges i toppen, titel og meta i bunden. Men indholdet er forskelligt — et event har en dato- og tidslinje samt en like-knap, mens et location har en region-badge og en adresselinje. I stedet for at lave én komponent med 15 props eller to næsten ens komponenter, byggede jeg `SeeYouThereCard` som en _compound component_ — en lille familie af sub-komponenter der composeres på callsiten. Det er det samme mønster shadcn/ui og Radix bruger.
 
 ```tsx
 // src/components/SeeYouThereCard/index.tsx (uddrag)
-const SeeYouThereCard: React.FC<CardRootProps> = ({ className, href, aspect = 'aspect-[528/325]', children, ...props }) => {
+const SeeYouThereCard: React.FC<CardRootProps> = ({
+  className,
+  href,
+  aspect = 'aspect-[528/325]',
+  children,
+  ...props
+}) => {
   const content = (
     <article
       data-slot="syt-card"
-      className={cn('group relative w-full overflow-hidden rounded-3xl bg-neutral-900 text-white shadow-sm', aspect, className)}
+      className={cn(
+        'group relative w-full overflow-hidden rounded-3xl bg-neutral-900 text-white shadow-sm',
+        aspect,
+        className,
+      )}
       {...props}
     >
       {children}
@@ -93,7 +109,10 @@ const SeeYouThereCard: React.FC<CardRootProps> = ({ className, href, aspect = 'a
   )
   if (href) {
     return (
-      <Link href={href} className="block rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
+      <Link
+        href={href}
+        className="block rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+      >
         {content}
       </Link>
     )
@@ -101,9 +120,17 @@ const SeeYouThereCard: React.FC<CardRootProps> = ({ className, href, aspect = 'a
   return content
 }
 
-export { SeeYouThereCard, SeeYouThereCardHeader, SeeYouThereCardFooter, SeeYouThereCardBody,
-         SeeYouThereCardTitle, SeeYouThereCardMeta, SeeYouThereCardBadges,
-         SeeYouThereCardImage, SeeYouThereCardOverlay }
+export {
+  SeeYouThereCard,
+  SeeYouThereCardHeader,
+  SeeYouThereCardFooter,
+  SeeYouThereCardBody,
+  SeeYouThereCardTitle,
+  SeeYouThereCardMeta,
+  SeeYouThereCardBadges,
+  SeeYouThereCardImage,
+  SeeYouThereCardOverlay,
+}
 ```
 
 På callsiten ser det sådan ud — strukturen er deklarativ og forskellige varianter (event vs. location) bygges af de samme byggesten. Her er event-kortet, hvor `action`-slot'en bruges til at injicere en `LikeButton`:
@@ -116,7 +143,9 @@ På callsiten ser det sådan ud — strukturen er deklarativ og forskellige vari
   <SeeYouThereCardHeader>
     <SeeYouThereCardBadges className="flex-wrap">
       {categories.map((c) => (
-        <Badge key={c.id} color={categoryColorClass(c.color)}>{c.title}</Badge>
+        <Badge key={c.id} color={categoryColorClass(c.color)}>
+          {c.title}
+        </Badge>
       ))}
     </SeeYouThereCardBadges>
     {action && <div className="shrink-0">{action}</div>}
@@ -132,7 +161,9 @@ På callsiten ser det sådan ud — strukturen er deklarativ og forskellige vari
       )}
       <SeeYouThereCardMeta>
         <CalendarDays className="h-3.5 w-3.5 shrink-0" aria-hidden />
-        <span className="truncate">{formatDate(event.startDate)} • {formatTime(event.startTime)}</span>
+        <span className="truncate">
+          {formatDate(event.startDate)} • {formatTime(event.startTime)}
+        </span>
       </SeeYouThereCardMeta>
     </SeeYouThereCardBody>
   </SeeYouThereCardFooter>
@@ -194,7 +225,7 @@ export const FeaturedEvent: StoryObj<typeof SeeYouThereCard> = {
 
 Storybook er ikke kun et lokalt værktøj — jeg hoster det gratis på **GitHub Pages** via en GitHub Actions-workflow i `.github/workflows/storybook.yml`. Workflowen kører `npm run build-storybook` hver gang der pushes til `main`, og publicerer det statiske output til [carolinenorgaard.github.io/see-you-there](https://carolinenorgaard.github.io/see-you-there/). Det betyder at designsystemet er offentligt tilgængeligt og kan deles via et link — fx til en designer der gerne vil tjekke en komponent uden at skulle clone'e og køre projektet lokalt. Det er også grunden til at Storybook fungerer som single source of truth for designsystemet, som beskrevet i [02_målgruppe_og_design.md](./02_målgruppe_og_design.md#designsystem-og-værktøjer).
 
-På sigt vil jeg gerne tilføje **Chromatic**, som er en hosting-tjeneste lavet af Storybooks team. Chromatic kører Storybook i skyen og tager visuelle snapshots ved hvert pull request — hvis et badge utilsigtet flytter sig nogle pixels efter en CSS-ændring, fanger den det som en *visual regression*. Det er noget hverken TypeScript-checks eller unit-tests fanger, fordi koden i sig selv er stadig "korrekt". Det er en lavt hængende sikkerhedsline, der kan trækkes ind når Storybook-biblioteket først er sat op.
+På sigt vil jeg gerne tilføje **Chromatic**, som er en hosting-tjeneste lavet af Storybooks team. Chromatic kører Storybook i skyen og tager visuelle snapshots ved hvert pull request — hvis et badge utilsigtet flytter sig nogle pixels efter en CSS-ændring, fanger den det som en _visual regression_. Det er noget hverken TypeScript-checks eller unit-tests fanger, fordi koden i sig selv er stadig "korrekt". Det er en lavt hængende sikkerhedsline, der kan trækkes ind når Storybook-biblioteket først er sat op.
 
 ## 4. Filterstate i URL'en med nuqs
 
@@ -282,7 +313,7 @@ hooks: {
 }
 ```
 
-Pointen er at reglen gælder *uanset* hvem der opretter eventet — admin-UI'et, en REST-klient, et fremtidigt import-script eller en mobil-app. Hvis valideringen sad i `NewEventForm.tsx`, ville en udvikler der senere bygger et nyt opretningsflow skulle huske at duplikere logikken. Når hookket sidder på collectionen, er det umuligt at omgå.
+Pointen er at reglen gælder _uanset_ hvem der opretter eventet — admin-UI'et, en REST-klient, et fremtidigt import-script eller en mobil-app. Hvis valideringen sad i `NewEventForm.tsx`, ville en udvikler der senere bygger et nyt opretningsflow skulle huske at duplikere logikken. Når hookket sidder på collectionen, er det umuligt at omgå.
 
 `ValidationError` med en eksplicit `path` på det specifikke felt får Payloads admin-UI til at fremhæve fejlen ved det rigtige inputfelt — markant bedre brugeroplevelse end en generisk fejlbesked øverst i formularen.
 
@@ -324,7 +355,10 @@ export const Users: CollectionConfig = {
       name: 'role',
       type: 'select',
       defaultValue: 'user',
-      options: [{ label: 'User', value: 'user' }, { label: 'Admin', value: 'admin' }],
+      options: [
+        { label: 'User', value: 'user' },
+        { label: 'Admin', value: 'admin' },
+      ],
       access: {
         create: ({ req: { user } }) => user?.role === 'admin',
         update: ({ req: { user } }) => user?.role === 'admin',
@@ -334,9 +368,9 @@ export const Users: CollectionConfig = {
 }
 ```
 
-Bemærk *field-level access* på `role`-feltet. En bruger har `update`-adgang til sit eget user-dokument via `adminOrSelf`, men `role`-feltet har sin egen, snævrere regel: kun admins. Det betyder at selv om en bruger forsøger at sende en `PATCH` med `{ role: 'admin' }`, vil Payload håndhæve regelen på feltet og afvise ændringen — privilege escalation er afværget på datalaget i stedet for at være afhængig af at frontend-koden husker at skjule feltet.
+Bemærk _field-level access_ på `role`-feltet. En bruger har `update`-adgang til sit eget user-dokument via `adminOrSelf`, men `role`-feltet har sin egen, snævrere regel: kun admins. Det betyder at selv om en bruger forsøger at sende en `PATCH` med `{ role: 'admin' }`, vil Payload håndhæve regelen på feltet og afvise ændringen — privilege escalation er afværget på datalaget i stedet for at være afhængig af at frontend-koden husker at skjule feltet.
 
-Resultatet er at frontend-koden er mere uskyldig: jeg kan kalde `payload.find({ collection: 'users', overrideAccess: false })` og stole på at Payload allerede har filtreret dokumenter væk som den aktuelle bruger ikke må se. Det er den slags ting et headless CMS er bygget til at give gratis, hvis man husker at slå `overrideAccess` *fra* når kaldet sker på vegne af en almindelig bruger.
+Resultatet er at frontend-koden er mere uskyldig: jeg kan kalde `payload.find({ collection: 'users', overrideAccess: false })` og stole på at Payload allerede har filtreret dokumenter væk som den aktuelle bruger ikke må se. Det er den slags ting et headless CMS er bygget til at give gratis, hvis man husker at slå `overrideAccess` _fra_ når kaldet sker på vegne af en almindelig bruger.
 
 ## 7. Logout som POST-only — en bug der lærte mig om prefetch
 
@@ -347,7 +381,7 @@ Et af de mere lærerige uheld på projektet handlede ikke om en algoritme eller 
 <Link href="/logout">Log ud</Link>
 ```
 
-I dev så alt fint ud. Først efter et deploy opdagede jeg, at brugerne blev logget ud helt uden at klikke på noget. Årsagen var Next.js' `<Link>`-prefetch: i produktion prefetcher Next.js automatisk de links der bliver synlige i viewporten, så navigationen føles instant. Den prefetch er et `GET`-kald — og fordi mit logout-endpoint svarede på `GET`, var det nok at *rendere* et link til `/logout` for at logge brugeren ud. I dev sker prefetch ikke som standard, hvilket er grunden til at jeg ikke havde set det lokalt.
+I dev så alt fint ud. Først efter et deploy opdagede jeg, at brugerne blev logget ud helt uden at klikke på noget. Årsagen var Next.js' `<Link>`-prefetch: i produktion prefetcher Next.js automatisk de links der bliver synlige i viewporten, så navigationen føles instant. Den prefetch er et `GET`-kald — og fordi mit logout-endpoint svarede på `GET`, var det nok at _rendere_ et link til `/logout` for at logge brugeren ud. I dev sker prefetch ikke som standard, hvilket er grunden til at jeg ikke havde set det lokalt.
 
 Fixet var at gøre logout strengt `POST`-only og lade frontend submitte en lille form i stedet for at navigere til et link:
 
