@@ -2,7 +2,7 @@
 
 ## Stack
 
-### Payload
+### PayloadCMS
 Payload udgør kernen af projektet. Det er et Node-baseret headless CMS (Content Management System), der fungerer særdeles godt sammen med Next.js. Jeg ser det som en fordel, at både frontend og backend er skrevet i JavaScript/TypeScript, så jeg ikke skal skifte mellem to forskellige sprog under udviklingen.
 
 Payload er open source med et stort community og fremstår som et etableret projekt, der passer godt til denne løsning. Payload blev desuden opkøbt af Figma i 2025, hvilket både viser stor interesse for produktet og sikrer økonomi til, at projektet kan videreudvikles. Den version af Payload, jeg bruger, er v3, som blev udgivet i november 2024 og fortsat vedligeholdes aktivt.
@@ -12,6 +12,11 @@ Payload er open source med et stort community og fremstår som et etableret proj
 - Hurtigt at lære og let at tilpasse til projektets egne datamodeller
 - Hosting er enklere, da der ikke skal driftes en separat PHP-server, som man fx ville skulle med WordPress
 - Understøtter flere databaser, men jeg valgte MongoDB, som Payload anbefaler
+
+**Ulemper**
+- Mindre community end fx WordPress — færre færdige plugins og guides at slå op
+- Stadig et ungt projekt, så dokumentation og API'er ændrer sig oftere
+- Tæt koblet til Next.js — svært at skifte frontend senere
 
 ### Next.js
 En stor grund til, at jeg valgte Payload, er, at det som standard kommer med Next.js — en løsning jeg kender i forvejen. Next.js er et komplet React-framework, der dækker både server- og client-side, og som gør det hurtigt at bygge en solid frontend. Jeg bruger Next.js 16 (udgivet oktober 2025) med fil-baseret routing via App Router, hvilket gør det nemt at oprette nye sider sammenlignet med en "klassisk" client-side React-opsætning.
@@ -23,12 +28,27 @@ En stor grund til, at jeg valgte Payload, er, at det som standard kommer med Nex
 - Indbygget optimering af billeder, fonte og bundling
 - Tæt integration med Vercel, som er den anbefalede hostingplatform
 
+**Ulemper**
+- Stærkt bundet til Vercel — bedst hvis man bliver i deres økosystem
+- Hurtigt tempo i nye versioner betyder løbende oprydning i koden
+- Fejlfinding kan være besværlig, fordi det ikke altid er tydeligt om en fejl sker på server eller i browser
+
 ### MongoDB / Atlas
 Payload anbefaler MongoDB, som er en dokument-baseret database. I modsætning til en relationel database (SQL), hvor data gemmes i tabeller med faste kolonner og relationer via fremmednøgler, gemmer MongoDB data som JSON-lignende dokumenter med et fleksibelt skema.
 
 Det fleksible skema passer godt til et CMS-drevet projekt, fordi datamodellen ofte ændrer sig undervejs — felter tilføjes, omdøbes eller fjernes uden, at man behøver at køre tunge migrations. Til gengæld giver man afkald på nogle af de garantier, SQL-databaser tilbyder, fx joins på tværs af tabeller og transaktioner på tværs af flere collections. Payload håndterer relationer mellem dokumenter i applikationslaget, så dette er sjældent et problem i praksis.
 
 MongoDB Atlas er en managed hosting-løsning til MongoDB, der tilbyder et gratis cluster, som passer til en prototype i denne størrelse.
+
+**Fordele**
+- Fleksibelt skema, så datamodellen kan ændres uden tunge migrations
+- Passer godt til JSON-lignende data, som Payload arbejder med i forvejen
+- Gratis cluster i Atlas er rigeligt til en prototype
+
+**Ulemper**
+- Færre garantier end en SQL-database, fx på tværs af tabeller
+- Komplekse forespørgsler på tværs af data kan blive klodsede
+- Skift til en anden database senere kan kræve omskrivning af datalaget
 
 ## Authentication
 Til brugeroprettelse og login bruger jeg Payloads indbyggede `users`-collection, som leverer hashing af passwords, sessions og rolle-baseret adgangskontrol ud af kassen. Det er en bevidst beslutning om at læne sig op ad et veletableret framework's defaults frem for at finde på noget selv på et sikkerhedsfølsomt område, hvor egne fejl kan have store konsekvenser.
@@ -51,6 +71,9 @@ Vercels serverless miljø har ikke et persistent filsystem, så uploads kan ikke
 **Fordel:** Det var meget hurtigt at sætte op. Adapteren konfigureres med få linjer i `payload.config.ts`, og fordi jeg allerede hoster på Vercel, ligger filerne tæt på Next.js-applikationen og leveres via samme CDN — uden ekstra konto eller IAM-opsætning.
 
 **Ulempe:** På Vercels hobby-tier får man kun 1 GB Blob storage gratis. Det er tilstrækkeligt til en POC, men hvis platformen vokser, og brugerne begynder at uploade billeder til deres begivenheder for alvor, vil det hurtigt blive en omkostning at tage stilling til. Det naturlige skifte vil i så fald være at flytte hele driften over på **Coolify** på egen server (nævnt ovenfor under hosting), så jeg samtidig kan hoste min egen object storage dér — frem for at sprede mig over flere managed services hver med deres egen regning.
+
+### Storybook-hosting
+Designsystemets Storybook-bibliotek hostes gratis på **GitHub Pages** via en GitHub Actions-workflow, der bygger og udgiver det statiske output hver gang der pushes til `main`. Det betyder at biblioteket er offentligt tilgængeligt på et link og kan deles uden at modtageren skal clone og køre projektet lokalt. Den tekniske opsætning er beskrevet i [04_kodeeksempler.md](./04_kodeeksempler.md#3-storybook-som-komponent-bibliotek-og-fremtidig-chromatic).
 
 ### Mail
 På nuværende tidspunkt sender jeg transaktionel mail (verifikation af konto, glemt password m.m.) via en **Gmail-konto**, jeg har oprettet specifikt til projektet. Det er ikke den optimale løsning — Gmail har sendekvoter og er ikke beregnet til systemudsendt mail, så pålideligheden vil falde, hvis volumen stiger — men det virker for nu på POC-stadiet.

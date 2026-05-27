@@ -7,6 +7,8 @@ Projektet er udviklet af mig, Caroline Norgaard Elmer, som eneste udvikler. Min 
 
 Den prioritering har naturligvis en pris. Med kun én person på opgaven har jeg ikke haft tid til at give alle dele af projektet samme dybde — særligt **brugertest** og en mere fyldestgørende **Figma-designfase** er områder, der er nedprioriteret til fordel for at få den tekniske kerne på plads. Det er bevidste fravalg, ikke forglemmelser, og noget jeg vender tilbage til løbende i de følgende afsnit.
 
+Projektet er **open source** og ligger frit tilgængeligt på GitHub. Ligesom platformen i sig selv handler om at samle mennesker omkring fælles oplevelser, er håbet at også koden kan blive et lille fællesskab — hvor andre udviklere kan kigge med, foreslå forbedringer eller bidrage med nye funktioner. Den åbenhed er også en del af grunden til, at jeg har prioriteret arkitektur og dokumentation så højt: jo lettere det er for en udefrakommende at forstå projektet, desto større er chancen for at de rent faktisk gider bidrage.
+
 ## Krav til løsning
 - Sitet skal fungere både på desktop og mobil
 - Det skal være let for brugeren at få overblik over, hvad der sker på deres favoritsteder
