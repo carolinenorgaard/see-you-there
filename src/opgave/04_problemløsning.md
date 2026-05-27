@@ -20,9 +20,9 @@ Databasen kører på **MongoDB Atlas**, som er en managed MongoDB-hosting med et
 ### Storage
 Vercels serverless miljø har ikke et persistent filsystem, så uploads kan ikke gemmes lokalt. I stedet bruger jeg **Vercel Blob** sammen med Payloads `@payloadcms/storage-vercel-blob`-adapter. Det giver en fuldt managed object storage, der er tæt integreret med resten af hosting-opsætningen og leveres via Vercels CDN.
 
-**Fordel:** Det var meget hurtigt at sætte op. Adapteren konfigureres med få linjer i `payload.config.ts`, og fordi jeg allerede hoster på Vercel, var der ingen ekstra konto, IAM-opsætning eller bucket-policy at forholde sig til, som man ville have med fx AWS S3.
+**Fordel:** Det var meget hurtigt at sætte op. Adapteren konfigureres med få linjer i `payload.config.ts`, og fordi jeg allerede hoster på Vercel, ligger filerne tæt på Next.js-applikationen og leveres via samme CDN — uden ekstra konto eller IAM-opsætning.
 
-**Ulempe:** På Vercels hobby-tier får man kun 1 GB Blob storage gratis. Det er tilstrækkeligt til en POC, men hvis platformen vokser, og brugerne begynder at uploade billeder til deres begivenheder for alvor, vil det hurtigt blive en omkostning at tage stilling til — enten ved at opgradere planen eller ved at skifte til en billigere S3-kompatibel udbyder som Cloudflare R2.
+**Ulempe:** På Vercels hobby-tier får man kun 1 GB Blob storage gratis. Det er tilstrækkeligt til en POC, men hvis platformen vokser, og brugerne begynder at uploade billeder til deres begivenheder for alvor, vil det hurtigt blive en omkostning at tage stilling til. Det naturlige skifte vil i så fald være at flytte hele driften over på **Coolify** på egen server (nævnt ovenfor under hosting), så jeg samtidig kan hoste min egen object storage dér — frem for at sprede mig over flere managed services hver med deres egen regning.
 
 ### Mail
 På nuværende tidspunkt sender jeg transaktionel mail (verifikation af konto, glemt password m.m.) via en **Gmail-konto**, jeg har oprettet specifikt til projektet. Det er ikke den optimale løsning — Gmail har sendekvoter og er ikke beregnet til systemudsendt mail, så pålideligheden vil falde, hvis volumen stiger — men det virker for nu på POC-stadiet.
