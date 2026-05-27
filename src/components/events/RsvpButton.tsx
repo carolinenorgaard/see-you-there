@@ -7,7 +7,7 @@ import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { authFetch } from '@/utilities/auth-fetch'
-import { togglePillClasses } from '@/utilities/togglePillClasses'
+import { pillShapeClasses, togglePillClasses } from '@/utilities/togglePillClasses'
 import { cn } from '@/utilities/ui'
 
 export function RsvpButton({
@@ -61,10 +61,7 @@ export function RsvpButton({
         aria-label={label}
         aria-pressed={attending}
         title={label}
-        className={cn(
-          'inline-flex h-9 w-9 items-center justify-center rounded-full border shadow-sm transition disabled:opacity-50',
-          togglePillClasses(attending),
-        )}
+        className={cn(pillShapeClasses(true), 'disabled:opacity-50', togglePillClasses(attending))}
       >
         {attending ? <X className="h-4 w-4" /> : <Check className="h-4 w-4" />}
       </button>

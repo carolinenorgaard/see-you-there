@@ -5,9 +5,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-import { Button } from '@/components/ui/button'
 import { authFetch } from '@/utilities/auth-fetch'
-import { togglePillClasses } from '@/utilities/togglePillClasses'
+import { pillShapeClasses, togglePillClasses } from '@/utilities/togglePillClasses'
 import { cn } from '@/utilities/ui'
 
 export function LikeButton({
@@ -30,14 +29,18 @@ export function LikeButton({
   const [count, setCount] = useState(initialCount)
   const [loading, setLoading] = useState(false)
 
+  const shape = pillShapeClasses(iconOnly)
+
   if (!loggedIn) {
     return (
-      <Button asChild variant="outline" size="sm">
-        <Link href="/login" aria-label="Log ind for at like denne begivenhed">
-          <Heart className="h-4 w-4" />
-          {showCount && <span>{count}</span>}
-        </Link>
-      </Button>
+      <Link
+        href="/login"
+        aria-label="Log ind for at like denne begivenhed"
+        className={cn(shape, togglePillClasses(false))}
+      >
+        <Heart className="h-4 w-4" />
+        {!iconOnly && showCount && <span>{count}</span>}
+      </Link>
     )
   }
 
@@ -68,11 +71,7 @@ export function LikeButton({
       aria-label={label}
       aria-pressed={liked}
       title={label}
-      className={cn(
-        'inline-flex items-center justify-center gap-2 border shadow-sm transition disabled:opacity-50',
-        iconOnly ? 'h-9 w-9 rounded-full' : 'rounded-md px-3 py-2',
-        togglePillClasses(liked, 'pink'),
-      )}
+      className={cn(shape, 'disabled:opacity-50', togglePillClasses(liked, 'pink'))}
     >
       <Heart className={cn('h-4 w-4', liked && 'fill-current')} />
       {!iconOnly && showCount && <span>{count}</span>}

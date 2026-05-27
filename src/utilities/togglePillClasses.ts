@@ -19,3 +19,8 @@ const inactive = 'border-border bg-background text-foreground hover:bg-accent'
 
 export const togglePillClasses = (active: boolean, tone: TogglePillTone = 'primary') =>
   active ? activeByTone[tone] : inactive
+
+export const pillShapeClasses = (iconOnly: boolean) =>
+  `inline-flex items-center justify-center gap-2 border shadow-sm transition ${
+    iconOnly ? 'h-9 w-9 rounded-full' : 'rounded-md px-3 py-2'
+  }`
