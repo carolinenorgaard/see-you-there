@@ -57,7 +57,7 @@ Tommelfingerreglen er: hvis PR'en gør én ting og kan beskrives i én sætning,
 **Hvad jeg ville ændre i et team-setup**:
 - **Korte, beskrivende branch-navne pr. feature** (`feature/profile-redesign`, `fix/event-validation`) i stedet for at hænge alt på `develop`. Med flere udviklere er en enkelt langlivet branch en flaskehals.
 - **Required reviews** og branch protection på `main`, så ingen kan merge uden mindst én anden persons godkendelse.
-- **CI-pipeline** der kører lint, typecheck og tests på hver PR. Lige nu er der ingen automatisk gate — jeg har kørt `pnpm lint` og `pnpm test` lokalt, men det er en disciplin der bør være automatiseret.
+- **CI-pipeline** der kører lint, typecheck og tests på hver PR. Lige nu er der ingen automatisk gate — jeg har kørt `npm run lint` og `npm test` lokalt, men det er en disciplin der bør være automatiseret.
 - **Beskrivende PR-titler** i stedet for dato-format, så det er muligt at scanne PR-listen og se hvad hver ændring gjorde, uden at skulle åbne den enkelte PR.
 
 Dato-formatet er en bevidst forenkling der passer til et solo-projekt i POC-fasen. Hvis platformen vokser, eller hvis andre udviklere kommer ind på projektet, er det første jeg ville lægge om.

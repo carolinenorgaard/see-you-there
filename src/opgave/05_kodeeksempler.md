@@ -46,7 +46,7 @@ export const buildToggleEndpoints = ({ basePath, collection, field, responseKey 
 ]
 ```
 
-To detaljer er værd at bemærke: `overrideAccess: true` bruges fordi vi allerede har valideret `req.user` selv — vi har bevidst lukket op for at almindelige brugere kan opdatere et event, men *kun* via den her smalle vej. Og `depth: 0` gør at relationerne returneres som rene ID'er i stedet for fuldt joinede dokumenter, hvilket både er hurtigere og gør `extractIds`-hjælperen unødvendigt.
+To detaljer er værd at bemærke: `overrideAccess: true` bruges fordi vi allerede har valideret `req.user` selv — vi har bevidst lukket op for at almindelige brugere kan opdatere et event, men *kun* via den her smalle vej. Og `depth: 0` gør at relationerne returneres som rene ID'er i stedet for fuldt joinede dokumenter, hvilket er hurtigere og holder `extractIds`-hjælperens arbejde enkelt (den håndterer både objekter med `.id` og bare IDs som fallback, men med `depth: 0` bliver det stort set en pass-through).
 
 På frontend er `LikeButton` en client component. Mens kaldet er undervejs disables knappen via en `loading`-flag; først når serveren har bekræftet ændringen, opdateres den lokale state og `router.refresh()` får den omkringliggende server component til at re-rendere.
 
@@ -165,7 +165,7 @@ Hver sub-komponent får et `data-slot`-attribut (fx `data-slot="syt-card-title"`
 
 ## 3. Storybook som komponent-bibliotek (og fremtidig Chromatic)
 
-Jeg har installeret Storybook 9 (`@storybook/nextjs-vite`), så komponenter kan udvikles og dokumenteres isoleret — uden at jeg skal navigere til den rigtige side med de rigtige filtre for at se en variant. Hver komponent har en `*.stories.tsx`-fil ved siden af sig, og Storybook samler dem alle i et browsbart bibliotek på `localhost:6006`.
+Jeg har installeret Storybook 10 (`@storybook/nextjs-vite`), så komponenter kan udvikles og dokumenteres isoleret — uden at jeg skal navigere til den rigtige side med de rigtige filtre for at se en variant. Hver komponent har en `*.stories.tsx`-fil ved siden af sig, og Storybook samler dem alle i et browsbart bibliotek på `localhost:6006`.
 
 ```tsx
 // src/components/SeeYouThereCard/SeeYouThereCard.stories.tsx (uddrag)
@@ -191,6 +191,8 @@ export const FeaturedEvent: StoryObj<typeof SeeYouThereCard> = {
 ```
 
 `tags: ['autodocs']` får Storybook til automatisk at generere en dokumentationsside med proptyper og eksempler — den er ren bivirkning af komponentens TypeScript-typer, så dokumentationen kan ikke komme ud af sync med koden. Stories fungerer dermed både som en levende styleguide og som en kontrakt: hvis en story knækker visuelt, har komponenten ændret adfærd.
+
+Storybook er ikke kun et lokalt værktøj — jeg hoster det gratis på **GitHub Pages** via en GitHub Actions-workflow i `.github/workflows/storybook.yml`. Workflowen kører `npm run build-storybook` hver gang der pushes til `main`, og publicerer det statiske output til [carolinenorgaard.github.io/see-you-there](https://carolinenorgaard.github.io/see-you-there/). Det betyder at designsystemet er offentligt tilgængeligt og kan deles via et link — fx til en designer der gerne vil tjekke en komponent uden at skulle clone'e og køre projektet lokalt. Det er også grunden til at Storybook fungerer som single source of truth for designsystemet, som beskrevet i [02_målgruppe_og_design.md](./02_målgruppe_og_design.md#designsystem-og-værktøjer).
 
 På sigt vil jeg gerne tilføje **Chromatic**, som er en hosting-tjeneste lavet af Storybooks team. Chromatic kører Storybook i skyen og tager visuelle snapshots ved hvert pull request — hvis et badge utilsigtet flytter sig nogle pixels efter en CSS-ændring, fanger den det som en *visual regression*. Det er noget hverken TypeScript-checks eller unit-tests fanger, fordi koden i sig selv er stadig "korrekt". Det er en lavt hængende sikkerhedsline, der kan trækkes ind når Storybook-biblioteket først er sat op.
 
@@ -263,7 +265,10 @@ hooks: {
       if (end < start) {
         errors.push({ path: 'endDate', message: 'End date must be on or after start date.' })
       } else {
-        const sameDay = start.toDateString() === end.toDateString()
+        const sameDay =
+          start.getUTCFullYear() === end.getUTCFullYear() &&
+          start.getUTCMonth() === end.getUTCMonth() &&
+          start.getUTCDate() === end.getUTCDate()
         if (sameDay && data.startTime && data.endTime &&
             new Date(data.endTime) < new Date(data.startTime)) {
           errors.push({ path: 'endTime', message: 'End time must be on or after start time …' })
@@ -329,6 +334,6 @@ export const Users: CollectionConfig = {
 }
 ```
 
-Bemærk *field-level access* på `role`-feltet. En bruger har `update`-adgang til sit eget user-dokument via `adminOrSelf`, men `role`-feltet har sin egen, snævrere regel: kun admins. Det betyder at selv om en bruger kunne sende en `PATCH` med `{ role: 'admin' }`, ville Payload stille og roligt strippe det felt fra payloaden inden update'et rammer databasen. Privilege escalation er afværget på datalaget i stedet for at være afhængig af at frontend-koden husker at skjule feltet.
+Bemærk *field-level access* på `role`-feltet. En bruger har `update`-adgang til sit eget user-dokument via `adminOrSelf`, men `role`-feltet har sin egen, snævrere regel: kun admins. Det betyder at selv om en bruger forsøger at sende en `PATCH` med `{ role: 'admin' }`, vil Payload håndhæve regelen på feltet og afvise ændringen — privilege escalation er afværget på datalaget i stedet for at være afhængig af at frontend-koden husker at skjule feltet.
 
 Resultatet er at frontend-koden er mere uskyldig: jeg kan kalde `payload.find({ collection: 'users', overrideAccess: false })` og stole på at Payload allerede har filtreret dokumenter væk som den aktuelle bruger ikke må se. Det er den slags ting et headless CMS er bygget til at give gratis, hvis man husker at slå `overrideAccess` *fra* når kaldet sker på vegne af en almindelig bruger.
