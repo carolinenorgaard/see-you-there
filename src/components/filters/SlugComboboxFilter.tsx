@@ -63,7 +63,7 @@ export const SlugComboboxFilter = <T extends Item>({
             'focus-visible:ring-ring/40 focus-visible:ring-4 focus-visible:outline-1',
           )}
         >
-          <Icon className="size-4 shrink-0 text-neutral-500" aria-hidden />
+          <Icon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
           <span
             className={cn('flex-1 truncate text-left', !activeItem && 'text-muted-foreground')}
           >

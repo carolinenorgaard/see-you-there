@@ -20,7 +20,7 @@ export const SourceToggle = ({ active }: { active: EventSource }) => {
     <div
       role="tablist"
       aria-label="Filtrér begivenheder efter kilde"
-      className="inline-flex rounded-full border border-neutral-200 bg-neutral-100 p-1"
+      className="inline-flex rounded-full border border-border bg-muted p-1"
     >
       {options.map(({ value, label }) => {
         const isActive = value === active
@@ -36,8 +36,8 @@ export const SourceToggle = ({ active }: { active: EventSource }) => {
             className={cn(
               'rounded-full px-4 py-1.5 text-sm font-medium transition',
               isActive
-                ? 'bg-white text-neutral-900 shadow-sm'
-                : 'text-neutral-600 hover:text-neutral-900',
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground',
             )}
           >
             {label}

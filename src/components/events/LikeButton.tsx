@@ -1,10 +1,14 @@
 'use client'
 
 import { Heart } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
+import { Button } from '@/components/ui/button'
 import { authFetch } from '@/utilities/auth-fetch'
+import { togglePillClasses } from '@/utilities/togglePillClasses'
+import { cn } from '@/utilities/ui'
 
 export function LikeButton({
   eventId,
@@ -28,14 +32,12 @@ export function LikeButton({
 
   if (!loggedIn) {
     return (
-      <a
-        href="/login"
-        aria-label="Log ind for at like denne begivenhed"
-        className="inline-flex items-center gap-2 rounded px-3 py-2 border border-neutral-200 bg-white text-neutral-900"
-      >
-        <Heart className="h-4 w-4" />
-        {showCount && <span>{count}</span>}
-      </a>
+      <Button asChild variant="outline" size="sm">
+        <Link href="/login" aria-label="Log ind for at like denne begivenhed">
+          <Heart className="h-4 w-4" />
+          {showCount && <span>{count}</span>}
+        </Link>
+      </Button>
     )
   }
 
@@ -57,35 +59,23 @@ export function LikeButton({
     }
   }
 
-  if (iconOnly) {
-    const label = liked ? 'Fjern like' : 'Like denne begivenhed'
-    return (
-      <button
-        onClick={toggle}
-        disabled={loading}
-        aria-label={label}
-        aria-pressed={liked}
-        title={label}
-        className={`inline-flex h-9 w-9 items-center justify-center rounded-full border shadow-sm disabled:opacity-50 ${
-          liked
-            ? 'bg-pink-500 border-pink-500 text-white hover:bg-pink-600'
-            : 'bg-white border-neutral-200 text-neutral-900 hover:bg-neutral-100'
-        }`}
-      >
-        <Heart className={`h-4 w-4 ${liked ? 'fill-current' : ''}`} />
-      </button>
-    )
-  }
+  const label = liked ? 'Fjern like' : 'Like denne begivenhed'
 
   return (
     <button
       onClick={toggle}
       disabled={loading}
-      className={`inline-flex items-center gap-2 rounded px-3 py-2 border disabled:opacity-50 ${liked ? 'bg-pink-500 border-pink-500 text-white' : 'bg-white text-black'}`}
+      aria-label={label}
       aria-pressed={liked}
+      title={label}
+      className={cn(
+        'inline-flex items-center justify-center gap-2 border shadow-sm transition disabled:opacity-50',
+        iconOnly ? 'h-9 w-9 rounded-full' : 'rounded-md px-3 py-2',
+        togglePillClasses(liked, 'category-pink'),
+      )}
     >
-      <Heart className={`h-4 w-4 ${liked ? 'fill-current' : ''}`} />
-      {showCount && <span>{count}</span>}
+      <Heart className={cn('h-4 w-4', liked && 'fill-current')} />
+      {!iconOnly && showCount && <span>{count}</span>}
     </button>
   )
 }

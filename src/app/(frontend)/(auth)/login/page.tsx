@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useState } from 'react'
 
+import { Button } from '@/components/ui/button'
+import { FormError } from '@/components/ui/form-error'
 import { authFetch } from '@/utilities/auth-fetch'
 
 function LoginForm() {
@@ -38,7 +40,7 @@ function LoginForm() {
   return (
     <>
       {verified && (
-        <p className="mb-4 text-green-700">Email bekræftet — du kan logge ind nu.</p>
+        <p className="mb-4 text-success">Email bekræftet — du kan logge ind nu.</p>
       )}
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <label className="flex flex-col gap-1">
@@ -61,14 +63,10 @@ function LoginForm() {
             className="border rounded px-3 py-2"
           />
         </label>
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-black text-white rounded px-4 py-2 disabled:opacity-50"
-        >
+        <FormError message={error} />
+        <Button type="submit" disabled={loading} className="self-start">
           {loading ? 'Logger ind…' : 'Log ind'}
-        </button>
+        </Button>
       </form>
       <div className="mt-6 text-sm flex flex-col gap-1">
         <Link href="/signup" className="underline">Opret en konto</Link>
@@ -80,7 +78,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="container pt-24 pb-24">
+    <div className="container pt-12 pb-16 md:pt-16">
       <div className="mx-auto max-w-md rounded-lg border border-border bg-card text-card-foreground p-8 shadow-sm">
         <h1 className="text-3xl font-semibold mb-6">Log ind</h1>
         <Suspense fallback={null}>

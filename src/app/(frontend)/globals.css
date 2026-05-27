@@ -32,6 +32,12 @@
 @source inline("bg-card");
 @source inline("border-error");
 @source inline("bg-error/30");
+@source inline("bg-category-teal");
+@source inline("bg-category-pink");
+@source inline("bg-category-purple");
+@source inline("bg-category-orange");
+@source inline("bg-category-blue");
+@source inline("bg-category-amber");
 @source inline("border-success");
 @source inline("bg-success/30");
 @source inline("border-warning");
@@ -124,6 +130,19 @@
   --success: oklch(78% 0.08 200deg);
   --warning: oklch(89% 0.1 75deg);
   --error: oklch(75% 0.15 25deg);
+
+  --card-invert: oklch(20.5% 0 0deg);
+  --card-invert-foreground: oklch(98.5% 0 0deg);
+  --card-invert-muted: oklch(70% 0 0deg);
+  --card-invert-border: oklch(30% 0 0deg);
+
+  --category-teal: oklch(60% 0.118 184.704deg);
+  --category-pink: oklch(60% 0.22 0deg);
+  --category-purple: oklch(70% 0.16 305deg);
+  --category-orange: oklch(74% 0.17 60deg);
+  --category-blue: oklch(50% 0.18 250deg);
+  --category-amber: oklch(78% 0.15 75deg);
+  --category-foreground: oklch(98.5% 0 0deg);
 }
 
 [data-theme='dark'] {
@@ -162,6 +181,19 @@
   --success: oklch(28% 0.1 200deg);
   --warning: oklch(35% 0.08 70deg);
   --error: oklch(45% 0.1 25deg);
+
+  --card-invert: oklch(17% 0 0deg);
+  --card-invert-foreground: oklch(98.5% 0 0deg);
+  --card-invert-muted: oklch(70.8% 0 0deg);
+  --card-invert-border: oklch(30% 0 0deg);
+
+  --category-teal: oklch(65% 0.11 184.704deg);
+  --category-pink: oklch(65% 0.2 0deg);
+  --category-purple: oklch(72% 0.15 305deg);
+  --category-orange: oklch(77% 0.16 60deg);
+  --category-blue: oklch(60% 0.17 250deg);
+  --category-amber: oklch(80% 0.14 75deg);
+  --category-foreground: oklch(98.5% 0 0deg);
 }
 
 [data-theme='dark'] .prose {
@@ -213,6 +245,17 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-error: var(--error);
+  --color-card-invert: var(--card-invert);
+  --color-card-invert-foreground: var(--card-invert-foreground);
+  --color-card-invert-muted: var(--card-invert-muted);
+  --color-card-invert-border: var(--card-invert-border);
+  --color-category-teal: var(--category-teal);
+  --color-category-pink: var(--category-pink);
+  --color-category-purple: var(--category-purple);
+  --color-category-orange: var(--category-orange);
+  --color-category-blue: var(--category-blue);
+  --color-category-amber: var(--category-amber);
+  --color-category-foreground: var(--category-foreground);
 }
 
 @layer base {
