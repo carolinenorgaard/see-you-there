@@ -17,32 +17,22 @@ Jeg har bevidst ikke lavet formelle personas eller brugertests på POC-stadiet. 
 
 ## Use cases der drev featurevalg
 
-Designet og datamodellen er trukket ud af et par konkrete use cases. Hver use case har en direkte teknisk konsekvens, hvilket har holdt scope stramt:
+For at holde scope stramt har jeg taget udgangspunkt i tre konkrete brugersituationer. Hver situation har ført til en bestemt feature i sitet:
 
-- **"Find events tæt på mig i denne uge"** drev kravet om geografisk filtrering (region, lokation) og dato-filtrering. Det er igen grunden til at filterstate ligger i URL'en og ikke i React-state — se kodeeksempel om nuqs i [05_kodeeksempler.md](./05_kodeeksempler.md#4-filterstate-i-urlen-med-nuqs).
-- **"Send et event til en ven"** drev kravet om at hver filtreret visning skal have sin egen URL. Et delt link skal lande modtageren på præcis det samme indhold som afsenderen så.
-- **"Se hvad jeg har liket eller tilmeldt mig"** drev `/profile`-siden og de to felter `likes` og `attendees` på event-collectionen. Det er også grunden til at like/RSVP er to selvstændige relationer i stedet for én samlet "engagement"-relation — de svarer til forskellige intentioner og skal kunne vises hver for sig.
+- **"Jeg vil finde events tæt på mig på en bestemt dag"** → filtre for region, lokation samt en dato-rail med de næste 14 dage på `/events`-siden.
+- **"Jeg vil dele min søgning med en ven"** → også filtre og søgekriterier ligger i URL'en, ikke kun selve event-siden. Det betyder at en bruger kan kopiere `/events?categories=jazz&region=koebenhavn` og sende det videre, så modtageren lander på præcis den samme filtrerede visning. Det er den primære grund til at filterstate håndteres via URL'en frem for intern React-state (se [05_kodeeksempler.md](./05_kodeeksempler.md#4-filterstate-i-urlen-med-nuqs)). At et enkelt event også kan sendes direkte via sin `/events/[slug]`-URL er derimod bare standard Next.js-routing og ikke et særskilt designvalg.
+- **"Jeg vil kunne se hvad jeg har liket eller tilmeldt mig"** → `/profile`-siden viser brugerens liked og attended events i to sektioner under hinanden.
 
 ## Designsystem og værktøjer
 
 Designet bygger på en lille håndfuld principper og værktøjer, der trækker i samme retning:
 
-- **Figma som mood board og udgangspunkt** — ikke som single source of truth. Jeg brugte Figma til at samle stemninger, prøve kort-kompositioner af og fastsætte enkelte konkrete værdier (kortets `aspect-[528/325]`-ratio i `SeeYouThereCard` er trukket direkte fra et Figma-mock og lagt ind som en Tailwind-utility). Men Figma-filen er bevidst ikke holdt vedlige som projektets autoritative designkilde, fordi den uundgåeligt ville komme ud af sync med koden — og det er koden brugerne reelt møder.
+- **Figma som mood board og udgangspunkt** — ikke som single source of truth. Jeg brugte Figma til at samle stemninger og prøve kort-kompositioner af. Men Figma-filen er bevidst ikke holdt vedlige som projektets autoritative designkilde, fordi den uundgåeligt ville komme ud af sync med koden — og det er koden brugerne reelt møder.
 - **Storybook som single source of truth for designsystemet**. Det er her komponenterne lever i deres "rene" form, dokumenteret med varianter, props og brugseksempler, og det er det biblioteket fortæller sandheden om hvordan en `SeeYouThereCard`, en `Badge` eller en `LikeButton` ser ud og opfører sig. Hvis Figma og Storybook nogensinde er uenige, er det Storybook der vinder — fordi det er der, designet faktisk bliver brugt i produktionskoden.
-- **Tailwind v4** med design tokens defineret som CSS-variabler. Det betyder at hvis jeg ændrer en farve i ét sted, opdateres den overalt — uden at jeg skal lave find-and-replace i komponenterne.
-- **shadcn-stil compound components** som mønster: i stedet for store komponenter med mange props, eksponerer jeg små byggesten (Card, CardHeader, CardFooter, CardBody osv.) som callsiten composer som den vil. Det matcher det visuelle designsprog, der i sig selv er compositional — samme kort-skelet bruges til både events og locations, men indholdet inde i hver slot er forskelligt.
+- **Tailwind v4 med CSS-variabler i tre lag** som tokens-pipeline. Lag 1 er rå farveværdier i `:root` (defineret i `oklch`, som er den moderne, perceptuelt ensartede farverum, der gør det lettere at holde kontrast og lysstyrke konsistente). Lag 2 er et `[data-theme='dark']`-blok der overskriver de samme variabler med deres mørke-mode-værdier — temaskift kræver kun at ændre én attribut på `<html>`. Lag 3 er en `@theme inline`-blok der mapper `--background` → `--color-background` osv., så Tailwind-klasser som `bg-background` og `text-foreground` peger på de samme variabler. Det betyder at jeg har én kanonisk farve-definition i hele projektet, og at et farveskift kun skal laves ét sted.
+- **shadcn-stil compound components** som mønster: i stedet for store komponenter med mange props, eksponerer jeg små byggesten (Card, CardHeader, CardFooter, CardBody osv.) som callsiten composer som den vil. shadcn-primitives forbruger præcis de samme CSS-variabler beskrevet ovenfor (`bg-background`, `border-border`, `text-muted-foreground` osv.), så når jeg drop'er en `Badge` eller en `Card` ind i en story eller en side, falder de automatisk på plads i forhold til resten af paletten. Det matcher også det visuelle designsprog, der i sig selv er compositional — samme kort-skelet bruges til både events og locations, men indholdet inde i hver slot er forskelligt.
 
 Valget om at gøre Storybook (og ikke Figma) til den autoritative kilde er en bevidst beslutning om at lade kode og dokumentation ligge så tæt på hinanden som muligt. Storybook-biblioteket er beskrevet nærmere i [05_kodeeksempler.md](./05_kodeeksempler.md#3-storybook-som-komponent-bibliotek-og-fremtidig-chromatic).
-
-## Tilgængelighed som designvalg
-
-Tilgængelighed er bagt ind i selve designsystemet snarere end at være tilføjet bagefter:
-
-- Kontraster overholder WCAG AA — den mørke gradient i bunden af alle `SeeYouThereCard`-instanser sikrer at hvid tekst altid har tilstrækkelig kontrast mod billedet.
-- Hele kortet er klikbart via `next/link`, men fokus-ringen vises kun ved tastatur-navigation (`focus-visible`), så musbrugere ikke generes af en ramme om hvert kort.
-- Interaktive elementer har `aria-pressed`/`aria-label` hvor det er nødvendigt — eksempler i Like/RSVP-knapperne, beskrevet i [05_kodeeksempler.md](./05_kodeeksempler.md#1-like--og-deltag-knappen--én-fælles-toggle-fabrik).
-
-Det er en bevidst forenkling at jeg ikke har lavet en formel a11y-audit (Lighthouse, axe-core) endnu. Det vil være naturligt at gøre, før produktet rammer rigtige brugere.
 
 ## Hvad jeg ikke nåede
 
@@ -51,5 +41,6 @@ For at være ærlig om hvor designet stadig er tyndt:
 - **Ingen brugertests**: alle antagelser om brugeren er informerede gæt frem for målte indsigter.
 - **Ingen formelle personas eller customer journeys**: jeg har én bruger i hovedet, ikke et team-validerede artefakter.
 - **Begrænset indholdsmoderation-design**: hvordan ser admin-UI'et ud når det er en redaktør der ikke er udvikler, der skal moderere et upassende kommentar? Ikke afklaret.
+- **Ingen systematisk tilgængeligheds-test**: jeg er bevidst om vigtigheden, men har ikke kørt formelle audits (Lighthouse, axe-core) eller skærmlæser-tests og kan derfor ikke dokumentere at sitet overholder WCAG.
 
-Det er bevidste fravalg på POC-stadiet, men de tre står øverst på listen hvis projektet bevæger sig mod lancering.
+Det er bevidste fravalg på POC-stadiet, men de fire står øverst på listen hvis projektet bevæger sig mod lancering.
