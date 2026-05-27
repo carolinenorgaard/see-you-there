@@ -2,6 +2,11 @@
 
 **See you there** (arbejdstitel) er en digital platform, der skal samle mennesker omkring fysiske steder ved at lade brugere oprette og dele begivenheder. Brugerne kan interagere med hinanden ved at deltage, kommentere og like hinandens begivenheder. Visionen er et selvkørende økosystem, hvor det er brugerne selv, der skaber det relevante indhold, og hvor sponsorerede events fra virksomheder på sigt kan supplere det organiske indhold.
 
+## Hvem står bag
+Projektet er udviklet af mig, Caroline Norgaard Elmer, som eneste udvikler. Min styrke ligger i koden, og jeg har bevidst prioriteret **arkitektur og fundament** højest — så projektet står med en solid teknisk base, hvor nye udviklere senere kan komme til uden at skulle rive ned først.
+
+Den prioritering har naturligvis en pris. Med kun én person på opgaven har jeg ikke haft tid til at give alle dele af projektet samme dybde — særligt **brugertest** og en mere fyldestgørende **Figma-designfase** er områder, der er nedprioriteret til fordel for at få den tekniske kerne på plads. Det er bevidste fravalg, ikke forglemmelser, og noget jeg vender tilbage til løbende i de følgende afsnit.
+
 ## Krav til løsning
 - Sitet skal fungere både på desktop og mobil
 - Det skal være let for brugeren at få overblik over, hvad der sker på deres favoritsteder
