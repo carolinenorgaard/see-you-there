@@ -35,10 +35,8 @@ For at være ærlig om hvor projektet stadig er tyndt — bevidste fravalg på P
 
 ## Hvad jeg ville lave anderledes hvis jeg startede forfra
 
-- **PWA fra starten** (gentaget fra 03). Offline-funktionalitet og install-to-homescreen er ting jeg tror brugerne ville sætte pris på, og det er sværere at retroficere ind end at planlægge for fra dag 1.
-- **PostgreSQL i stedet for MongoDB**, hvis kerneforespørgslerne viser sig at være relationelle. MongoDB er valgt fordi Payload anbefaler det, men en stor del af mine queries går allerede gennem joins i applikationslaget, som en relationel database håndterer mere elegant. Payload understøtter heldigvis PostgreSQL, så det er ikke et lock-in.
-- **`useOptimistic` på Like/RSVP fra dag 1**. Den nuværende sekventielle flow (vent på server, opdatér så UI) er sikker, men sløv. React 19's `useOptimistic`-hook er bygget præcis til denne slags, og jeg har bare ikke prioriteret at tage skiftet endnu.
-- **Lighthouse og a11y-audit som en del af CI** så jeg ville fange regressioner automatisk i stedet for at skulle huske at tjekke dem manuelt.
+- **Gået sammen med andre** i stedet for at stå alene med det hele. Det havde givet mulighed for sparring, fordeling af opgaver og at få øje på blinde vinkler tidligere i processen.
+- **Et mere struktureret Figma-design med brugerrejser** fra start. Jeg sprang relativt hurtigt til kode, og et mere gennemarbejdet designgrundlag — med eksplicitte brugerrejser — ville have gjort det nemmere at træffe beslutninger om flow og prioritering undervejs.
 
 ## Næste skridt
 
