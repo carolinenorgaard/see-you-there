@@ -87,7 +87,8 @@
 }
 
 :root {
-  --background: oklch(100% 0 0deg);
+  --brand-cream: oklch(0.9822 0.011 89.72);
+  --background: var(--brand-cream);
   --foreground: oklch(14.5% 0 0deg);
   --card: oklch(96.5% 0.005 265deg);
   --card-foreground: oklch(14.5% 0 0deg);
@@ -127,19 +128,19 @@
 
 [data-theme='dark'] {
   --background: oklch(14.5% 0 0deg);
-  --foreground: oklch(98.5% 0 0deg);
+  --foreground: var(--brand-cream);
   --card: oklch(17% 0 0deg);
-  --card-foreground: oklch(98.5% 0 0deg);
+  --card-foreground: var(--foreground);
   --popover: oklch(14.5% 0 0deg);
-  --popover-foreground: oklch(98.5% 0 0deg);
-  --primary: oklch(98.5% 0 0deg);
+  --popover-foreground: var(--foreground);
+  --primary: var(--foreground);
   --primary-foreground: oklch(20.5% 0 0deg);
   --secondary: oklch(26.9% 0 0deg);
-  --secondary-foreground: oklch(98.5% 0 0deg);
+  --secondary-foreground: var(--foreground);
   --muted: oklch(26.9% 0 0deg);
   --muted-foreground: oklch(70.8% 0 0deg);
   --accent: oklch(26.9% 0 0deg);
-  --accent-foreground: oklch(98.5% 0 0deg);
+  --accent-foreground: var(--foreground);
   --destructive: oklch(39.6% 0.141 25.723deg);
   --destructive-foreground: oklch(63.7% 0.237 25.331deg);
   --border: oklch(26.9% 0 0deg);
@@ -151,11 +152,11 @@
   --chart-4: oklch(62.7% 0.265 303.9deg);
   --chart-5: oklch(64.5% 0.246 16.439deg);
   --sidebar: oklch(20.5% 0 0deg);
-  --sidebar-foreground: oklch(98.5% 0 0deg);
+  --sidebar-foreground: var(--foreground);
   --sidebar-primary: oklch(48.8% 0.243 264.376deg);
-  --sidebar-primary-foreground: oklch(98.5% 0 0deg);
+  --sidebar-primary-foreground: var(--foreground);
   --sidebar-accent: oklch(26.9% 0 0deg);
-  --sidebar-accent-foreground: oklch(98.5% 0 0deg);
+  --sidebar-accent-foreground: var(--foreground);
   --sidebar-border: oklch(26.9% 0 0deg);
   --sidebar-ring: oklch(43.9% 0 0deg);
   --success: oklch(28% 0.1 200deg);
@@ -163,7 +164,16 @@
   --error: oklch(45% 0.1 25deg);
 }
 
+[data-theme='dark'] .prose {
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-links: var(--foreground);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-quotes: var(--foreground);
+}
+
 @theme inline {
+  --color-cream: var(--brand-cream);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
