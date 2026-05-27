@@ -16,7 +16,7 @@ I [01_intro.md](./01_intro.md) opstillede jeg fem krav til løsningen. Her er en
 
 **Server components plus Local API skipper en hel klasse af problemer**. Jeg har slet ikke skullet håndtere API-versionering, CORS mellem domæner, eller fordobling af typer mellem klient og server. Det var ikke noget jeg satte stor pris på fra dag 1, men det er noget jeg har lært at sætte stor pris på i takt med at jeg har set hvor mange problemer det fjerner.
 
-**Authorization som data er et mønster jeg vil tage med videre**. At en access-funktion i Payload kan returnere enten `true`/`false` eller en `Where`-query (se [05_kodeeksempler.md](./05_kodeeksempler.md#6-access-control--rbac-på-collection-niveau)) var en aha-oplevelse. Det er et mønster der gør sikkerhed udtryksfuld i stedet for imperativ, og det er en idé jeg gerne vil prøve at overføre til andre projekter.
+**Authorization som data er et mønster jeg vil tage med videre**. At en access-funktion i Payload kan returnere enten `true`/`false` eller en `Where`-query (se [04_kodeeksempler.md](./04_kodeeksempler.md#6-access-control--rbac-på-collection-niveau)) var en aha-oplevelse. Det er et mønster der gør sikkerhed udtryksfuld i stedet for imperativ, og det er en idé jeg gerne vil prøve at overføre til andre projekter.
 
 ## Hvad jeg lærte om processen
 
