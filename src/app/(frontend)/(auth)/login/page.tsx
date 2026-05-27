@@ -80,11 +80,13 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="container max-w-md pt-24 pb-24">
-      <h1 className="text-3xl font-semibold mb-6">Log ind</h1>
-      <Suspense fallback={null}>
-        <LoginForm />
-      </Suspense>
+    <div className="container pt-24 pb-24">
+      <div className="mx-auto max-w-md rounded-lg border border-border bg-card text-card-foreground p-8 shadow-sm">
+        <h1 className="text-3xl font-semibold mb-6">Log ind</h1>
+        <Suspense fallback={null}>
+          <LoginForm />
+        </Suspense>
+      </div>
     </div>
   )
 }
