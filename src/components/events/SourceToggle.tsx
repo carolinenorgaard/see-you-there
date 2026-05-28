@@ -2,7 +2,7 @@
 
 import { useQueryStates } from 'nuqs'
 
-import { eventsFilterParsers, type EventSource } from '@/components/events/filters/eventsFilters'
+import { eventsUrlParsers, type EventSource } from '@/components/events/filters/eventsFilters'
 import { cn } from '@/utilities/ui'
 
 const options: { value: EventSource; label: string }[] = [
@@ -12,8 +12,8 @@ const options: { value: EventSource; label: string }[] = [
 
 export const SourceToggle = ({ active }: { active: EventSource }) => {
   const [, setStates] = useQueryStates({
-    source: eventsFilterParsers.source,
-    page: eventsFilterParsers.page,
+    source: eventsUrlParsers.source,
+    page: eventsUrlParsers.page,
   })
 
   return (

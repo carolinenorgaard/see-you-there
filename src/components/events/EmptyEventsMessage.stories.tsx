@@ -14,36 +14,36 @@ type Story = StoryObj<typeof EmptyEventsMessage>
 
 export const NoSeeYouThereEvents: Story = {
   args: {
-    filters: {
+    state: {
       source: 'syt',
       date: null,
-      categorySlugs: [],
-      regionSlug: null,
-      locationSlug: null,
+      categories: [],
+      region: null,
+      location: null,
     },
   },
 }
 
 export const NoCommunityEvents: Story = {
   args: {
-    filters: {
+    state: {
       source: 'community',
       date: null,
-      categorySlugs: [],
-      regionSlug: null,
-      locationSlug: null,
+      categories: [],
+      region: null,
+      location: null,
     },
   },
 }
 
 export const NoMatchingFilters: Story = {
   args: {
-    filters: {
+    state: {
       source: 'syt',
       date: '2026-05-20',
-      categorySlugs: ['music', 'food'],
-      regionSlug: 'copenhagen',
-      locationSlug: null,
+      categories: ['music', 'food'],
+      region: 'copenhagen',
+      location: null,
     },
   },
 }

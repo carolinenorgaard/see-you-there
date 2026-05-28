@@ -3,12 +3,9 @@ import { MapPin } from 'lucide-react'
 import { getPayload } from 'payload'
 
 import { CategoryChipRow } from '@/components/filters/CategoryChipRow'
+import { loadList } from '@/list'
 import { SlugComboboxFilter } from '@/components/filters/SlugComboboxFilter'
-import {
-  buildLocationsWhere,
-  loadLocationsFilters,
-  normalizeLocationsFilters,
-} from '@/components/locations/filters/locationsFilters'
+import { locationsFilters } from '@/components/locations/filters/locationsFilters'
 import RichText from '@/components/RichText'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -36,36 +33,20 @@ export default async function LocationsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
-  const filters = normalizeLocationsFilters(await loadLocationsFilters(searchParams))
-
   const payload = await getPayload({ config: configPromise })
 
-  const [categoriesRes, regionsRes] = await Promise.all([
-    payload.find({
-      collection: 'categories',
-      depth: 0,
+  const { result, options } = await loadList<typeof locationsFilters, 'locations', Location>({
+    payload,
+    searchParams,
+    filters: locationsFilters,
+    query: {
+      collection: 'locations',
+      depth: 1,
       limit: 100,
-      overrideAccess: false,
-    }),
-    payload.find({
-      collection: 'regions',
-      depth: 0,
-      limit: 200,
-      overrideAccess: false,
-      sort: 'title',
-    }),
-  ])
-
-  const categories = categoriesRes.docs as Category[]
-  const regions = regionsRes.docs as Region[]
-
-  const locations = await payload.find({
-    collection: 'locations',
-    depth: 1,
-    limit: 100,
-    overrideAccess: false,
-    where: buildLocationsWhere(filters, { categories, regions }),
+    },
   })
+
+  const { categories, region: regions } = options
 
   return (
     <div className="container pt-24 pb-24">
@@ -83,11 +64,11 @@ export default async function LocationsPage({
           />
         )}
       </div>
-      {locations.docs.length === 0 ? (
+      {result.docs.length === 0 ? (
         <p>Ingen lokationer fundet.</p>
       ) : (
         <SeeYouThereGrid>
-          {locations.docs.map((location: Location) => {
+          {result.docs.map((location: Location) => {
             const region =
               typeof location.address.region === 'object' ? (location.address.region as Region) : null
             const locationCategories = (location.categories ?? []).filter(

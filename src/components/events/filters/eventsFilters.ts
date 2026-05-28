@@ -1,93 +1,61 @@
-import { createLoader, parseAsString, parseAsStringLiteral } from 'nuqs/server'
-import type { Where } from 'payload'
-
-import {
-  categoriesParser,
-  locationParser,
-  normalizeCategorySlugs,
-  normalizeSlug,
-  pageParser,
-  regionParser,
-  resolveIdBySlug,
-  resolveIdsBySlug,
-  serverSyncOptions,
-} from '@/components/filters/sharedFilterParsers'
+import { dayFilter, mergeFilterParsers, pickManyFilter, pickOneFilter, type StateOf, toggleFilter } from '@/list'
+import { pageParser } from '@/components/filters/sharedFilterParsers'
 import type { Category, Location, Region } from '@/payload-types'
-import { nextIsoDay } from '@/utilities/formatDateTime'
 
 export const EVENT_SOURCES = ['syt', 'community'] as const
 export type EventSource = (typeof EVENT_SOURCES)[number]
 
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
+// The Filters of the Events List.
+// Keyed names become the property names on the state/options returned by
+// loadList — and the property names used by EmptyEventsMessage and
+// hasActiveFilters below.
+export const eventsFilters = {
+  source: toggleFilter({
+    paramKey: 'source',
+    values: EVENT_SOURCES,
+    defaultValue: 'syt',
+    payloadPath: 'createdBySeeYouThere',
+    trueWhen: 'syt',
+  }),
+  date: dayFilter({
+    paramKey: 'date',
+    payloadPath: 'startDate',
+  }),
+  categories: pickManyFilter<Category>({
+    paramKey: 'categories',
+    collection: 'categories',
+    payloadPath: 'categories',
+    limit: 100,
+  }),
+  region: pickOneFilter<Region>({
+    paramKey: 'region',
+    collection: 'regions',
+    payloadPath: 'location.address.region',
+    limit: 200,
+    sort: 'title',
+  }),
+  location: pickOneFilter<Location>({
+    paramKey: 'location',
+    collection: 'locations',
+    payloadPath: 'location',
+    limit: 500,
+    sort: 'title',
+    select: { title: true, slug: true },
+  }),
+}
 
-export const eventsFilterParsers = {
-  source: parseAsStringLiteral(EVENT_SOURCES)
-    .withDefault('syt')
-    .withOptions({ ...serverSyncOptions, clearOnDefault: true }),
-  date: parseAsString
-    .withDefault('')
-    .withOptions({ ...serverSyncOptions, clearOnDefault: true }),
-  categories: categoriesParser,
-  region: regionParser,
-  location: locationParser,
+// URL parser map preserved for client components (SourceToggle, DateChipRail)
+// that call useQueryStates with these parsers. Pagination is not a Filter but
+// is part of the URL state, so it lives alongside.
+export const eventsUrlParsers = {
+  ...mergeFilterParsers(eventsFilters),
   page: pageParser,
 }
 
-export type ParsedEventFilters = {
-  source: EventSource
-  date: string | null
-  categorySlugs: string[]
-  regionSlug: string | null
-  locationSlug: string | null
-}
+export type EventsFilterState = StateOf<typeof eventsFilters>
 
-export const loadEventsFilters = createLoader(eventsFilterParsers)
-
-export const normalizeEventsFilters = (
-  raw: Awaited<ReturnType<typeof loadEventsFilters>>,
-): ParsedEventFilters => ({
-  source: raw.source,
-  date: raw.date && ISO_DATE.test(raw.date) ? raw.date : null,
-  categorySlugs: normalizeCategorySlugs(raw.categories),
-  regionSlug: normalizeSlug(raw.region),
-  locationSlug: normalizeSlug(raw.location),
-})
-
-export const hasActiveFilters = (filters: ParsedEventFilters): boolean =>
-  !!filters.date ||
-  filters.categorySlugs.length > 0 ||
-  !!filters.regionSlug ||
-  !!filters.locationSlug
-
-export const buildEventsWhere = (
-  filters: ParsedEventFilters,
-  {
-    categories,
-    regions,
-    locations,
-  }: { categories: Category[]; regions: Region[]; locations: Location[] },
-): Where => {
-  const categoryIds = resolveIdsBySlug(filters.categorySlugs, categories)
-  const regionId = resolveIdBySlug(filters.regionSlug, regions)
-  const locationId = resolveIdBySlug(filters.locationSlug, locations)
-
-  const where: Where = {
-    createdBySeeYouThere: { equals: filters.source === 'syt' },
-  }
-  if (filters.date) {
-    where.startDate = {
-      greater_than_equal: `${filters.date}T00:00:00.000Z`,
-      less_than: `${nextIsoDay(filters.date)}T00:00:00.000Z`,
-    }
-  }
-  if (categoryIds.length) {
-    where.categories = { in: categoryIds }
-  }
-  if (regionId !== null) {
-    where['location.address.region'] = { equals: regionId }
-  }
-  if (locationId !== null) {
-    where.location = { equals: locationId }
-  }
-  return where
-}
+export const hasActiveFilters = (state: EventsFilterState): boolean =>
+  !!state.date ||
+  state.categories.length > 0 ||
+  !!state.region ||
+  !!state.location

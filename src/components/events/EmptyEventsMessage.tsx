@@ -1,17 +1,17 @@
 import { noMatchingEventsIntro } from '@/app/(frontend)/events/content'
 import {
+  type EventsFilterState,
   hasActiveFilters,
-  type ParsedEventFilters,
 } from '@/components/events/filters/eventsFilters'
 import RichText from '@/components/RichText'
 
-export const EmptyEventsMessage = ({ filters }: { filters: ParsedEventFilters }) => {
-  if (hasActiveFilters(filters)) {
+export const EmptyEventsMessage = ({ state }: { state: EventsFilterState }) => {
+  if (hasActiveFilters(state)) {
     return <RichText data={noMatchingEventsIntro} enableGutter={false} className="max-w-3xl" />
   }
 
   const message =
-    filters.source === 'syt'
+    state.source === 'syt'
       ? 'Ingen See You There begivenheder endnu.'
       : 'Ingen community begivenheder endnu.'
 
