@@ -23,10 +23,13 @@ export const FilterTransitionProvider = ({ children }: { children: ReactNode }) 
   )
 }
 
+let warnedMissingProvider = false
+
 export const useFilterTransition = (): FilterTransition => {
   const ctx = useContext(FilterTransitionContext)
   if (!ctx) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== 'production' && !warnedMissingProvider) {
+      warnedMissingProvider = true
       console.warn(
         '[useFilterTransition] No <FilterTransitionProvider> in the tree — filter URL writes will skip the loading skeleton. Wrap the route layout in <FilterTransitionProvider>.',
       )

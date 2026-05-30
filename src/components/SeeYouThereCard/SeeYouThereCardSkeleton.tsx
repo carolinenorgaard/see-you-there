@@ -19,7 +19,7 @@ const Bar = ({ height, width }: { height: string; width: string }) => (
 )
 
 const SeeYouThereCardSkeleton = () => (
-  <SeeYouThereCard aria-hidden className="bg-muted text-transparent animate-pulse">
+  <SeeYouThereCard aria-hidden className="bg-muted text-transparent motion-safe:animate-pulse">
     <SeeYouThereCardHeader>
       <SeeYouThereCardBadges>
         <Pill width="w-16" />
