@@ -13,7 +13,7 @@ export const EmptyEventsMessage = ({ filters }: { filters: EventsFilters }) => {
   const message =
     filters.source === 'syt'
       ? 'Ingen See You There begivenheder endnu.'
-      : 'Ingen community begivenheder endnu.'
+      : 'Ingen fællesskabsbegivenheder endnu.'
 
   return <p className="text-muted-foreground">{message}</p>
 }

@@ -109,7 +109,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
       <section className="mt-16 max-w-2xl">
         <h2 className="text-2xl font-semibold mb-2">Opret en begivenhed på {location.title}</h2>
         <p className="text-muted-foreground mb-6">
-          Del noget, du selv afholder eller har kendskab til. Det vises under fanen Community på
+          Del noget, du selv afholder eller har kendskab til. Det vises under fanen Fællesskab på
           begivenhedssiden.
         </p>
         {user ? (

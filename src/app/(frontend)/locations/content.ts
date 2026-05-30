@@ -72,7 +72,7 @@ export const hostEventIntro: DefaultTypedEditorState = {
           },
           {
             type: 'text',
-            text: ' under Community-fanen, så andre kan finde det, deltage og dele oplevelsen.',
+            text: ' under Fællesskab-fanen, så andre kan finde det, deltage og dele oplevelsen.',
             detail: 0,
             format: 0,
             mode: 'normal',
