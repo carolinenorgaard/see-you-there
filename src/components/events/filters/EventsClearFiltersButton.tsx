@@ -26,7 +26,7 @@ export const EventsClearFiltersButton = ({ className }: { className?: string }) 
       type="button"
       onClick={clear}
       className={cn(
-        'inline-flex h-9 items-center gap-1 rounded-full px-3 text-sm font-medium text-muted-foreground transition hover:text-foreground',
+        'inline-flex h-9 cursor-pointer items-center gap-1 rounded-full px-3 text-sm font-medium text-muted-foreground transition hover:text-foreground',
         className,
       )}
     >
