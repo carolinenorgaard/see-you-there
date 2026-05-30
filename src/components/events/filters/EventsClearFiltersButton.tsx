@@ -3,6 +3,7 @@
 import { useQueryStates } from 'nuqs'
 import { X } from 'lucide-react'
 
+import { useFilterTransition } from '@/components/filters/FilterTransitionContext'
 import { cn } from '@/utilities/ui'
 import { eventsUrlParsers } from './eventsFilters'
 
@@ -15,7 +16,8 @@ const PARSERS = {
 }
 
 export const EventsClearFiltersButton = ({ className }: { className?: string }) => {
-  const [, setStates] = useQueryStates(PARSERS)
+  const { startTransition } = useFilterTransition()
+  const [, setStates] = useQueryStates(PARSERS, { startTransition })
   const clear = () =>
     void setStates({ date: null, categories: null, region: null, location: null, page: null })
 

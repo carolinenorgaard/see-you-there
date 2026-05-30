@@ -15,6 +15,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/utilities/ui'
 
+import { useFilterTransition } from './FilterTransitionContext'
 import { slugParser } from './sharedFilterParsers'
 
 const ALL_VALUE = '__all__'
@@ -40,7 +41,8 @@ export const SlugComboboxFilter = <T extends Item>({
   ariaLabel,
   icon: Icon = MapPin,
 }: Props<T>) => {
-  const [activeSlug, setSlug] = useQueryState(paramKey, slugParser)
+  const { startTransition } = useFilterTransition()
+  const [activeSlug, setSlug] = useQueryState(paramKey, slugParser.withOptions({ startTransition }))
   const [open, setOpen] = useState(false)
 
   const activeItem = items.find((i) => itemSlug(i) === activeSlug) ?? null
