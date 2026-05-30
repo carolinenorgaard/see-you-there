@@ -23,7 +23,12 @@ export const dayFilter = (args: {
     parsers: { [args.paramKey]: parser },
     read: (loaded) => {
       const raw = (loaded[args.paramKey] as string | undefined) ?? ''
-      return raw && ISO_DATE.test(raw) ? raw : null
+      if (!raw || !ISO_DATE.test(raw)) return null
+      // Round-trip rejects shape-valid but calendar-invalid dates like
+      // 2026-99-99 (would crash nextIsoDay) or 2026-02-30 (normalized).
+      const d = new Date(`${raw}T00:00:00.000Z`)
+      if (Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== raw) return null
+      return raw
     },
     toWhere: (day): Where | null => {
       if (!day) return null
