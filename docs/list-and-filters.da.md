@@ -47,7 +47,7 @@ Hele systemet hænger på én lille type. Den findes i [`src/list/types.ts`](../
 
 ```ts
 export type Filter<TState = unknown, TOptions = unknown> = {
-  parsers: FilterUrlParsers
+  parsers: Record<string, any>
   read: (loaded: Record<string, unknown>) => TState
   preload?: (payload: Payload) => Promise<TOptions>
   toWhere: (state: TState, options: TOptions) => Where | null
@@ -243,14 +243,14 @@ export const dayFilter = (args: {
 ### Trin 1 — saml alle parsers
 
 ```ts
-const load = createLoader(mergeFilterParsers(filters) as any)
+const load = createLoader(mergeFilterParsers(filters))
 ```
 
-`mergeFilterParsers` er en simpel reduce der spreder alle filtres `parsers`-maps ind i ét stort map. Det er den eneste grund den eksisterer ([`src/list/types.ts:35-39`](../src/list/types.ts#L35-L39)):
+`mergeFilterParsers` er en simpel reduce der spreder alle filtres `parsers`-maps ind i ét stort map. Det er den eneste grund den eksisterer ([`src/list/types.ts:27-31`](../src/list/types.ts#L27-L31)):
 
 ```ts
-export const mergeFilterParsers = (filters: FiltersRecord): FilterUrlParsers =>
-  Object.values(filters).reduce<FilterUrlParsers>(
+export const mergeFilterParsers = (filters: FiltersRecord): Record<string, any> =>
+  Object.values(filters).reduce<Record<string, any>>(
     (acc, f) => Object.assign(acc, f.parsers),
     {},
   )
@@ -262,7 +262,7 @@ Det merged map sendes til nuqs' `createLoader` — det giver os én funktion der
 
 ```ts
 const [loaded, optionValues] = await Promise.all([
-  load(searchParams) as Promise<Record<string, unknown>>,
+  load(searchParams),
   Promise.all(
     entries.map(([, f]) => (f.preload ? f.preload(payload) : Promise.resolve(undefined))),
   ),

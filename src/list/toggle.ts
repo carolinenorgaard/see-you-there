@@ -17,23 +17,22 @@ import type { Filter } from './types'
 //     payloadPath: 'createdBySeeYouThere',
 //     trueWhen: 'syt',
 //   })
-export const toggleFilter = <K extends string, V extends string>(args: {
-  paramKey: K
+export const toggleFilter = <V extends string>(args: {
+  paramKey: string
   values: readonly V[]
   defaultValue: V
   payloadPath: string
   trueWhen: V
-}) => {
+}): Filter<V, undefined> => {
   const parser = parseAsStringLiteral(args.values)
     .withDefault(args.defaultValue)
     .withOptions({ ...serverSyncOptions, clearOnDefault: true })
 
   return {
-    parsers: { [args.paramKey]: parser } as Record<K, typeof parser>,
-    read: (loaded: Record<string, unknown>): V =>
-      (loaded[args.paramKey] as V | undefined) ?? args.defaultValue,
-    toWhere: (value: V): Where => ({
+    parsers: { [args.paramKey]: parser },
+    read: (loaded) => (loaded[args.paramKey] as V | undefined) ?? args.defaultValue,
+    toWhere: (value): Where => ({
       [args.payloadPath]: { equals: value === args.trueWhen },
     }),
-  } satisfies Filter<V, undefined, Record<K, typeof parser>>
+  }
 }

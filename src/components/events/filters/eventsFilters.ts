@@ -44,10 +44,10 @@ export const eventsFilters = {
   }),
 }
 
-// URL parser map preserved for client components (SourceToggle, DateChipRail)
-// that call useQueryStates with these parsers. Pagination is not a Filter but
-// is part of the URL state, so it lives alongside.
-export const eventsUrlParsers = {
+// URL parser map for client components (SourceToggle, DateChipRail) that call
+// useQueryStates with a subset of these parsers. Pagination is not a Filter
+// but is part of the URL state, so it lives alongside.
+export const eventsUrlParsers: Record<string, any> = {
   ...mergeFilterParsers(eventsFilters),
   page: pageParser,
 }

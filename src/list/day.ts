@@ -11,21 +11,21 @@ const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 // A Filter for a single day (YYYY-MM-DD). Contributes a half-open day
 // window at the given Payload path (e.g. 'startDate'): greater_than_equal
 // day-start, less_than next-day-start.
-export const dayFilter = <K extends string>(args: {
-  paramKey: K
+export const dayFilter = (args: {
+  paramKey: string
   payloadPath: string
-}) => {
+}): Filter<string | null, undefined> => {
   const parser = parseAsString
     .withDefault('')
     .withOptions({ ...serverSyncOptions, clearOnDefault: true })
 
   return {
-    parsers: { [args.paramKey]: parser } as Record<K, typeof parser>,
-    read: (loaded: Record<string, unknown>): string | null => {
+    parsers: { [args.paramKey]: parser },
+    read: (loaded) => {
       const raw = (loaded[args.paramKey] as string | undefined) ?? ''
       return raw && ISO_DATE.test(raw) ? raw : null
     },
-    toWhere: (day: string | null): Where | null => {
+    toWhere: (day): Where | null => {
       if (!day) return null
       return {
         [args.payloadPath]: {
@@ -34,5 +34,5 @@ export const dayFilter = <K extends string>(args: {
         },
       }
     },
-  } satisfies Filter<string | null, undefined, Record<K, typeof parser>>
+  }
 }

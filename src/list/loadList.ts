@@ -34,16 +34,11 @@ export async function loadList<
   query,
 }: LoadListArgs<F, TCollection>): Promise<LoadListResult<F, T>> {
   const entries = Object.entries(filters)
-
-  // nuqs createLoader is typed against a concrete parser-map literal; the
-  // merged map from dynamic Filters is structurally compatible but its keys
-  // can't be inferred at this site, hence the cast.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const load = createLoader(mergeFilterParsers(filters) as any)
+  const load = createLoader(mergeFilterParsers(filters))
 
   // URL parsing and preloads are independent — run them concurrently.
   const [loaded, optionValues] = await Promise.all([
-    load(searchParams) as Promise<Record<string, unknown>>,
+    load(searchParams),
     Promise.all(
       entries.map(([, f]) => (f.preload ? f.preload(payload) : Promise.resolve(undefined))),
     ),
