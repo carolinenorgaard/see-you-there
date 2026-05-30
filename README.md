@@ -1,6 +1,6 @@
 # Live site on
 
-https://see-you-there-ivory.vercel.app/
+https://see-you-there.dk
 
 ## Storybook / Design-system
 
