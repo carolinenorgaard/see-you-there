@@ -5,7 +5,11 @@ import { getPayload } from 'payload'
 import { CategoryChipRow } from '@/components/filters/CategoryChipRow'
 import { loadFilteredList } from '@/filteredList'
 import { SlugComboboxFilter } from '@/components/filters/SlugComboboxFilter'
-import { locationsFilters } from '@/components/locations/filters/locationsFilters'
+import { LocationsClearFiltersButton } from '@/components/locations/filters/LocationsClearFiltersButton'
+import {
+  hasActiveFilters,
+  locationsFilters,
+} from '@/components/locations/filters/locationsFilters'
 import RichText from '@/components/RichText'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -35,7 +39,7 @@ export default async function LocationsPage({
 }) {
   const payload = await getPayload({ config: configPromise })
 
-  const { result, options } = await loadFilteredList<typeof locationsFilters, 'locations', Location>({
+  const { result, filters, options } = await loadFilteredList<typeof locationsFilters, 'locations', Location>({
     payload,
     searchParams,
     filters: locationsFilters,
@@ -54,15 +58,18 @@ export default async function LocationsPage({
       <RichText data={hostEventIntro} enableGutter={false} className="mb-10 max-w-3xl" />
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         {categories.length > 0 && <CategoryChipRow categories={categories} />}
-        {regions.length > 0 && (
-          <SlugComboboxFilter
-            items={regions}
-            paramKey="region"
-            allLabel="Alle regioner"
-            searchPlaceholder="Søg efter region…"
-            ariaLabel="Filtrér efter region"
-          />
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {regions.length > 0 && (
+            <SlugComboboxFilter
+              items={regions}
+              paramKey="region"
+              allLabel="Alle regioner"
+              searchPlaceholder="Søg efter region…"
+              ariaLabel="Filtrér efter region"
+            />
+          )}
+          {hasActiveFilters(filters) && <LocationsClearFiltersButton />}
+        </div>
       </div>
       {result.docs.length === 0 ? (
         <p>Ingen lokationer fundet.</p>

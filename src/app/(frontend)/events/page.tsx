@@ -7,7 +7,8 @@ import { EventCard } from '@/components/events/EventCard'
 import { LikeButton } from '@/components/events/LikeButton'
 import { SourceToggle } from '@/components/events/SourceToggle'
 import { DateChipRail } from '@/components/events/filters/DateChipRail'
-import { eventsFilters } from '@/components/events/filters/eventsFilters'
+import { EventsClearFiltersButton } from '@/components/events/filters/EventsClearFiltersButton'
+import { eventsFilters, hasActiveFilters } from '@/components/events/filters/eventsFilters'
 import { CategoryChipRow } from '@/components/filters/CategoryChipRow'
 import { loadFilteredList } from '@/filteredList'
 import { pageParser } from '@/components/filters/sharedFilterParsers'
@@ -84,6 +85,7 @@ export default async function EventsPage({
                 ariaLabel="Filtrér efter lokation"
               />
             )}
+            {hasActiveFilters(filters) && <EventsClearFiltersButton />}
           </div>
         </div>
       </div>
