@@ -4,7 +4,7 @@ import type { CollectionSlug, PaginatedDocs, Payload, Where } from 'payload'
 import { mergeFilterParsers } from './types'
 import type { FiltersRecord, OptionsOf, FiltersOf } from './types'
 
-type LoadListArgs<F extends FiltersRecord, TCollection extends CollectionSlug> = {
+type LoadFilteredListArgs<F extends FiltersRecord, TCollection extends CollectionSlug> = {
   payload: Payload
   searchParams: Promise<Record<string, string | string[] | undefined>>
   filters: F
@@ -17,13 +17,13 @@ type LoadListArgs<F extends FiltersRecord, TCollection extends CollectionSlug> =
   }
 }
 
-export type LoadListResult<F extends FiltersRecord, T> = {
+export type LoadFilteredListResult<F extends FiltersRecord, T> = {
   result: PaginatedDocs<T>
   filters: FiltersOf<F>
   options: OptionsOf<F>
 }
 
-export async function loadList<
+export async function loadFilteredList<
   F extends FiltersRecord,
   TCollection extends CollectionSlug,
   T = unknown,
@@ -32,7 +32,7 @@ export async function loadList<
   searchParams,
   filters,
   query,
-}: LoadListArgs<F, TCollection>): Promise<LoadListResult<F, T>> {
+}: LoadFilteredListArgs<F, TCollection>): Promise<LoadFilteredListResult<F, T>> {
   const entries = Object.entries(filters)
   const load = createLoader(mergeFilterParsers(filters))
 

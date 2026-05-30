@@ -3,7 +3,7 @@ import { MapPin } from 'lucide-react'
 import { getPayload } from 'payload'
 
 import { CategoryChipRow } from '@/components/filters/CategoryChipRow'
-import { loadList } from '@/list'
+import { loadFilteredList } from '@/filteredList'
 import { SlugComboboxFilter } from '@/components/filters/SlugComboboxFilter'
 import { locationsFilters } from '@/components/locations/filters/locationsFilters'
 import RichText from '@/components/RichText'
@@ -35,7 +35,7 @@ export default async function LocationsPage({
 }) {
   const payload = await getPayload({ config: configPromise })
 
-  const { result, options } = await loadList<typeof locationsFilters, 'locations', Location>({
+  const { result, options } = await loadFilteredList<typeof locationsFilters, 'locations', Location>({
     payload,
     searchParams,
     filters: locationsFilters,

@@ -2,8 +2,8 @@ import { parseAsString } from 'nuqs/server'
 import type { CollectionSlug, Payload } from 'payload'
 import { describe, expect, it, vi } from 'vitest'
 
-import { loadList, mergeFilterParsers, pickOneFilter } from '@/list'
-import type { Filter } from '@/list'
+import { loadFilteredList, mergeFilterParsers, pickOneFilter } from '@/filteredList'
+import type { Filter } from '@/filteredList'
 
 // ---------------------------------------------------------------------------
 // 1. mergeFilterParsers — the smallest unit. It just folds every filter's
@@ -72,13 +72,13 @@ describe('pickOneFilter', () => {
 })
 
 // ---------------------------------------------------------------------------
-// 3. loadList — the orchestrator. We stub `payload.find` with vi.fn so no
-//    database is touched, and assert that loadList wires URL → filters →
+// 3. loadFilteredList — the orchestrator. We stub `payload.find` with vi.fn so no
+//    database is touched, and assert that loadFilteredList wires URL → filters →
 //    where-clause → payload.find correctly.
 // ---------------------------------------------------------------------------
-describe('loadList', () => {
+describe('loadFilteredList', () => {
   // A minimal Filter we can hand-roll for the test. Its parser is a real nuqs
-  // ParserBuilder (loadList needs that), but read/toWhere are trivial.
+  // ParserBuilder (loadFilteredList needs that), but read/toWhere are trivial.
   const stringFilter = (urlKey: string, payloadPath: string): Filter<string | null, unknown> => ({
     parsers: { [urlKey]: parseAsString.withDefault('') },
     read: (loaded) => ((loaded[urlKey] as string) || null),
@@ -94,7 +94,7 @@ describe('loadList', () => {
     })
     const payload = { find: findMock } as unknown as Payload
 
-    const { filters, result } = await loadList({
+    const { filters, result } = await loadFilteredList({
       payload,
       searchParams: Promise.resolve({ tag: 'music', region: 'cph' }),
       filters: {
@@ -124,7 +124,7 @@ describe('loadList', () => {
     const findMock = vi.fn().mockResolvedValue({ docs: [], totalDocs: 0 })
     const payload = { find: findMock } as unknown as Payload
 
-    await loadList({
+    await loadFilteredList({
       payload,
       searchParams: Promise.resolve({}),
       filters: { tagF: stringFilter('tag', 'tag') },
@@ -148,7 +148,7 @@ describe('loadList', () => {
       toWhere,
     }
 
-    await loadList({
+    await loadFilteredList({
       payload,
       searchParams: Promise.resolve({}),
       filters: { f: filterWithPreload },

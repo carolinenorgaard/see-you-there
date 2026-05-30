@@ -1,8 +1,8 @@
 # List + Filter — arkitektur i dybden
 
-> English version: [list-and-filters.md](./list-and-filters.md)
+> English version: [filtered-list.md](./filtered-list.md)
 
-Dette dokument forklarer hvordan filter-systemet i `src/list/` virker, fra det øjeblik brugeren ændrer URL'en til Payload returnerer resultatet. Det er tænkt som en sammenhængende læseguide — start fra toppen.
+Dette dokument forklarer hvordan filter-systemet i `src/filteredList/` virker, fra det øjeblik brugeren ændrer URL'en til Payload returnerer resultatet. Det er tænkt som en sammenhængende læseguide — start fra toppen.
 
 ---
 
@@ -27,7 +27,7 @@ URL'en er **single source of truth** for filter-tilstanden. Det betyder:
 flowchart TD
     URL[URL med query params] --> Page[Page handler]
     Filters[Filter-deklarationer på siden] --> Page
-    Page --> Load[loadList]
+    Page --> Load[loadFilteredList]
     Load --> Parse[Parse URL via merged parsers]
     Load --> Preload[Preload options parallelt]
     Parse --> Build[Hvert Filter bidrager med en Where-klausul]
@@ -37,13 +37,13 @@ flowchart TD
     Out --> Render[Siden renderes]
 ```
 
-Det centrale punkt er `loadList`: den modtager URL'en og en filter-deklaration, og returnerer alt siden skal bruge for at rendere — både selve søgeresultatet, den parsede filter-tilstand (til at vise hvad der er valgt), og de preloadede options (til at rendere fx kategori-chips med titler).
+Det centrale punkt er `loadFilteredList`: den modtager URL'en og en filter-deklaration, og returnerer alt siden skal bruge for at rendere — både selve søgeresultatet, den parsede filter-tilstand (til at vise hvad der er valgt), og de preloadede options (til at rendere fx kategori-chips med titler).
 
 ---
 
 ## 3. `Filter`-typen — fire kontrakter
 
-Hele systemet hænger på én lille type. Den findes i [`src/list/types.ts`](../src/list/types.ts):
+Hele systemet hænger på én lille type. Den findes i [`src/filteredList/types.ts`](../src/filteredList/types.ts):
 
 ```ts
 export type Filter<TState = unknown, TOptions = unknown> = {
@@ -69,13 +69,13 @@ Det er det. Hver konkret filter-fabrik returnerer et objekt der opfylder denne k
 
 ## 4. De fire fabrikker
 
-`src/list/` indeholder fire fabrikker — hver dækker et almindeligt filter-mønster. Tilføj kun en ny fabrik når et helt nyt mønster dukker op.
+`src/filteredList/` indeholder fire fabrikker — hver dækker et almindeligt filter-mønster. Tilføj kun en ny fabrik når et helt nyt mønster dukker op.
 
 ### 4.1 `pickOneFilter` — én slug → `equals`
 
 Brugeren vælger ét element fra en option-kollektion (fx én region). URL'en bærer ét slug, filteret slår op i Payload for at finde det matchende id, og bygger en `equals`-klausul.
 
-**[`src/list/pickOne.ts:15-49`](../src/list/pickOne.ts#L15-L49)**
+**[`src/filteredList/pickOne.ts:15-49`](../src/filteredList/pickOne.ts#L15-L49)**
 
 ```ts
 export const pickOneFilter = <T extends SlugItem = SlugItem>(args: {
@@ -124,7 +124,7 @@ export const pickOneFilter = <T extends SlugItem = SlugItem>(args: {
 
 Som `pickOneFilter`, men URL'en bærer flere slugs adskilt af komma (håndteres af `parseAsArrayOf(parseAsString)`). Bygger en `in`-klausul.
 
-**[`src/list/pickMany.ts:14-46`](../src/list/pickMany.ts#L14-L46)**
+**[`src/filteredList/pickMany.ts:14-46`](../src/filteredList/pickMany.ts#L14-L46)**
 
 ```ts
 export const pickManyFilter = <T extends SlugItem = SlugItem>(args: {
@@ -161,7 +161,7 @@ export const pickManyFilter = <T extends SlugItem = SlugItem>(args: {
 
 Et toggle mellem to faste URL-værdier. Bidrager **altid** med en `Where`-klausul (også på default) — URL'en rydder bare query-param'et når man er på defaulten.
 
-**[`src/list/toggle.ts:20-38`](../src/list/toggle.ts#L20-L38)**
+**[`src/filteredList/toggle.ts:20-38`](../src/filteredList/toggle.ts#L20-L38)**
 
 ```ts
 export const toggleFilter = <V extends string>(args: {
@@ -196,7 +196,7 @@ Eksempel — Events' `source`-toggle: `syt` (See You There) eller `community`. P
 
 Et enkelt dato-felt. Validerer formatet med regex; bygger en halv-åben klausul `[dagens-start, næste-dags-start)`.
 
-**[`src/list/day.ts:14-38`](../src/list/day.ts#L14-L38)**
+**[`src/filteredList/day.ts:14-43`](../src/filteredList/day.ts#L14-L43)**
 
 ```ts
 export const dayFilter = (args: {
@@ -234,11 +234,11 @@ export const dayFilter = (args: {
 
 ---
 
-## 5. `loadList` — orkestratoren trin for trin
+## 5. `loadFilteredList` — orkestratoren trin for trin
 
-`loadList` er den eneste server-funktion siden behøver kalde. Den limer alle fabrikker sammen.
+`loadFilteredList` er den eneste server-funktion siden behøver kalde. Den limer alle fabrikker sammen.
 
-**[`src/list/loadList.ts:26-79`](../src/list/loadList.ts#L26-L79)**
+**[`src/filteredList/loadFilteredList.ts:26-74`](../src/filteredList/loadFilteredList.ts#L26-L74)**
 
 ### Trin 1 — saml alle parsers
 
@@ -246,7 +246,7 @@ export const dayFilter = (args: {
 const load = createLoader(mergeFilterParsers(filters))
 ```
 
-`mergeFilterParsers` er en simpel reduce der spreder alle filtres `parsers`-maps ind i ét stort map. Det er den eneste grund den eksisterer ([`src/list/types.ts:27-31`](../src/list/types.ts#L27-L31)):
+`mergeFilterParsers` er en simpel reduce der spreder alle filtres `parsers`-maps ind i ét stort map. Det er den eneste grund den eksisterer ([`src/filteredList/types.ts:27-31`](../src/filteredList/types.ts#L27-L31)):
 
 ```ts
 export const mergeFilterParsers = (filters: FiltersRecord): Record<string, any> =>
@@ -427,7 +427,7 @@ export default async function EventsPage({
 
   const [me, list] = await Promise.all([
     getOptionalMe(),
-    loadList<typeof eventsFilters, 'events', Event>({
+    loadFilteredList<typeof eventsFilters, 'events', Event>({
       payload,
       searchParams: Promise.resolve(resolved),
       filters: eventsFilters,
@@ -444,8 +444,8 @@ export default async function EventsPage({
 
 To detaljer der ofte forvirrer:
 
-1. **`await searchParams` derefter `Promise.resolve(resolved)`** — Next.js 16 leverer `searchParams` som en Promise. Vi await'er den én gang (så vi kan parse `page` lokalt), men `loadList` vil **også** have en Promise (det er dens kontrakt med nuqs), så vi pakker den ind igen. Det er ikke et ekstra round-trip — bare en gen-pakning.
-2. **`page` er ikke et Filter** — pagination er URL-state men ikke et narrowing-aksis. Det parses separat ([`docs/list-and-filters.da.md#7`](#)) og sendes ind i `query.page`.
+1. **`await searchParams` derefter `Promise.resolve(resolved)`** — Next.js 16 leverer `searchParams` som en Promise. Vi await'er den én gang (så vi kan parse `page` lokalt), men `loadFilteredList` vil **også** have en Promise (det er dens kontrakt med nuqs), så vi pakker den ind igen. Det er ikke et ekstra round-trip — bare en gen-pakning.
+2. **`page` er ikke et Filter** — pagination er URL-state men ikke et narrowing-aksis. Det parses separat ([`docs/filtered-list.da.md#7`](#)) og sendes ind i `query.page`.
 
 Resultatet bruges som:
 
@@ -462,7 +462,7 @@ const { result, filters, options } = list
 
 Indtil nu har vi kun talt om server-siden. Men hvordan kommer URL'en til at ændre sig når brugeren klikker på en chip?
 
-Svaret er at klient-komponenterne bruger **samme nuqs-parsers** via `useQueryState` / `useQueryStates`. Når de skriver til URL'en, opdateres adresse-linjen, Next.js gen-renderer server-komponenten, og `loadList` kører igen med den nye URL.
+Svaret er at klient-komponenterne bruger **samme nuqs-parsers** via `useQueryState` / `useQueryStates`. Når de skriver til URL'en, opdateres adresse-linjen, Next.js gen-renderer server-komponenten, og `loadFilteredList` kører igen med den nye URL.
 
 Nøglen til at server-refresh sker er `shallow: false` — defineret én gang i:
 
@@ -515,7 +515,7 @@ export const resolveIdBySlug = <T extends SlugItem>(
 
 ## 10. Tilføj et nyt filter — opskrift
 
-1. **Findes der allerede en fabrik der passer?** Hvis ja, hop til trin 2. Hvis det er et helt nyt mønster (fx pris-range, fritekst-søgning, geo), lav en ny fabrik i `src/list/` der opfylder `Filter`-kontrakten.
+1. **Findes der allerede en fabrik der passer?** Hvis ja, hop til trin 2. Hvis det er et helt nyt mønster (fx pris-range, fritekst-søgning, geo), lav en ny fabrik i `src/filteredList/` der opfylder `Filter`-kontrakten.
 
 2. **Tilføj filteret til den relevante liste**, fx [`eventsFilters.ts`](../src/components/events/filters/eventsFilters.ts):
 
@@ -532,7 +532,7 @@ export const resolveIdBySlug = <T extends SlugItem>(
 
 3. **Tilføj en UI-kontrol** i page-træet der læser/skriver URL-param'et via nuqs. Brug en eksisterende komponent ([`SlugComboboxFilter`](../src/components/filters/SlugComboboxFilter.tsx) for single, [`CategoryChipRow`](../src/components/filters/CategoryChipRow.tsx) for multi) eller skriv en ny der følger samme mønster.
 
-Det er det. Ingen ændringer til `loadList`, ingen manuel `Promise.all`, ingen separat where-builder.
+Det er det. Ingen ændringer til `loadFilteredList`, ingen manuel `Promise.all`, ingen separat where-builder.
 
 ---
 
@@ -551,6 +551,6 @@ npx vitest run --config ./vitest.config.mts tests/int/list.int.spec.ts
 Testene er ordnet som en læseguide selv:
 1. `mergeFilterParsers` — den simpleste enhed.
 2. `pickOneFilter` — én fabrik fra ende til anden.
-3. `loadList` — orkestratoren med stubbet `payload.find` og hand-rolled filtre.
+3. `loadFilteredList` — orkestratoren med stubbet `payload.find` og hand-rolled filtre.
 
 Sæt en `console.log(loaded)` ind i en af test-filterets `read`-funktioner og kør igen for at se præcis hvad nuqs giver dig efter URL-parsing — det er den hurtigste måde at få en mavefornemmelse for hvad der sker.

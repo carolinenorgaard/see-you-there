@@ -9,7 +9,7 @@ import { SourceToggle } from '@/components/events/SourceToggle'
 import { DateChipRail } from '@/components/events/filters/DateChipRail'
 import { eventsFilters } from '@/components/events/filters/eventsFilters'
 import { CategoryChipRow } from '@/components/filters/CategoryChipRow'
-import { loadList } from '@/list'
+import { loadFilteredList } from '@/filteredList'
 import { pageParser } from '@/components/filters/sharedFilterParsers'
 import { SlugComboboxFilter } from '@/components/filters/SlugComboboxFilter'
 import { QueryPagination } from '@/components/Pagination/QueryPagination'
@@ -37,7 +37,7 @@ export default async function EventsPage({
 
   const [me, list] = await Promise.all([
     getOptionalMe(),
-    loadList<typeof eventsFilters, 'events', Event>({
+    loadFilteredList<typeof eventsFilters, 'events', Event>({
       payload,
       searchParams: Promise.resolve(resolved),
       filters: eventsFilters,

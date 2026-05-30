@@ -1,13 +1,13 @@
-import { dayFilter, type FiltersOf, mergeFilterParsers, pickManyFilter, pickOneFilter, toggleFilter } from '@/list'
+import { dayFilter, type FiltersOf, mergeFilterParsers, pickManyFilter, pickOneFilter, toggleFilter } from '@/filteredList'
 import { pageParser } from '@/components/filters/sharedFilterParsers'
 import type { Category, Location, Region } from '@/payload-types'
 
 export const EVENT_SOURCES = ['syt', 'community'] as const
 export type EventSource = (typeof EVENT_SOURCES)[number]
 
-// The Filters of the Events List.
-// Keyed names become the property names on the state/options returned by
-// loadList — and the property names used by EmptyEventsMessage and
+// The Filters of the Events Filtered List.
+// Keyed names become the property names on the filters/options returned by
+// loadFilteredList — and the property names used by EmptyEventsMessage and
 // hasActiveFilters below.
 export const eventsFilters = {
   source: toggleFilter({

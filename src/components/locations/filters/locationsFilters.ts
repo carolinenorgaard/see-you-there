@@ -1,7 +1,7 @@
-import { type FiltersOf, pickManyFilter, pickOneFilter } from '@/list'
+import { type FiltersOf, pickManyFilter, pickOneFilter } from '@/filteredList'
 import type { Category, Region } from '@/payload-types'
 
-// The Filters of the Locations List.
+// The Filters of the Locations Filtered List.
 // The region path is one-hop here (Location → address.region), versus the
 // two-hop path on Events (Event → location.address.region).
 export const locationsFilters = {

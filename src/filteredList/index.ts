@@ -1,5 +1,5 @@
-export { loadList } from './loadList'
-export type { LoadListResult } from './loadList'
+export { loadFilteredList } from './loadFilteredList'
+export type { LoadFilteredListResult } from './loadFilteredList'
 export { mergeFilterParsers } from './types'
 export type { Filter, FiltersOf, FiltersRecord, OptionsOf, SlugItem } from './types'
 
