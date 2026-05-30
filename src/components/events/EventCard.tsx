@@ -1,4 +1,4 @@
-import { CalendarDays, MapPin } from 'lucide-react'
+import { CalendarDays, MapPin, Users } from 'lucide-react'
 import * as React from 'react'
 
 import {
@@ -27,6 +27,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, action }) => {
   const location = populated<Location>(event.location)
   const categories = populatedList<Category>(event.categories)
   const image = populated<Media>(event.image) ?? populated<Media>(location?.image)
+  const isCommunity = !event.createdBySeeYouThere
 
   return (
     <SeeYouThereCard href={`/events/${event.slug}`}>
@@ -58,6 +59,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event, action }) => {
             </span>
           </SeeYouThereCardMeta>
         </SeeYouThereCardBody>
+        {isCommunity && (
+          <Badge color="bg-brand-mint text-foreground" className="shrink-0 gap-1">
+            <Users className="h-3 w-3" aria-hidden />
+            Fællesskab
+          </Badge>
+        )}
       </SeeYouThereCardFooter>
     </SeeYouThereCard>
   )

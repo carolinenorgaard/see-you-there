@@ -94,6 +94,8 @@
 
 :root {
   --brand-cream: oklch(0.9822 0.011 89.72);
+  --brand-teal: oklch(0.9025 0.0903 195.67);
+  --brand-mint: oklch(0.9025 0.0903 145deg);
   --background: var(--brand-cream);
   --foreground: oklch(14.5% 0 0deg);
   --card: oklch(96.5% 0.005 265deg);
@@ -206,6 +208,8 @@
 
 @theme inline {
   --color-cream: var(--brand-cream);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-mint: var(--brand-mint);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
