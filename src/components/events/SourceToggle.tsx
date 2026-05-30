@@ -6,9 +6,17 @@ import { eventsUrlParsers, type EventSource } from '@/components/events/filters/
 import { useFilterTransition } from '@/components/filters/FilterTransitionContext'
 import { cn } from '@/utilities/ui'
 
-const options: { value: EventSource; label: string }[] = [
-  { value: 'syt', label: 'See You There' },
-  { value: 'community', label: 'Community' },
+const options: { value: EventSource; label: string; activeClass: string }[] = [
+  {
+    value: 'syt',
+    label: 'See You There',
+    activeClass: 'bg-brand-teal text-foreground shadow-sm',
+  },
+  {
+    value: 'community',
+    label: 'Fællesskab',
+    activeClass: 'bg-brand-mint text-foreground shadow-sm',
+  },
 ]
 
 export const SourceToggle = ({ active }: { active: EventSource }) => {
@@ -27,7 +35,7 @@ export const SourceToggle = ({ active }: { active: EventSource }) => {
       aria-label="Filtrér begivenheder efter kilde"
       className="inline-flex rounded-full border border-border bg-muted p-1"
     >
-      {options.map(({ value, label }) => {
+      {options.map(({ value, label, activeClass }) => {
         const isActive = value === active
         return (
           <button
@@ -39,10 +47,8 @@ export const SourceToggle = ({ active }: { active: EventSource }) => {
               void setStates({ source: value, page: null })
             }}
             className={cn(
-              'rounded-full px-4 py-1.5 text-sm font-medium transition',
-              isActive
-                ? 'bg-background text-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground',
+              'cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition',
+              isActive ? activeClass : 'text-muted-foreground hover:text-foreground',
             )}
           >
             {label}

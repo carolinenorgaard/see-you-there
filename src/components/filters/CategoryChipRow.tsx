@@ -37,7 +37,7 @@ export const CategoryChipRow = ({ categories }: { categories: Category[] }) => {
             onClick={() => toggle(slug)}
             aria-pressed={isActive}
             className={cn(
-              'rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              'cursor-pointer rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
               !isActive && 'opacity-60 hover:opacity-100',
             )}
           >

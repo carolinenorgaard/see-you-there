@@ -49,7 +49,7 @@ export const DateChipRail = () => {
         onClick={() => setDate(null)}
         aria-pressed={!activeDate}
         className={cn(
-          'flex h-14 shrink-0 items-center rounded-full border px-4 text-xs font-semibold transition',
+          'flex h-14 shrink-0 cursor-pointer items-center rounded-full border px-4 text-xs font-semibold transition',
           togglePillClasses(!activeDate),
         )}
       >
@@ -64,7 +64,7 @@ export const DateChipRail = () => {
             onClick={() => setDate(isActive ? null : chip.iso)}
             aria-pressed={isActive}
             className={cn(
-              'flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-full border text-[10px] font-semibold uppercase tracking-wide transition',
+              'flex h-14 w-14 shrink-0 cursor-pointer flex-col items-center justify-center rounded-full border text-[10px] font-semibold uppercase tracking-wide transition',
               togglePillClasses(isActive),
             )}
             title={chip.label ?? `${chip.weekday} ${chip.day}`}

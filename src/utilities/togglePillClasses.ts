@@ -21,6 +21,6 @@ export const togglePillClasses = (active: boolean, tone: TogglePillTone = 'prima
   active ? activeByTone[tone] : inactive
 
 export const pillShapeClasses = (iconOnly: boolean) =>
-  `inline-flex items-center justify-center gap-2 border shadow-sm transition ${
+  `inline-flex cursor-pointer items-center justify-center gap-2 border shadow-sm transition ${
     iconOnly ? 'h-9 w-9 rounded-full' : 'rounded-md px-3 py-2'
   }`
