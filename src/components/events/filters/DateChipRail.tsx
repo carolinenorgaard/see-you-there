@@ -5,7 +5,7 @@ import { useQueryStates } from 'nuqs'
 import { toIsoDay } from '@/utilities/formatDateTime'
 import { togglePillClasses } from '@/utilities/togglePillClasses'
 import { cn } from '@/utilities/ui'
-import { eventsFilterParsers } from './eventsFilters'
+import { eventsUrlParsers } from './eventsFilters'
 
 const DAYS_AHEAD = 14
 
@@ -30,8 +30,8 @@ const buildDateRailChips = (): Chip[] => {
 
 export const DateChipRail = () => {
   const [{ date: rawDate }, setStates] = useQueryStates({
-    date: eventsFilterParsers.date,
-    page: eventsFilterParsers.page,
+    date: eventsUrlParsers.date,
+    page: eventsUrlParsers.page,
   })
   const setDate = (value: string | null) => setStates({ date: value, page: null })
   const activeDate = rawDate || null

@@ -1,11 +1,11 @@
 import { noMatchingEventsIntro } from '@/app/(frontend)/events/content'
 import {
+  type EventsFilters,
   hasActiveFilters,
-  type ParsedEventFilters,
 } from '@/components/events/filters/eventsFilters'
 import RichText from '@/components/RichText'
 
-export const EmptyEventsMessage = ({ filters }: { filters: ParsedEventFilters }) => {
+export const EmptyEventsMessage = ({ filters }: { filters: EventsFilters }) => {
   if (hasActiveFilters(filters)) {
     return <RichText data={noMatchingEventsIntro} enableGutter={false} className="max-w-3xl" />
   }
