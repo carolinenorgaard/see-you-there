@@ -17,9 +17,9 @@ export const NoSeeYouThereEvents: Story = {
     filters: {
       source: 'syt',
       date: null,
-      categorySlugs: [],
-      regionSlug: null,
-      locationSlug: null,
+      categories: [],
+      region: null,
+      location: null,
     },
   },
 }
@@ -29,9 +29,9 @@ export const NoCommunityEvents: Story = {
     filters: {
       source: 'community',
       date: null,
-      categorySlugs: [],
-      regionSlug: null,
-      locationSlug: null,
+      categories: [],
+      region: null,
+      location: null,
     },
   },
 }
@@ -41,9 +41,9 @@ export const NoMatchingFilters: Story = {
     filters: {
       source: 'syt',
       date: '2026-05-20',
-      categorySlugs: ['music', 'food'],
-      regionSlug: 'copenhagen',
-      locationSlug: null,
+      categories: ['music', 'food'],
+      region: 'copenhagen',
+      location: null,
     },
   },
 }
