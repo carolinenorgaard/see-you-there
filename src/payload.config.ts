@@ -1,5 +1,5 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
-import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+import { resendAdapter } from '@payloadcms/email-resend'
 import sharp from 'sharp'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
@@ -64,19 +64,11 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URL || '',
   }),
-  email: process.env.SMTP_HOST
-    ? nodemailerAdapter({
+  email: process.env.RESEND_API_KEY
+    ? resendAdapter({
         defaultFromAddress: process.env.EMAIL_FROM_ADDRESS!,
         defaultFromName: process.env.EMAIL_FROM_NAME || 'See You There',
-        transportOptions: {
-          host: process.env.SMTP_HOST,
-          port: Number(process.env.SMTP_PORT) || 465,
-          secure: true,
-          auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-          },
-        },
+        apiKey: process.env.RESEND_API_KEY,
       })
     : consoleEmailAdapter,
   collections: [Pages, Posts, Media, Categories, Events, EventComments, Locations, Regions, Users],
