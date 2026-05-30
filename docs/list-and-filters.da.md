@@ -33,7 +33,7 @@ flowchart TD
     Parse --> Build[Hvert Filter bidrager med en Where-klausul]
     Preload --> Build
     Build --> Find[payload.find]
-    Find --> Out[result + state + options]
+    Find --> Out[result + filters + options]
     Out --> Render[Siden renderes]
 ```
 
@@ -275,16 +275,16 @@ URL-parsing og option-preloads er uafhængige, så de kører parallelt. Filtre u
 
 ```ts
 entries.forEach(([name, f], i) => {
-  const parsed = f.read(loaded)
+  const value = f.read(loaded)
   const opts = optionValues[i]
-  ;(state as Record<string, unknown>)[name] = parsed
+  ;(parsed as Record<string, unknown>)[name] = value
   ;(options as Record<string, unknown>)[name] = opts
-  const contribution = f.toWhere(parsed, opts)
+  const contribution = f.toWhere(value, opts)
   if (contribution) whereClauses.push(contribution)
 })
 ```
 
-Her er det vigtigt at se: `state` og `options` indekseres på **filterets navn** (`source`, `date`, `categories` …) — ikke på URL-key'en. Det er derfor man på siden kan skrive `state.categories` selvom URL'en hedder `?categories=…`.
+Her er det vigtigt at se: `parsed` og `options` indekseres på **filterets navn** (`source`, `date`, `categories` …) — ikke på URL-key'en. Det er derfor man på siden kan skrive `filters.categories` selvom URL'en hedder `?categories=…`.
 
 ### Trin 4 — kombinér Where-klausulerne
 
@@ -308,13 +308,13 @@ const result = (await payload.find({
   where,
 })) as PaginatedDocs<T>
 
-return { result, state, options }
+return { result, filters: parsed, options }
 ```
 
 `overrideAccess: false` er vigtigt — det betyder Payload-access-control-reglerne gælder også her. Siden får tre ting tilbage:
 
 - `result` — selve det paginerede søgeresultat.
-- `state` — den parsede filter-tilstand (til at vise hvad der er valgt).
+- `filters` — den parsede filter-tilstand (til at vise hvad der er valgt).
 - `options` — de preloadede option-kollektioner (til at vise titler i chips, dropdowns …).
 
 ---
@@ -368,7 +368,7 @@ For en URL som:
 /events?source=community&categories=music,art&region=cph&page=2
 ```
 
-bliver `state` til:
+bliver `filters` til:
 
 ```ts
 {
@@ -394,7 +394,7 @@ og `options` indeholder de preloadede kollektioner for `categories`, `region` og
 }
 ```
 
-Bemærk: `date` og `location` bidrager ikke fordi deres state er `null` / tom.
+Bemærk: `date` og `location` bidrager ikke fordi deres værdi er `null` / tom.
 
 Filen eksporterer også et **merged parser-map** til klient-komponenter ([`eventsFilters.ts:50-53`](../src/components/events/filters/eventsFilters.ts#L50-L53)):
 
@@ -450,9 +450,9 @@ To detaljer der ofte forvirrer:
 Resultatet bruges som:
 
 ```tsx
-const { result, state, options } = list
-// result.docs   — events at rendere
-// state.region  — det valgte region-slug (eller null)
+const { result, filters, options } = list
+// result.docs        — events at rendere
+// filters.region     — det valgte region-slug (eller null)
 // options.categories — alle preloadede kategori-docs
 ```
 

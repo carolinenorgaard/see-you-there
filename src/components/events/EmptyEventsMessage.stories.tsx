@@ -14,7 +14,7 @@ type Story = StoryObj<typeof EmptyEventsMessage>
 
 export const NoSeeYouThereEvents: Story = {
   args: {
-    state: {
+    filters: {
       source: 'syt',
       date: null,
       categories: [],
@@ -26,7 +26,7 @@ export const NoSeeYouThereEvents: Story = {
 
 export const NoCommunityEvents: Story = {
   args: {
-    state: {
+    filters: {
       source: 'community',
       date: null,
       categories: [],
@@ -38,7 +38,7 @@ export const NoCommunityEvents: Story = {
 
 export const NoMatchingFilters: Story = {
   args: {
-    state: {
+    filters: {
       source: 'syt',
       date: '2026-05-20',
       categories: ['music', 'food'],

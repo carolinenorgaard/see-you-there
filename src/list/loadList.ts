@@ -2,7 +2,7 @@ import { createLoader } from 'nuqs/server'
 import type { CollectionSlug, PaginatedDocs, Payload, Where } from 'payload'
 
 import { mergeFilterParsers } from './types'
-import type { FiltersRecord, OptionsOf, StateOf } from './types'
+import type { FiltersRecord, OptionsOf, FiltersOf } from './types'
 
 type LoadListArgs<F extends FiltersRecord, TCollection extends CollectionSlug> = {
   payload: Payload
@@ -19,7 +19,7 @@ type LoadListArgs<F extends FiltersRecord, TCollection extends CollectionSlug> =
 
 export type LoadListResult<F extends FiltersRecord, T> = {
   result: PaginatedDocs<T>
-  state: StateOf<F>
+  filters: FiltersOf<F>
   options: OptionsOf<F>
 }
 
@@ -44,16 +44,16 @@ export async function loadList<
     ),
   ])
 
-  const state = {} as StateOf<F>
+  const parsed = {} as FiltersOf<F>
   const options = {} as OptionsOf<F>
   const whereClauses: Where[] = []
 
   entries.forEach(([name, f], i) => {
-    const parsed = f.read(loaded)
+    const value = f.read(loaded)
     const opts = optionValues[i]
-    ;(state as Record<string, unknown>)[name] = parsed
+    ;(parsed as Record<string, unknown>)[name] = value
     ;(options as Record<string, unknown>)[name] = opts
-    const contribution = f.toWhere(parsed, opts)
+    const contribution = f.toWhere(value, opts)
     if (contribution) whereClauses.push(contribution)
   })
 
@@ -70,5 +70,5 @@ export async function loadList<
     where,
   })) as PaginatedDocs<T>
 
-  return { result, state, options }
+  return { result, filters: parsed, options }
 }

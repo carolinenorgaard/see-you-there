@@ -51,14 +51,14 @@ export default async function EventsPage({
     }),
   ])
 
-  const { result, state, options } = list
+  const { result, filters, options } = list
   const { categories, region: regions, location: locations } = options
 
   return (
     <div className="container pt-24 pb-24">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-4xl font-bold tracking-tight">Begivenhedsvæg</h1>
-        <SourceToggle active={state.source} />
+        <SourceToggle active={filters.source} />
       </div>
 
       <div className="mb-8 space-y-4">
@@ -89,7 +89,7 @@ export default async function EventsPage({
       </div>
 
       {result.docs.length === 0 ? (
-        <EmptyEventsMessage state={state} />
+        <EmptyEventsMessage filters={filters} />
       ) : (
         <SeeYouThereGrid>
           {result.docs.map((event: Event) => {

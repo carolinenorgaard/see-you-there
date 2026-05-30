@@ -18,7 +18,7 @@ flowchart TD
     Parse --> Build[Each Filter contributes a Where clause]
     Preload --> Build
     Build --> Find[payload.find]
-    Find --> Out[result + state + options]
+    Find --> Out[result + filters + options]
     Out --> Render[Page renders]
 ```
 

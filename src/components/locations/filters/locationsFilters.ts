@@ -1,4 +1,4 @@
-import { pickManyFilter, pickOneFilter, type StateOf } from '@/list'
+import { type FiltersOf, pickManyFilter, pickOneFilter } from '@/list'
 import type { Category, Region } from '@/payload-types'
 
 // The Filters of the Locations List.
@@ -20,4 +20,4 @@ export const locationsFilters = {
   }),
 }
 
-export type LocationsFilterState = StateOf<typeof locationsFilters>
+export type LocationsFilters = FiltersOf<typeof locationsFilters>

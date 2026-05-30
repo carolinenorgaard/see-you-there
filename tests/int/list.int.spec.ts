@@ -94,7 +94,7 @@ describe('loadList', () => {
     })
     const payload = { find: findMock } as unknown as Payload
 
-    const { state, result } = await loadList({
+    const { filters, result } = await loadList({
       payload,
       searchParams: Promise.resolve({ tag: 'music', region: 'cph' }),
       filters: {
@@ -104,8 +104,8 @@ describe('loadList', () => {
       query: { collection: 'events' as CollectionSlug },
     })
 
-    // state is keyed by filter name (not URL key)
-    expect(state).toEqual({ tagF: 'music', regionF: 'cph' })
+    // filters is keyed by filter name (not URL key)
+    expect(filters).toEqual({ tagF: 'music', regionF: 'cph' })
 
     // payload.find received the AND-combined where clause
     expect(findMock).toHaveBeenCalledTimes(1)

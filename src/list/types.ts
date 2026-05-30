@@ -15,7 +15,7 @@ export type Filter<TState = unknown, TOptions = unknown> = {
 
 export type FiltersRecord = Record<string, Filter<any, any>>
 
-export type StateOf<F extends FiltersRecord> = {
+export type FiltersOf<F extends FiltersRecord> = {
   [K in keyof F]: F[K] extends Filter<infer S, any> ? S : never
 }
 

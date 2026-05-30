@@ -1,4 +1,4 @@
-import { dayFilter, mergeFilterParsers, pickManyFilter, pickOneFilter, type StateOf, toggleFilter } from '@/list'
+import { dayFilter, type FiltersOf, mergeFilterParsers, pickManyFilter, pickOneFilter, toggleFilter } from '@/list'
 import { pageParser } from '@/components/filters/sharedFilterParsers'
 import type { Category, Location, Region } from '@/payload-types'
 
@@ -52,10 +52,10 @@ export const eventsUrlParsers: Record<string, any> = {
   page: pageParser,
 }
 
-export type EventsFilterState = StateOf<typeof eventsFilters>
+export type EventsFilters = FiltersOf<typeof eventsFilters>
 
-export const hasActiveFilters = (state: EventsFilterState): boolean =>
-  !!state.date ||
-  state.categories.length > 0 ||
-  !!state.region ||
-  !!state.location
+export const hasActiveFilters = (filters: EventsFilters): boolean =>
+  !!filters.date ||
+  filters.categories.length > 0 ||
+  !!filters.region ||
+  !!filters.location
