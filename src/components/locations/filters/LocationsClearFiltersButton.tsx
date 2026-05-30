@@ -3,6 +3,7 @@
 import { useQueryStates } from 'nuqs'
 import { X } from 'lucide-react'
 
+import { useFilterTransition } from '@/components/filters/FilterTransitionContext'
 import { cn } from '@/utilities/ui'
 import { locationsUrlParsers } from './locationsFilters'
 
@@ -13,7 +14,8 @@ const PARSERS = {
 }
 
 export const LocationsClearFiltersButton = ({ className }: { className?: string }) => {
-  const [, setStates] = useQueryStates(PARSERS)
+  const { startTransition } = useFilterTransition()
+  const [, setStates] = useQueryStates(PARSERS, { startTransition })
   const clear = () => void setStates({ categories: null, region: null, page: null })
 
   return (

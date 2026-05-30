@@ -2,6 +2,7 @@
 
 import { useQueryStates } from 'nuqs'
 
+import { useFilterTransition } from '@/components/filters/FilterTransitionContext'
 import { toIsoDay } from '@/utilities/formatDateTime'
 import { togglePillClasses } from '@/utilities/togglePillClasses'
 import { cn } from '@/utilities/ui'
@@ -29,10 +30,14 @@ const buildDateRailChips = (): Chip[] => {
 }
 
 export const DateChipRail = () => {
-  const [{ date: rawDate }, setStates] = useQueryStates({
-    date: eventsUrlParsers.date,
-    page: eventsUrlParsers.page,
-  })
+  const { startTransition } = useFilterTransition()
+  const [{ date: rawDate }, setStates] = useQueryStates(
+    {
+      date: eventsUrlParsers.date,
+      page: eventsUrlParsers.page,
+    },
+    { startTransition },
+  )
   const setDate = (value: string | null) => setStates({ date: value, page: null })
   const activeDate = rawDate || null
   const chips = buildDateRailChips()

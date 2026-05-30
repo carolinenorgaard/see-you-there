@@ -10,10 +10,12 @@ import { DateChipRail } from '@/components/events/filters/DateChipRail'
 import { EventsClearFiltersButton } from '@/components/events/filters/EventsClearFiltersButton'
 import { eventsFilters, hasActiveFilters } from '@/components/events/filters/eventsFilters'
 import { CategoryChipRow } from '@/components/filters/CategoryChipRow'
+import { FilteredResultsArea } from '@/components/filters/FilteredResultsArea'
 import { loadFilteredList } from '@/filteredList'
 import { pageParser } from '@/components/filters/sharedFilterParsers'
 import { SlugComboboxFilter } from '@/components/filters/SlugComboboxFilter'
 import { QueryPagination } from '@/components/Pagination/QueryPagination'
+import { SeeYouThereCardSkeletonGrid } from '@/components/SeeYouThereCard/SeeYouThereCardSkeleton'
 import { SeeYouThereGrid } from '@/components/SeeYouThereGrid'
 import type { Event } from '@/payload-types'
 import { extractIds } from '@/utilities/extractIds'
@@ -90,32 +92,34 @@ export default async function EventsPage({
         </div>
       </div>
 
-      {result.docs.length === 0 ? (
-        <EmptyEventsMessage filters={filters} />
-      ) : (
-        <SeeYouThereGrid>
-          {result.docs.map((event: Event) => {
-            const likeIds = extractIds(event.likes)
-            const liked = !!me && likeIds.includes(me.id)
-            return (
-              <EventCard
-                key={event.id}
-                event={event}
-                action={
-                  <LikeButton
-                    eventId={String(event.id)}
-                    initialLiked={liked}
-                    initialCount={likeIds.length}
-                    loggedIn={!!me}
-                    showCount={false}
-                    iconOnly
-                  />
-                }
-              />
-            )
-          })}
-        </SeeYouThereGrid>
-      )}
+      <FilteredResultsArea skeleton={<SeeYouThereCardSkeletonGrid count={result.docs.length || PAGE_SIZE} />}>
+        {result.docs.length === 0 ? (
+          <EmptyEventsMessage filters={filters} />
+        ) : (
+          <SeeYouThereGrid>
+            {result.docs.map((event: Event) => {
+              const likeIds = extractIds(event.likes)
+              const liked = !!me && likeIds.includes(me.id)
+              return (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  action={
+                    <LikeButton
+                      eventId={String(event.id)}
+                      initialLiked={liked}
+                      initialCount={likeIds.length}
+                      loggedIn={!!me}
+                      showCount={false}
+                      iconOnly
+                    />
+                  }
+                />
+              )
+            })}
+          </SeeYouThereGrid>
+        )}
+      </FilteredResultsArea>
 
       {result.totalPages > 1 && result.page && (
         <QueryPagination page={result.page} totalPages={result.totalPages} />

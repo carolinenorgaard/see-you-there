@@ -3,9 +3,11 @@ import { MapPin } from 'lucide-react'
 import { getPayload } from 'payload'
 
 import { CategoryChipRow } from '@/components/filters/CategoryChipRow'
+import { FilteredResultsArea } from '@/components/filters/FilteredResultsArea'
 import { loadFilteredList } from '@/filteredList'
 import { SlugComboboxFilter } from '@/components/filters/SlugComboboxFilter'
 import { LocationsClearFiltersButton } from '@/components/locations/filters/LocationsClearFiltersButton'
+import { SeeYouThereCardSkeletonGrid } from '@/components/SeeYouThereCard/SeeYouThereCardSkeleton'
 import {
   hasActiveFilters,
   locationsFilters,
@@ -30,6 +32,8 @@ import { populated } from '@/utilities/payloadRelations'
 
 import { hostEventIntro } from './content'
 
+const QUERY_LIMIT = 100
+
 export const dynamic = 'force-dynamic'
 
 export default async function LocationsPage({
@@ -46,7 +50,7 @@ export default async function LocationsPage({
     query: {
       collection: 'locations',
       depth: 1,
-      limit: 100,
+      limit: QUERY_LIMIT,
     },
   })
 
@@ -71,11 +75,12 @@ export default async function LocationsPage({
           {hasActiveFilters(filters) && <LocationsClearFiltersButton />}
         </div>
       </div>
-      {result.docs.length === 0 ? (
-        <p>Ingen lokationer fundet.</p>
-      ) : (
-        <SeeYouThereGrid>
-          {result.docs.map((location: Location) => {
+      <FilteredResultsArea skeleton={<SeeYouThereCardSkeletonGrid count={result.docs.length || 12} />}>
+        {result.docs.length === 0 ? (
+          <p>Ingen lokationer fundet.</p>
+        ) : (
+          <SeeYouThereGrid>
+            {result.docs.map((location: Location) => {
             const region =
               typeof location.address.region === 'object' ? (location.address.region as Region) : null
             const locationCategories = (location.categories ?? []).filter(
@@ -122,6 +127,7 @@ export default async function LocationsPage({
           })}
         </SeeYouThereGrid>
       )}
+      </FilteredResultsArea>
     </div>
   )
 }

@@ -3,6 +3,7 @@
 import { useQueryState } from 'nuqs'
 import React from 'react'
 
+import { useFilterTransition } from '@/components/filters/FilterTransitionContext'
 import { pageParser } from '@/components/filters/sharedFilterParsers'
 import { Pagination } from '@/components/Pagination'
 
@@ -11,7 +12,8 @@ export const QueryPagination: React.FC<{
   page: number
   totalPages: number
 }> = (props) => {
-  const [, setPage] = useQueryState('page', pageParser)
+  const { startTransition } = useFilterTransition()
+  const [, setPage] = useQueryState('page', pageParser.withOptions({ startTransition }))
   // Pagination originally hardcoded router.push('/posts/page/N'); we added the
   // onNavigate hook so query-string archives like /events can reuse the markup
   // without forking the component.

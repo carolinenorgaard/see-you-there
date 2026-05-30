@@ -7,10 +7,15 @@ import type { Category } from '@/payload-types'
 import { categoryColorClass } from '@/utilities/categoryColor'
 import { cn } from '@/utilities/ui'
 
+import { useFilterTransition } from './FilterTransitionContext'
 import { categoriesParser } from './sharedFilterParsers'
 
 export const CategoryChipRow = ({ categories }: { categories: Category[] }) => {
-  const [activeSlugs, setCategories] = useQueryState('categories', categoriesParser)
+  const { startTransition } = useFilterTransition()
+  const [activeSlugs, setCategories] = useQueryState(
+    'categories',
+    categoriesParser.withOptions({ startTransition }),
+  )
 
   const toggle = (slug: string) => {
     const next = activeSlugs.includes(slug)
