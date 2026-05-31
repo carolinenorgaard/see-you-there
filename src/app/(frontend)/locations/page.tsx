@@ -1,8 +1,14 @@
 import configPromise from '@payload-config'
+import { createLoader } from 'nuqs/server'
 import { getPayload } from 'payload'
 
 import { FilteredListing } from '@/components/FilteredListing'
 import { loadFilteredList } from '@/filteredList'
+import {
+  normalizePerPage,
+  pageParser,
+  perPageParser,
+} from '@/components/filters/sharedFilterParsers'
 import { LocationCard } from '@/components/locations/LocationCard'
 import { LocationsFilterBar } from '@/components/locations/filters/LocationsFilterBar'
 import { locationsFilters } from '@/components/locations/filters/locationsFilters'
@@ -11,7 +17,7 @@ import type { Location } from '@/payload-types'
 
 import { hostEventIntro } from './content'
 
-const QUERY_LIMIT = 100
+const loadPage = createLoader({ page: pageParser, perPage: perPageParser })
 
 export const dynamic = 'force-dynamic'
 
@@ -20,6 +26,11 @@ export default async function LocationsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
+  const resolved = await searchParams
+  const { page: rawPage, perPage: rawPerPage } = loadPage(resolved)
+  const page = Math.max(1, rawPage)
+  const limit = normalizePerPage(rawPerPage)
+
   const payload = await getPayload({ config: configPromise })
 
   const { result, filters, options } = await loadFilteredList<
@@ -28,12 +39,13 @@ export default async function LocationsPage({
     Location
   >({
     payload,
-    searchParams,
+    searchParams: Promise.resolve(resolved),
     filters: locationsFilters,
     query: {
       collection: 'locations',
       depth: 1,
-      limit: QUERY_LIMIT,
+      limit,
+      page,
     },
   })
 

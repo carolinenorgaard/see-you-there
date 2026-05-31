@@ -10,14 +10,16 @@ import { EventsFilterBar } from '@/components/events/filters/EventsFilterBar'
 import { eventsFilters } from '@/components/events/filters/eventsFilters'
 import { FilteredListing } from '@/components/FilteredListing'
 import { loadFilteredList } from '@/filteredList'
-import { pageParser } from '@/components/filters/sharedFilterParsers'
+import {
+  normalizePerPage,
+  pageParser,
+  perPageParser,
+} from '@/components/filters/sharedFilterParsers'
 import type { Event } from '@/payload-types'
 import { extractIds } from '@/utilities/extractIds'
 import { getOptionalMe } from '@/utilities/getOptionalMe'
 
-const PAGE_SIZE = 24
-
-const loadPage = createLoader({ page: pageParser })
+const loadPage = createLoader({ page: pageParser, perPage: perPageParser })
 
 export const dynamic = 'force-dynamic'
 
@@ -27,8 +29,9 @@ export default async function EventsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const resolved = await searchParams
-  const { page: rawPage } = loadPage(resolved)
+  const { page: rawPage, perPage: rawPerPage } = loadPage(resolved)
   const page = Math.max(1, rawPage)
+  const limit = normalizePerPage(rawPerPage)
 
   const payload = await getPayload({ config: configPromise })
 
@@ -41,7 +44,7 @@ export default async function EventsPage({
       query: {
         collection: 'events',
         depth: 2,
-        limit: PAGE_SIZE,
+        limit,
         page,
         sort: 'startDate',
       },

@@ -4,14 +4,19 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 afterEach(cleanup)
 
-// QueryPagination uses nuqs + a transition context; stub it with a marker
-// so the orchestration test stays focused on FilteredListing's own branches.
+// QueryPagination and PerPageSelect both reach into nuqs + the transition
+// context; stub them so the orchestration test stays focused on
+// FilteredListing's own branches.
 vi.mock('@/components/Pagination/QueryPagination', () => ({
   QueryPagination: ({ page, totalPages }: { page: number; totalPages: number }) => (
     <div data-testid="pagination">
       {page}/{totalPages}
     </div>
   ),
+}))
+
+vi.mock('@/components/filters/PerPageSelect', () => ({
+  PerPageSelect: () => <div data-testid="per-page-select" />,
 }))
 
 import { FilteredListing } from '@/components/FilteredListing'
@@ -67,6 +72,29 @@ describe('FilteredListing', () => {
     expect(items[0].textContent).toBe('Alpha')
     expect(items[1].textContent).toBe('Beta')
     expect(queryByTestId('empty')).toBeNull()
+  })
+
+  it('renders the per-page selector when totalDocs exceeds the smallest option', () => {
+    const result = makeResult({
+      docs: [{ id: 1, title: 'Alpha' }],
+      totalDocs: 25,
+      totalPages: 3,
+    })
+
+    const { queryByTestId } = render(<FilteredListing<Doc> {...baseProps} result={result} />)
+
+    expect(queryByTestId('per-page-select')).not.toBeNull()
+  })
+
+  it('omits the per-page selector when totalDocs fits within the smallest option', () => {
+    const result = makeResult({
+      docs: [{ id: 1, title: 'Alpha' }],
+      totalDocs: 3,
+    })
+
+    const { queryByTestId } = render(<FilteredListing<Doc> {...baseProps} result={result} />)
+
+    expect(queryByTestId('per-page-select')).toBeNull()
   })
 
   it('omits pagination when totalPages <= 1', () => {
