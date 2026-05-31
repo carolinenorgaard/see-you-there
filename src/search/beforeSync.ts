@@ -5,17 +5,67 @@ export const beforeSyncWithSearch: BeforeSync = async ({ req, originalDoc, searc
     doc: { relationTo: collection },
   } = searchDoc
 
-  const { slug, id, categories, title, meta } = originalDoc
+  const { slug, id, categories, title, description, image, meta } = originalDoc
+
+  const imageId = (value: unknown): string | number | undefined => {
+    if (!value) return undefined
+    if (typeof value === 'object') return (value as { id?: string | number }).id
+    return value as string | number
+  }
+
+  let city: string | undefined
+  let street: string | undefined
+  let eventLocationImageId: string | number | undefined
+
+  if (collection === 'locations') {
+    city = originalDoc.address?.city
+    street = originalDoc.address?.street
+  } else if (collection === 'events') {
+    const loc = originalDoc.location
+    if (loc && typeof loc === 'object') {
+      city = loc.address?.city
+      street = loc.address?.street
+      eventLocationImageId = imageId(loc.image)
+    } else if (loc) {
+      const locationDoc = await req.payload.findByID({
+        collection: 'locations',
+        id: loc,
+        disableErrors: true,
+        depth: 0,
+        select: { address: true, image: true },
+        req,
+      })
+      if (locationDoc) {
+        city = locationDoc.address?.city
+        street = locationDoc.address?.street
+        eventLocationImageId = imageId(locationDoc.image)
+      }
+    }
+  }
+
+  const metaForSync =
+    collection === 'posts'
+      ? {
+          ...meta,
+          title: meta?.title || title,
+          image: imageId(meta?.image) ?? meta?.image,
+          description: meta?.description,
+        }
+      : {
+          title,
+          description,
+          image:
+            collection === 'events'
+              ? imageId(image) ?? eventLocationImageId
+              : imageId(image),
+        }
 
   const modifiedDoc: DocToSync = {
     ...searchDoc,
     slug,
-    meta: {
-      ...meta,
-      title: meta?.title || title,
-      image: meta?.image?.id || meta?.image,
-      description: meta?.description,
-    },
+    meta: metaForSync,
+    city,
+    street,
     categories: [],
   }
 

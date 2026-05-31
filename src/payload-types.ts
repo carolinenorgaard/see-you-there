@@ -976,16 +976,27 @@ export interface Search {
   id: string;
   title?: string | null;
   priority?: number | null;
-  doc: {
-    relationTo: 'posts';
-    value: string | Post;
-  };
+  doc:
+    | {
+        relationTo: 'posts';
+        value: string | Post;
+      }
+    | {
+        relationTo: 'events';
+        value: string | Event;
+      }
+    | {
+        relationTo: 'locations';
+        value: string | Location;
+      };
   slug?: string | null;
   meta?: {
     title?: string | null;
     description?: string | null;
     image?: (string | null) | Media;
   };
+  city?: string | null;
+  street?: string | null;
   categories?:
     | {
         relationTo?: string | null;
@@ -1775,6 +1786,8 @@ export interface SearchSelect<T extends boolean = true> {
         description?: T;
         image?: T;
       };
+  city?: T;
+  street?: T;
   categories?:
     | T
     | {
