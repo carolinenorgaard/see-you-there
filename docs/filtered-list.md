@@ -27,8 +27,13 @@ flowchart TD
 - `src/filteredList/` — the executor (`loadFilteredList`) and the filter factories (`pickOneFilter`, `pickManyFilter`, `dayFilter`, `toggleFilter`)
 - `src/components/events/filters/eventsFilters.ts` — the Events List's filter declarations
 - `src/components/locations/filters/locationsFilters.ts` — the Locations List's filter declarations
-- `src/components/filters/sharedFilterParsers.ts` — small parser primitives shared between server and client
-- `src/components/filters/CategoryChipRow.tsx`, `SlugComboboxFilter.tsx` — the filter UI controls (hand-written per page)
+- `src/components/filters/sharedFilterParsers.ts` — parser primitives shared between server and client (incl. `pageParser`, `perPageParser`)
+- `src/components/filters/CategoryChipRow.tsx`, `SlugComboboxFilter.tsx`, `PerPageSelect.tsx` — filter UI controls
+- `src/components/FilteredListing/` — the shared page-level view that composes header / filter bar / grid / pagination / skeleton around the result (see [filtered-listing.da.md](./filtered-listing.da.md))
+
+## Not handled by the filter system
+
+Pagination (`page`) and per-page size (`perPage`) are URL state but not narrowing axes — they live outside `loadFilteredList`. Each page parses them with its own `createLoader({ page: pageParser, perPage: perPageParser })` and feeds the result into `query.limit` / `query.page`. See `src/app/(frontend)/events/page.tsx`.
 
 ## Adding a new Filter
 

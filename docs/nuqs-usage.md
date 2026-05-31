@@ -29,18 +29,24 @@ Use `useQueryStates` (not `useQueryState`) when changing a filter must also rese
 | `CategoryChipRow` | `src/components/filters/CategoryChipRow.tsx` | `categories[]` | `categoriesParser` (shared) |
 | `SlugComboboxFilter` | `src/components/filters/SlugComboboxFilter.tsx` | dynamic (`region`, `location`) | `slugParser` (shared) |
 | `QueryPagination` | `src/components/Pagination/QueryPagination.tsx` | `page` | `pageParser` (shared) |
+| `PerPageSelect` | `src/components/filters/PerPageSelect.tsx` | `perPage` + `page` | `useQueryStates` — resets `page` on per-page change |
+| `PendingSkeleton` | `src/components/FilteredListing/PendingSkeleton.tsx` | `perPage` (read-only) | `perPageParser` (shared) — picks skeleton count |
 | `SourceToggle` | `src/components/events/SourceToggle.tsx` | `source` + `page` | `useQueryStates` — resets `page` on source change |
 | `DateChipRail` | `src/components/events/filters/DateChipRail.tsx` | `date` + `page` | `useQueryStates` — resets `page` on date change |
 
-**Shared parsers:** `src/components/filters/sharedFilterParsers.ts` — `categoriesParser`, `slugParser` (aliased as `regionParser` / `locationParser`), `pageParser`.
+**Shared parsers:** `src/components/filters/sharedFilterParsers.ts` — `categoriesParser`, `slugParser` (aliased as `regionParser` / `locationParser`), `pageParser`, `perPageParser`.
+
+`perPageParser` is whitelisted against `PER_PAGE_OPTIONS = [9, 27, 54]` via `normalizePerPage(raw)`; anything outside the whitelist falls back to the default (`9`). Pages read it on the server and feed it into `query.limit`.
 
 **Server-side loaders (`createLoader`):**
-- `src/components/events/filters/eventsFilters.ts` — `source`, `date`, `categories`, `region`, `location`, `page`
-- `src/components/locations/filters/locationsFilters.ts` — `categories`, `region`
+- `src/app/(frontend)/events/page.tsx` — `{ page, perPage }` (pagination, not Filters)
+- `src/app/(frontend)/locations/page.tsx` — `{ page, perPage }` (pagination, not Filters)
+- `src/components/events/filters/eventsFilters.ts` — `source`, `date`, `categories`, `region`, `location` (Filter system)
+- `src/components/locations/filters/locationsFilters.ts` — `categories`, `region` (Filter system)
 
 **Conventions baked into the shared parsers:**
 - `shallow: false` everywhere (forces RSC re-run on change)
-- `clearOnDefault: true` on singles and pagination (clean URLs)
+- `clearOnDefault: true` on singles, pagination, and per-page (clean URLs)
 - Related params paired via `useQueryStates` so changing a filter atomically resets `page`
 
 ## URL State Not (Yet) Using nuqs

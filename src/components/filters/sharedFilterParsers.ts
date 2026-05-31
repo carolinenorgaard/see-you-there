@@ -19,6 +19,17 @@ export const pageParser = parseAsInteger
   .withDefault(1)
   .withOptions({ ...serverSyncOptions, clearOnDefault: true })
 
+export const PER_PAGE_OPTIONS = [9, 27, 54] as const
+export type PerPage = (typeof PER_PAGE_OPTIONS)[number]
+const PER_PAGE_DEFAULT: PerPage = PER_PAGE_OPTIONS[0]
+
+export const perPageParser = parseAsInteger
+  .withDefault(PER_PAGE_DEFAULT)
+  .withOptions({ ...serverSyncOptions, clearOnDefault: true })
+
+export const normalizePerPage = (raw: number): PerPage =>
+  (PER_PAGE_OPTIONS as readonly number[]).includes(raw) ? (raw as PerPage) : PER_PAGE_DEFAULT
+
 export const normalizeCategorySlugs = (raw: string[]): string[] => raw.filter(Boolean)
 
 export const normalizeSlug = (raw: string): string | null => raw || null

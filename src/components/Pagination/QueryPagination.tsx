@@ -17,5 +17,15 @@ export const QueryPagination: React.FC<{
   // Pagination originally hardcoded router.push('/posts/page/N'); we added the
   // onNavigate hook so query-string archives like /events can reuse the markup
   // without forking the component.
-  return <Pagination {...props} onNavigate={(target) => void setPage(target)} />
+  return (
+    <Pagination
+      {...props}
+      onNavigate={(target) => {
+        void setPage(target)
+        document
+          .getElementById('filtered-listing-top')
+          ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }}
+    />
+  )
 }
