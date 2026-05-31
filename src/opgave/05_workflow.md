@@ -2,70 +2,66 @@
 
 ## Versionsstyring med Git og GitHub
 
-Hele projektet er versionsstyret i et Git-repository hostet på GitHub. Selvom det er et soloprojekt på et Proof of Concept-stadie (POC), har jeg valgt at arbejde ud fra en lille disciplineret branching-model frem for at committe direkte til produktionsbranchen. Dette valg giver tre konkrete gevinster: en ren og gennemskuelig historik, mulighed for at rulle ændringer tilbage pr. pull request frem for pr. enkelt commit, og vigtigst af alt, at Vercel automatisk genererer en _preview-deployment_ for hver pull request. Det gør det muligt at teste ændringer på en rigtig live URL, før de merges ind i produktionen.
+Hele projektet ligger som et Git-repository på GitHub. Selvom jeg er eneste udvikler, har jeg valgt at arbejde med to adskilte branches (parallelle versioner af koden) frem for at lægge ændringer direkte i produktionen. Det giver tre fordele: en ren historik, mulighed for at rulle en hel ændring tilbage i ét hug, og — vigtigst — at Vercel automatisk laver en testudgave af sitet (en _preview_) for hver ændring. Så kan jeg åbne en rigtig URL og se, at alt virker, før det går live.
 
 ## Branch-struktur: main og develop
 
 ```
-main      ← Produktionsbranch (deployer automatisk til see-you-there.vercel.app)
-develop   ← Udviklingsbranch (udløser automatisk en preview-URL pr. åben PR)
+main      ← Den live udgave (deployer automatisk til see-you-there.vercel.app)
+develop   ← Min arbejdsudgave (får en preview-URL pr. foreslået ændring)
 ```
 
-**`main`:** Fungerer som min produktions-branch. Den må kun modtage kode via en godkendt Pull Request. Hver merge til `main` udløser automatisk en ny deployment til den endelige produktions-URL på Vercel.
+**`main`** er den udgave, brugerne ser. Den må kun modtage kode via en godkendt Pull Request — en formel anmodning om at flytte ændringer fra én branch til en anden.
 
-**`develop`:** Fungerer som min primære arbejds-branch. Når en funktion eller en samling af mindre rettelser er klar og testet lokalt, åbner jeg en PR fra `develop` mod `main`, gennemgår kodedifferencen (diffen) i GitHubs interface og gennemfører merget.
+**`develop`** er der, jeg arbejder. Når en feature eller en samling småting er færdig og testet lokalt, åbner jeg en Pull Request fra `develop` mod `main`, kigger ændringerne igennem og flytter (merger) dem ind.
 
-På et udviklingsteam ville `develop` typisk være en langlivet branch, hvor flere udviklere løbende merger deres egne isolerede _feature-branches_ ind, ligesom man ofte ville have et separat _staging_-miljø placeret mellem `develop` og `main`. Da dette er et soloprojekt, skaber en yderligere opsplitning dog ikke merværdi. Vercels per-PR preview-funktionalitet erstatter her fuldt ud behovet for et dedikeret staging-miljø.
+I et team ville `develop` typisk være en fælles branch, hvor flere udviklere lægger deres egne opgavebranches ind, og man ville ofte have et separat _staging_-miljø før produktion. På et soloprojekt giver det ikke ekstra værdi — Vercels preview pr. Pull Request dækker behovet for staging.
 
 ## Navngivning af Pull Requests
 
-Jeg har bevidst valgt en let-genkendelig, dato-baseret navngivning for størstedelen af mine Pull Requests (PR'er):
+For de fleste Pull Requests har jeg valgt en simpel, dato-baseret navngivning:
 
-- `26-05-2026` (Første PR den 26. maj 2026)
-- `26-05-2026.2` (Anden PR samme dag)
-- `26-05-2026.3` (Tredje PR samme dag)
+- `26-05-2026` (første Pull Request den 26. maj 2026)
+- `26-05-2026.2` (anden samme dag)
+- `26-05-2026.3` (tredje samme dag)
 - `...`
-- `26-05-2026.7` (Syvende PR samme dag)
 
-Når jeg færdiggør flere afgrænsede opgaver på samme dag (eksempelvis en refaktorering, en ny feature eller et mindre kode-fix), åbner jeg en separat PR for hver opgave i stedet for at samle alt i én stor leverance. Suffixet `.2`, `.3` osv. sikrer unikke titler og sorterer automatisk historikken kronologisk i GitHubs PR-liste.
+Når jeg afslutter flere afgrænsede opgaver på samme dag, åbner jeg en Pull Request for hver i stedet for at samle det hele i én stor. Suffixet `.2`, `.3` osv. holder titlerne unikke og sorterer historikken kronologisk.
 
-Selvom denne pragmatiske navngivning ikke umiddelbart afslører indholdet i selve titlen, er den fuldt ud tilstrækkelig, når den kombineres med brugen af _Conventional Commits_ på de underliggende commits. Det gør det nemt for mig at spore specifikke ændringer tilbage i historikken.
+Titlen siger ikke i sig selv noget om indholdet, men kombineret med beskrivende beskeder på de enkelte commits inde i hver Pull Request kan jeg let finde tilbage til en specifik ændring.
 
-**Undtagelse:** når en PR løser noget særligt eller introducere en større ændring, får den i stedet en beskrivende titel.
+**Undtagelse:** Hvis en Pull Request løser noget særligt eller introducerer en større ændring, får den en beskrivende titel.
 
-Eksempler fra projektets historik:
+Eksempler fra historikken:
 
-- _Add Storybook with stories and GitHub Pages deploy_ – Introducerede et helt nyt værktøj og en deployment-pipeline.
-- _Keep users logged in across navigations on Vercel_ – fixede to sammenhængende auth-bugs, der kun ramte produktionsmiljøet
-  (beskrevet i [03_arkitektur.md](./03_arkitektur.md#authentication) under _Authentication_).
+- _Add Storybook with stories and GitHub Pages deploy_ – nyt værktøj og en ny deployment-pipeline.
+- _Keep users logged in across navigations on Vercel_ – fixede to sammenhængende login-bugs, der kun ramte produktion (beskrevet i [03_arkitektur.md](./03_arkitektur.md#authentication) under _Authentication_).
 
-**Tommelfingerreglen har således været:** Hvis en PR isoleret set løser én større opgave, tildeles den en sigende titel. Hvis den samler op på løbende, mindre justeringer i løbet af arbejdsdagen, anvendes datoformatet.
+**Tommelfingerregel:** Løser Pull Request'en én større opgave, får den en sigende titel. Samler den op på små ændringer i løbet af dagen, bruges datoformatet.
 
 ## Den typiske arbejdsdag
 
-1. **Pull:** Starter dagen med at udføre `git pull` på `develop`-branchen for at sikre, at jeg har den nyeste kode.
-2. **Udvikling:** Ændringer og nye funktioner kodes og committes i små, logiske intervaller. Hvis en ændring i funktionaliteten kræver flere commits, holder jeg dem atomiske – én isoleret ændring pr. commit.
-3. **Push:** Koden skubbes løbende til GitHub med `git push origin develop` for at sikre backup og versionsstyring i skyen - så ændringerne er sikret på GitHub.
-4. **Oprettelse af Pull Request (PR):** PR åbner en pull request fra `develop` mod `main` enten via GitHubs webinterface eller CLI-værktøjet (`gh pr create`). PR-titlen får dato-format (eller en beskrivende titel, hvis der er tale om en større arkitektonisk ændring).
-5. **Test i preview-miljø:** Vercel genererer automatisk en unik preview-URL direkte i Pull Requesten. Jeg åbner denne URL for at teste ændringerne i et isoleret cloud-miljø, der spejler produktionsmiljøet med hensyn til (Node-version, miljøvariabler og database).
-6. **Merge:** Hvis preview-miljøet opfører sig som forventet, merger jeg koden ind i `main`. Vercel deployer automatisk til produktionsmiljøet.
-7. **Oprydning (Cleanup):** GitHub er konfigureret til ikke automatisk at slette `develop`-branchen efter et merge, da den fungerer som en permanent og gennemgående udviklings-branch igennem hele projektforløbet.
+1. **Hent nyeste kode:** Jeg starter dagen på `develop` med `git pull`, så jeg er opdateret.
+2. **Udvikling:** Jeg koder og gemmer ændringer (committer) i små, fokuserede bidder. Kræver en opgave flere commits, holder jeg hver commit til én isoleret ændring.
+3. **Push:** Jeg sender ændringerne op til GitHub løbende (`git push origin develop`), så arbejdet er sikret i skyen.
+4. **Pull Request:** Når noget er klart, åbner jeg en Pull Request fra `develop` mod `main` — enten via GitHubs webinterface eller kommandoen `gh pr create`. Titlen er enten datoformat eller beskrivende, alt efter omfang.
+5. **Test i preview:** Vercel laver automatisk en preview-URL i selve Pull Request'en. Jeg åbner den og tester ændringerne i et miljø, der spejler produktion (samme Node-version, miljøvariabler og database).
+6. **Merge:** Hvis preview-miljøet opfører sig som forventet, merger jeg ind i `main`, og Vercel deployer automatisk til produktion.
+7. **Oprydning:** `develop` slettes ikke efter merge — den fungerer som en permanent arbejdsbranch gennem hele projektet.
 
 ## Hvad der virker, og hvad jeg ville lave anderledes på et team
 
-### Hvorfor modellen fungerer i den nuværende fase
+### Hvorfor modellen fungerer nu
 
-- **Kvalitetssikring:** Hver kode-ændring har et review-trin (selvevaluering via PR-diffen), så jeg fanger fejl inden produktion.
-- **Isolerede testmiljøer:** Hver PR får sin egen preview-deployment, så jeg sikrer, at applikationen testes på en live server (rigtig URL), under reelle betingelser frem for udelukkende på `localhost`.
-- **Ren historik:** Historikken på `main`-branchen bevares overskuelig, da den udelukkende består af afsluttede og testede merge-commits.
+- **Kvalitetssikring:** Hver ændring har et review-trin (mig selv, der gennemgår Pull Request'en), så jeg fanger fejl før produktion.
+- **Isolerede testmiljøer:** Hver Pull Request får sin egen preview-deployment. Jeg tester på en rigtig URL under reelle betingelser, ikke kun på `localhost`.
+- **Ren historik:** `main` består udelukkende af færdige, testede merges.
 
-### Hvad jeg ville ændre i et team-setup
+### Hvad jeg ville ændre i et team
 
-Hvis projektet skulle skaleres til et team-setup, ville følgende ændringer være nødvendige:
+- **Egne branches pr. opgave:** Udviklingen skulle flyttes fra den fælles `develop` til dedikerede branches navngivet efter opgaven (f.eks. `feature/profile-redesign`). Flere udviklere på samme branch giver hurtigt merge-konflikter.
+- **Krav om peer review:** `main` skulle beskyttes, så kode kun kan merges, når mindst én anden udvikler har godkendt den.
+- **Automatiserede tjek:** Linting, typechecking og tests skulle køres automatisk på hver Pull Request. I dag kører jeg dem manuelt på min egen maskine via `npm run lint` og `npm run test`.
+- **Beskrivende Pull Request-titler:** Datoformatet skulle erstattes af titler, der fortæller, hvad ændringen handler om — afgørende for, at et team hurtigt kan scanne historikken uden at dykke ned i hver enkelt commit.
 
-- **Isolerede feature-branches:** Udviklingen skulle flyttes væk fra den fælles `develop`-branch til dedikerede branches navngivet efter den specifikke opgave (f.eks. `feature/profile-redesign` eller `fix/event-validation`). At lade flere udviklere arbejde direkte på samme langlivede branch vil føre til hyppige merge-konflikter.
-- **Branch Protection og Peer Reviews:** Der skulle implementeres required reviews og branch protection på `main`, så kode udelukkende kan merges efter godkendelse fra mindst én anden udvikler.
-- **Automatiseret CI-pipeline:** Continuous Integration (CI) bør integreres som en obligatorisk kontrolmekanisme på alle PR'er. CI-pipelines skal automatisk afvikle linting, typechecking og enhedstest (`npm run lint`, `npm run test`). Lige nu køres disse udelukkende manuelt på den lokale maskine via "npm run lint" som jeg har kørt lokalt, men det er en disciplin der bør være automatiseret.
-- **Beskrivende PR-titler i stedet for datoformat:** Dato-baserede navngivningsformat skulle erstattes af beskrivende titler. Dette er afgørende for, at et samlet team hurtigt kan scanne PR-historikken og afkode, hvad hver enkelt ændring bidrager med, uden at skulle dykke ned i de enkelte commits.
-
-Det nuværende datoformat er en bevidst branch-struktur, der passer til et solo-projekt i POC-fasen. Det står dog øverst på listen over processer, der skal omlægges, hvis platformen vokser eller udvides med flere udviklere på projektet.
+Datoformatet er et bevidst valg, der passer til soloprojektet i POC-fasen. Men det står øverst på listen over ting, der skal omlægges, hvis projektet vokser og får flere udviklere på.

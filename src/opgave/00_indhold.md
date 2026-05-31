@@ -54,10 +54,8 @@ Hvordan jeg bruger Git og GitHub i projektet — branch-strategi, PR-navngivning
 
 Tjek af krav fra intro mod den færdige løsning, læring fra teknisk arbejde og proces, samt næste skridt.
 
-- [Lever projektet op til kravene fra 01?](./06_refleksion.md#lever-projektet-op-til-kravene-fra-01)
-- [Hvad jeg lærte teknisk](./06_refleksion.md#hvad-jeg-lærte-teknisk)
-- [Hvad jeg lærte om processen](./06_refleksion.md#hvad-jeg-lærte-om-processen)
-- [Hvad jeg ikke nåede](./06_refleksion.md#hvad-jeg-ikke-nåede)
-- [Hvad jeg ville lave anderledes hvis jeg startede forfra](./06_refleksion.md#hvad-jeg-ville-lave-anderledes-hvis-jeg-startede-forfra)
-- [Næste skridt](./06_refleksion.md#næste-skridt)
+- [Fra proof of concept til rigtigt produkt](./06_refleksion.md#fra-proof-of-concept-til-rigtigt-produkt)
+- [Hvad jeg tog med mig teknisk](./06_refleksion.md#hvad-jeg-tog-med-mig-teknisk)
+- [Hvad jeg tog med mig om processen](./06_refleksion.md#hvad-jeg-tog-med-mig-om-processen)
+- [Hvad der står tilbage](./06_refleksion.md#hvad-der-står-tilbage)
 - [Konklusion](./06_refleksion.md#konklusion)
