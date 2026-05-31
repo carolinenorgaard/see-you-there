@@ -103,6 +103,8 @@ Brug på en side (provideren er allerede på plads via layoutet):
 </FilteredResultsArea>
 ```
 
+**Bemærk:** I dag bruger `/events` og `/locations` det delte view `<FilteredListing />` ([filtered-listing.da.md](./filtered-listing.da.md)), som **selv** wrapper resultatet i `FilteredResultsArea` og bruger `PendingSkeleton`-komponenten (som læser `perPage` fra URL'en for at vælge antal skelet-kort). En ny filtreret listeside får derfor skelettet automatisk ved blot at komponere `<FilteredListing />` — du behøver ikke selv wrappe noget.
+
 ## Hvilke kontroller er tilkoblet?
 
 Alle URL-state-ændringer på `/events` og `/locations`:
@@ -110,7 +112,8 @@ Alle URL-state-ændringer på `/events` og `/locations`:
 - `CategoryChipRow` (kategori-chips)
 - `SlugComboboxFilter` (region- og lokation-dropdowns)
 - `DateChipRail` (dato-skinnen — kun events)
-- `SourceToggle` (See You There / Community — kun events)
+- `SourceToggle` (See You There / Fællesskab — kun events)
+- `PerPageSelect` (9 / 27 / 54 resultater per side)
 - `EventsClearFiltersButton` og `LocationsClearFiltersButton`
 - `QueryPagination`
 

@@ -194,7 +194,7 @@ Eksempel — Events' `source`-toggle: `syt` (See You There) eller `community`. P
 
 ### 4.4 `dayFilter` — YYYY-MM-DD → halv-åbent dag-vindue
 
-Et enkelt dato-felt. Validerer formatet med regex; bygger en halv-åben klausul `[dagens-start, næste-dags-start)`.
+Et enkelt dato-felt. Validerer formatet med regex **og** at datoen er en rigtig kalenderdato (så `2026-02-30` og `2026-99-99` afvises før de når `nextIsoDay`). Bygger en halv-åben klausul `[dagens-start, næste-dags-start)`.
 
 **[`src/filteredList/day.ts:14-43`](../src/filteredList/day.ts#L14-L43)**
 
@@ -211,7 +211,12 @@ export const dayFilter = (args: {
     parsers: { [args.paramKey]: parser },
     read: (loaded) => {
       const raw = (loaded[args.paramKey] as string | undefined) ?? ''
-      return raw && ISO_DATE.test(raw) ? raw : null
+      if (!raw || !ISO_DATE.test(raw)) return null
+      // Round-trip afviser shape-gyldige men kalender-ugyldige datoer
+      // som 2026-99-99 (ville crashe nextIsoDay) eller 2026-02-30.
+      const d = new Date(`${raw}T00:00:00.000Z`)
+      if (Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== raw) return null
+      return raw
     },
     toWhere: (day) => {
       if (!day) return null
@@ -231,6 +236,7 @@ export const dayFilter = (args: {
 | `?date=`               | `null`         | `null`                                                           |
 | `?date=2026-05-28`     | `"2026-05-28"` | `{ startDate: { greater_than_equal: …T00:00Z, less_than: …T00:00Z } }` |
 | `?date=ulovligt`       | `null`         | `null` (regex afviser inputtet)                                  |
+| `?date=2026-02-30`     | `null`         | `null` (kalender-ugyldig — Date normaliserer den til en anden dag) |
 
 ---
 
@@ -246,7 +252,7 @@ export const dayFilter = (args: {
 const load = createLoader(mergeFilterParsers(filters))
 ```
 
-`mergeFilterParsers` er en simpel reduce der spreder alle filtres `parsers`-maps ind i ét stort map. Det er den eneste grund den eksisterer ([`src/filteredList/types.ts:27-31`](../src/filteredList/types.ts#L27-L31)):
+`mergeFilterParsers` er en simpel reduce der spreder alle filtres `parsers`-maps ind i ét stort map. Det er den eneste grund den eksisterer ([`src/filteredList/types.ts:30-34`](../src/filteredList/types.ts#L30-L34)):
 
 ```ts
 export const mergeFilterParsers = (filters: FiltersRecord): Record<string, any> =>
@@ -411,17 +417,20 @@ Den genbruges af UI-kontrollerne så server og klient deler nøjagtig samme URL-
 
 ## 7. Hvordan siden bruger det
 
-**[`src/app/(frontend)/events/page.tsx:27-55`](../src/app/(frontend)/events/page.tsx#L27-L55)**
+**[`src/app/(frontend)/events/page.tsx`](../src/app/(frontend)/events/page.tsx)**
 
 ```tsx
+const loadPage = createLoader({ page: pageParser, perPage: perPageParser })
+
 export default async function EventsPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const resolved = await searchParams
-  const { page: rawPage } = loadPage(resolved)
+  const { page: rawPage, perPage: rawPerPage } = loadPage(resolved)
   const page = Math.max(1, rawPage)
+  const limit = normalizePerPage(rawPerPage)
 
   const payload = await getPayload({ config: configPromise })
 
@@ -434,7 +443,7 @@ export default async function EventsPage({
       query: {
         collection: 'events',
         depth: 2,
-        limit: PAGE_SIZE,
+        limit,
         page,
         sort: 'startDate',
       },
@@ -442,10 +451,11 @@ export default async function EventsPage({
   ])
 ```
 
-To detaljer der ofte forvirrer:
+Tre detaljer der ofte forvirrer:
 
-1. **`await searchParams` derefter `Promise.resolve(resolved)`** — Next.js 16 leverer `searchParams` som en Promise. Vi await'er den én gang (så vi kan parse `page` lokalt), men `loadFilteredList` vil **også** have en Promise (det er dens kontrakt med nuqs), så vi pakker den ind igen. Det er ikke et ekstra round-trip — bare en gen-pakning.
-2. **`page` er ikke et Filter** — pagination er URL-state men ikke et narrowing-aksis. Det parses separat ([`docs/filtered-list.da.md#7`](#)) og sendes ind i `query.page`.
+1. **`await searchParams` derefter `Promise.resolve(resolved)`** — Next.js 16 leverer `searchParams` som en Promise. Vi await'er den én gang (så vi kan parse `page`/`perPage` lokalt), men `loadFilteredList` vil **også** have en Promise (det er dens kontrakt med nuqs), så vi pakker den ind igen. Det er ikke et ekstra round-trip — bare en gen-pakning.
+2. **`page` og `perPage` er ikke Filters** — pagination og side-størrelse er URL-state men ikke narrowing-akser. De parses separat via `createLoader({ page: pageParser, perPage: perPageParser })` og sendes ind i `query.page` / `query.limit`. `normalizePerPage` validerer mod whitelisten `PER_PAGE_OPTIONS = [9, 27, 54]` og falder tilbage på defaulten ved ugyldigt input.
+3. **Siden rendrer ikke selv resultatet** — den komponerer det delte view `<FilteredListing />` (header / filterBar / empty / renderItem). Se [filtered-listing.da.md](./filtered-listing.da.md).
 
 Resultatet bruges som:
 
@@ -495,7 +505,7 @@ URL'en bærer slugs (`?region=cph`) fordi de er læsbare og stabile — id'er ka
 
 Oversættelsen sker via to små hjælpere i:
 
-**[`src/components/filters/sharedFilterParsers.ts:28-36`](../src/components/filters/sharedFilterParsers.ts#L28-L36)**
+**[`src/components/filters/sharedFilterParsers.ts:39-47`](../src/components/filters/sharedFilterParsers.ts#L39-L47)**
 
 ```ts
 export const resolveIdsBySlug = <T extends SlugItem>(slugs: string[], items: T[]): T['id'][] => {
@@ -540,12 +550,14 @@ Det er det. Ingen ændringer til `loadFilteredList`, ingen manuel `Promise.all`,
 
 Modulet har integration-tests der kører uden DB (de stubber `payload.find` med `vi.fn`):
 
-**[`tests/int/list.int.spec.ts`](../tests/int/list.int.spec.ts)**
+**[`tests/int/filteredList.int.spec.ts`](../tests/int/filteredList.int.spec.ts)**
+
+Selve view-komposition'en (`<FilteredListing />`) er dækket af **[`tests/int/FilteredListing.int.spec.tsx`](../tests/int/FilteredListing.int.spec.tsx)**.
 
 Kør dem:
 
 ```bash
-npx vitest run --config ./vitest.config.mts tests/int/list.int.spec.ts
+npx vitest run --config ./vitest.config.mts tests/int/filteredList.int.spec.ts
 ```
 
 Testene er ordnet som en læseguide selv:
