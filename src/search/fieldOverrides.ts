@@ -37,6 +37,22 @@ export const searchFields: Field[] = [
     ],
   },
   {
+    name: 'city',
+    type: 'text',
+    index: true,
+    admin: {
+      readOnly: true,
+    },
+  },
+  {
+    name: 'street',
+    type: 'text',
+    index: true,
+    admin: {
+      readOnly: true,
+    },
+  },
+  {
     label: 'Categories',
     name: 'categories',
     type: 'array',
