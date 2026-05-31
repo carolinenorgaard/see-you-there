@@ -2,101 +2,111 @@
 
 ## Stack
 
+Dette afsnit beskriver de teknologier, som applikationen er bygget på.
+
 ### PayloadCMS
 
-Payload udgør kernen af projektet. Det er et Node-baseret headless CMS (Content Management System), der fungerer særdeles godt sammen med Next.js. Jeg ser det som en fordel, at både frontend og backend er skrevet i JavaScript/TypeScript, så jeg ikke skal skifte mellem to forskellige sprog under udviklingen.
+PayloadCMS udgør kernen i projektet. Det er et Node.js-baseret headless CMS (Content Management System), som fungerer særdeles godt sammen med Next.js. En væsentlig fordel ved denne løsning er, at både frontend og backend er skrevet i JavaScript/TypeScript, hvilket skaber et mere ensartet udviklingsmiljø og gør udviklingsprocessen mere overskuelig, da jeg ikke skal arbejde på tværs af forskellige programmeringssprog.
 
-Payload er open source med et stort community og fremstår som et etableret projekt, der passer godt til denne løsning. Payload blev desuden opkøbt af Figma i 2025, hvilket både viser stor interesse for produktet og sikrer økonomi til, at projektet kan videreudvikles. Den version af Payload, jeg bruger, er v3, som blev udgivet i november 2024 og fortsat vedligeholdes aktivt.
+Payload er open source og understøttes af et aktivt community, hvilket gør det til et veletableret og moderne CMS, der passer godt til projektets behov. I 2025 blev Payload desuden opkøbt af Figma, hvilket både viser/indikerer stor interesse for teknologien og giver gode muligheder for en stabil videreudvikling af platformen. Den version af Payload, jeg bruger, er v3, som blev udgivet i november 2024 og fortsat vedligeholdes aktivt.
 
-**Fordele**
+**Fordele:**
 
-- Samme sprog i frontend og backend (TypeScript)
+- Frontend og backend anvender samme sprog (TypeScript), hvilket giver en mere sammenhængende udviklingsproces.
 - Hurtigt at lære og let at tilpasse til projektets egne datamodeller
-- Hosting er enklere, da der ikke skal driftes en separat PHP-server, som man fx ville skulle med WordPress
-- Understøtter flere databaser, men jeg valgte MongoDB, som Payload anbefaler
+- Hosting er enklere, da der ikke kræves en separat PHP-server, som eksempelvis ved WordPress
+- Understøtter flere databaser - jeg valgte MongoDB, som Payload anbefaler
 
-**Ulemper**
+**Ulemper:**
 
-- Mindre community end fx WordPress — færre færdige plugins og guides at slå op
+- Mindre community end eksempelvis WordPress, hvilket betyder — færre færdige plugins, guides og vejledninger at slå op
 - Stadig et ungt projekt, så dokumentation og API'er ændrer sig oftere
-- Tæt koblet til Next.js — svært at skifte frontend senere
+- Tæt koblet til Next.js — kan gøre det mere omfattende og svært at skifte frontend-teknologi senere i projektets levetid
 
 ### Next.js
 
-En stor grund til, at jeg valgte Payload, er, at det som standard kommer med Next.js — en løsning jeg kender i forvejen. Next.js er et komplet React-framework, der dækker både server- og client-side, og som gør det hurtigt at bygge en solid frontend. Jeg bruger Next.js 16 (udgivet oktober 2025) med fil-baseret routing via App Router, hvilket gør det nemt at oprette nye sider sammenlignet med en "klassisk" client-side React-opsætning.
+En af grundene til, at jeg valgte Payload, er, at systemet som standard er bygget sammen med Next.js, som jeg allerede kender og har erfaring med i forvejen. Next.js er et React-framework, der understøtter både server-side rendering og client-side rendering, hvilket gør det muligt at bygge en moderne og solid frontend-webapplikation. I projektet anvender jeg Next.js 16 (udgivet i oktober 2025) med App Router, som benytter filbaseret routing. Dette gør det nemt at oprette og strukturere nye sider, da routingen automatisk genereres ud fra projektets mappestruktur, sammenlignet med en mere traditionel client-side React-opsætning, hvor routing typisk konfigureres manuelt.
 
-**Fordele**
+**Fordele:**
 
-- Samme sprog som backend (TypeScript)
-- Fil-baseret routing via App Router gør sidestrukturen forudsigelig
-- React Server Components giver mulighed for at hente data direkte på serveren uden ekstra API-lag
-- Indbygget optimering af billeder, fonte og bundling
-- Tæt integration med Vercel, som er den anbefalede hostingplatform
+- Samme programmeringssprog som backend (TypeScript), hvilket giver en mere ensartet udviklingsproces
+- Filbaseret routing via App Router gør projektets sidestruktur overskuelig og forudsigelig
+- React Server Components gør det muligt at hente data direkte på serveren uden behov for et ekstra API-lag
+- Indbygget optimering af billeder, skrifttyper og bundling bidrager til bedre performance
+- Tæt integration med Vercel, som er den anbefalede hostingplatform til Next.js.
 
-**Ulemper**
+**Ulemper:**
 
-- Stærkt bundet til Vercel — bedst hvis man bliver i deres økosystem
-- Hurtigt tempo i nye versioner betyder løbende oprydning i koden
-- Fejlfinding kan være besværlig, fordi det ikke altid er tydeligt om en fejl sker på server eller i browser
+- Stærkt bundet til Vercel — hvilket er bedst, hvis man bliver i deres økosystem
+- Hyppige opdateringer og nye versioner kan medføre behov for løbende vedligeholdelse og oprydning i koden
+- Fejlfinding kan være besværlig og mere kompleks, fordi det ikke altid er tydeligt, om en fejl opstår på server eller i browseren
 
 ### MongoDB / Atlas
 
-Payload anbefaler MongoDB, som er en dokument-baseret database. I modsætning til en relationel database (SQL), hvor data gemmes i tabeller med faste kolonner og relationer via fremmednøgler, gemmer MongoDB data som JSON-lignende dokumenter med et fleksibelt skema.
+Denne struktur passer godt til et CMS-drevet projekt, fordi datamodellen ofte udvikler sig undervejs i projektforløbet. Nye felter kan tilføjes, ændres eller fjernes uden behov for at køre tunge og omfattende migrationsprocesser. Samtidig arbejder Payload internt med JSON-lignende datastrukturer, hvilket gør integrationen mellem CMS og database naturlig.
 
-Det fleksible skema passer godt til et CMS-drevet projekt, fordi datamodellen ofte ændrer sig undervejs — felter tilføjes, omdøbes eller fjernes uden, at man behøver at køre tunge migrations. Til gengæld giver man afkald på nogle af de garantier, SQL-databaser tilbyder, fx joins på tværs af tabeller og transaktioner på tværs af flere collections. Payload håndterer relationer mellem dokumenter i applikationslaget, så dette er sjældent et problem i praksis.
+Til hosting af databasen anvendes MongoDB Atlas, som er MongoDBs egen cloud-baserede løsning. Atlas tilbyder blandt andet automatiseret drift, sikkerhedsfunktioner og et gratis cluster, som er tilstrækkeligt til en prototype af denne størrelse.
 
-MongoDB Atlas er en managed hosting-løsning til MongoDB, der tilbyder et gratis cluster, som passer til en prototype i denne størrelse.
+**Fordele:**
 
-**Fordele**
+- Fleksibelt skema, som gør det muligt at ændre datamodellen uden omfattende migrationsprocesser
+- Velegnet til JSON-lignende data, som Payload allerede arbejder med i forvejen
+- Gratis cluster i MongoDB Atlas er rigeligt til udvikling og prototyping
+- Tæt integration med Payload og den øvrige teknologistak.
 
-- Fleksibelt skema, så datamodellen kan ændres uden tunge migrations
-- Passer godt til JSON-lignende data, som Payload arbejder med i forvejen
-- Gratis cluster i Atlas er rigeligt til en prototype
+**Ulemper:**
 
-**Ulemper**
-
-- Færre garantier end en SQL-database, fx på tværs af tabeller
-- Komplekse forespørgsler på tværs af data kan blive klodsede
-- Skift til en anden database senere kan kræve omskrivning af datalaget
+- Færre garantier og indbyggede muligheder for komplekse relationer, sammenlignet med SQL-databaser - fx: på tværs af tabeller
+- Komplekse og avancerede forespørgsler på tværs af store datamængder kan blive klodsede og være mere komplekse at implementere
+- Et skift til en anden database-type senere, kan kræve ændringer og omskrivning i datalaget og applikationslogikken
 
 ## Authentication
 
-Til brugeroprettelse og login bruger jeg Payloads indbyggede `users`-collection, som leverer hashing af passwords, sessions og rolle-baseret adgangskontrol ud af kassen. Det er en bevidst beslutning om at læne sig op ad et veletableret framework's defaults frem for at finde på noget selv på et sikkerhedsfølsomt område, hvor egne fejl kan have store konsekvenser.
+Til brugeroprettelse og login anvender jeg Payloads indbyggede `users`-collection, som håndterer hashing af passwords, sessions og rollebaseret adgangskontrol. Ved at benytte den indbyggede løsning får jeg adgang til velafprøvede sikkerhedsfunktioner uden selv at skulle implementere dem fra bunden.
+
+Valget er bevidst, da autentificering er et sikkerhedskritisk område, hvor fejl i implementeringen kan få alvorlige konsekvenser. Derfor vurderer jeg det som en fordel at benytte et veletableret frameworks standardløsninger frem for at udvikle en egen løsning.
 
 ### Clerk som muligt alternativ
 
-Jeg har ikke selv arbejdet med Clerk endnu, men har set flere udviklere omtale det positivt — særligt for de færdige UI-komponenter, sociale logins og den indbyggede håndtering af sessions og MFA. På POC-stadiet vurderer jeg dog at Payloads indbyggede auth er tilstrækkeligt, og at det ikke giver mening at trække en ekstern auth-tjeneste ind, før jeg ved mere om, hvilke krav projektet reelt får.
+Jeg har ikke selv arbejdet med Clerk endnu, men har set flere udviklere omtale det positivt — særligt for de færdige UI-komponenter, sociale logins og den indbyggede håndtering af sessions. På POC-stadiet vurderer jeg dog at Payloads indbyggede auth er tilstrækkeligt, og at det ikke giver mening at trække en ekstern auth-tjeneste ind, før jeg ved mere om, hvilke krav projektet reelt får.
 
 ## Drift og platform
 
-Hvor stacken handler om _hvad_ applikationen er bygget af, handler det her afsnit om _hvor_ den kører — den eksterne infrastruktur, jeg ikke selv drifter, men har valgt og konfigureret.
+Hvor den tekniske stack beskriver, hvilke teknologier applikationen er bygget med, handler dette afsnit om, hvor applikationen kører, samt de eksterne tjenester og den infrastruktur, der understøtter løsningen.
+
+### Domain & DNS
+
+Jeg har købt domainet [see-you-there.dk](http://see-you-there.dk) via [simply.com](http://simply.com). Her har jeg via deres DNS (domain name system) mulighed for at pege på den server med projektet der er hosted hos Vercel og sende emails via Resend.
 
 ### Hosting
 
-Applikationen hostes på **Vercel**, som er den anbefalede platform til Next.js. Det giver automatiske preview-deployments pr. pull request, indbygget CDN og et gratis hobby-tier, der er rigeligt til en prototype.
+Applikationen hostes på Vercel, som er den anbefalede hostingplatform til Next.js. Platformen tilbyder blandt andet automatiske preview-deployments for hver pull request, et indbygget globalt CDN, samt et gratis hobby-tier, der er tilstrækkeligt til en prototype af denne størrelse.
 
-Jeg har også overvejet at hoste projektet selv via **Coolify** på en egen server. Det ville give fuld kontrol over driften og potentielt lavere omkostninger på sigt, hvis platformen vokser ud af Vercels gratis tier. Men det er unødvendigt på nuværende stadie og ville kræve indsigt i egen serveropsætning (drift, sikkerhed, backups, SSL-certifikater m.m.) — ressourcer projektet ikke har lige nu. Det er noget, der giver mening at vende tilbage til, hvis hostingomkostningerne på Vercel bliver en reel begrænsning.
+Jeg har også overvejet at hoste projektet selv ved hjælp af Coolify på en egen server. Denne løsning ville give større kontrol over driften og potentielt lavere omkostninger på længere sigt, hvis projektet vokser ud over Vercels gratis tier.
+
+På nuværende tidspunkt og stadie, vurderer jeg dog at det er unødvendigt, da fordelene ikke opvejer den ekstra kompleksitet, som kræver indsigt i egen server-opsætning. Selv-hosting ville blandt andet medføre ansvar for drift, sikkerhed, backups, håndtering af SSL-certifikater og m.m. hvilket ligger uden for projektets nuværende scope og ressourcer.
+
+Hvis projektet på et senere tidspunkt får flere brugere og højere driftsomkostninger, og Vercel dermed bliver en reel begrænsning, kan en selv-hostet løsning være relevant at genoverveje og vende tilbage til.
 
 ### Storage
 
-Vercels serverless miljø har ikke et persistent filsystem, så uploads kan ikke gemmes lokalt. I stedet bruger jeg **Vercel Blob** sammen med Payloads `@payloadcms/storage-vercel-blob`-adapter. Det giver en fuldt managed object storage, der er tæt integreret med resten af hosting-opsætningen og leveres via Vercels CDN.
+Da Vercels server ikke har et persistent filsystem, kan uploads ikke gemmes lokalt. I stedet har jeg valgt at bruge Vercel Blob sammen med Payloads `@payloadcms/storage-vercel-blob-adapter`. Dette giver en fuldt managed object storage-løsning, som er tæt integreret med den øvrige hosting-opsætning og leveres direkte via Vercels CDN.
 
-**Fordel:** Det var meget hurtigt at sætte op. Adapteren konfigureres med få linjer i `payload.config.ts`, og fordi jeg allerede hoster på Vercel, ligger filerne tæt på Next.js-applikationen og leveres via samme CDN — uden ekstra konto eller IAM-opsætning.
+**Fordel:** En væsentlig fordel ved dette valg er den hurtige implementeringstid. Adapteren sættes op med få linjer i `payload.config.ts`, og fordi jeg allerede benytter Vercel til hosting, ligger filerne tæt på Next.js-applikationen. Det sparer mig for at skulle administrere ekstra konti eller konfigurere IAM (Identity and Access Management).
 
-**Ulempe:** På Vercels hobby-tier får man kun 1 GB Blob storage gratis. Det er tilstrækkeligt til en POC, men hvis platformen vokser, og brugerne begynder at uploade billeder til deres begivenheder for alvor, vil det hurtigt blive en omkostning at tage stilling til. Det naturlige skifte vil i så fald være at flytte hele driften over på **Coolify** på egen server (nævnt ovenfor under hosting), så jeg samtidig kan hoste min egen object storage dér — frem for at sprede mig over flere managed services hver med deres egen regning.
+**Ulempe:** Den primære ulempe er dog, at man på Vercels _hobby-tier_ kun får 1 GB gratis Blob-storage. Det er tilstrækkeligt til en Proof of Concept (POC), men det vil hurtigt medføre ekstra omkostninger, hvis platformen vokser og brugerne begynder at uploade billeder til deres begivenheder i større omfang. Bliver det aktuelt, vil det naturlige skifte være at flytte hele driften over på Coolify på egen server (som beskrevet under hosting). Dette vil gøre det muligt at hoste min egen object storage og derved samle driften ét sted, frem for at sprede afhængigheder og omkostninger ud over flere forskellige managed services.
 
 ### Storybook-hosting
 
-Designsystemets Storybook-bibliotek hostes gratis på **GitHub Pages** via en GitHub Actions-workflow, der bygger og udgiver det statiske output hver gang der pushes til `main`. Det betyder at biblioteket er offentligt tilgængeligt på et link og kan deles uden at modtageren skal clone og køre projektet lokalt. Den tekniske opsætning er beskrevet i [04_kodeeksempler.md](./04_kodeeksempler.md#3-storybook-som-komponent-bibliotek-og-fremtidig-chromatic).
+Designsystemets Storybook-bibliotek hostes gratis på GitHub Pages via et GitHub Actions-workflow, der bygger og udgiver det statiske output automatisk, hver gang der pushes til main. Det betyder, at biblioteket er offentligt tilgængeligt online og nemt kan deles via et link, uden at modtageren behøver at klone og køre projektet lokalt. Den tekniske opsætning er beskrevet i [04_kodeeksempler.md](./04_kodeeksempler.md#3-storybook-som-komponent-bibliotek-og-fremtidig-chromatic).
 
-### Mail
+### E-mail-håndtering
 
-På nuværende tidspunkt sender jeg transaktionel mail (verifikation af konto, glemt password m.m.) via en **Gmail-konto**, jeg har oprettet specifikt til projektet. Det er ikke den optimale løsning — Gmail har sendekvoter og er ikke beregnet til systemudsendt mail, så pålideligheden vil falde, hvis volumen stiger — men det virker for nu på POC-stadiet.
+Lige nu bruger vi kun e-mails i forbindelse med oprettelse af brugere eller ved glemt password. Jeg prøvede først at oprette en almindelig Gmail-konto og sende mails via Nodemailer, men Google blokerede hurtigt denne løsning.
 
-På sigt er der to retninger, jeg vil overveje:
+Derfor valgte jeg at gå med Resend [https://resend.com/](https://resend.com/), som også anbefales i Payload-dokumentationen.
 
-- Skifte til en dedikeret transaktionel mail-udbyder som **Resend**, hvis Payload fortsat skal stå for auth-flowet.
-- Hvis mails udelukkende handler om brugeroprettelse og password-reset, kan det give mere mening at lade en auth-leverandør som **Clerk** håndtere det hele, så jeg helt slipper for at vedligeholde mail-templates og SMTP-konfiguration selv.
+Det er en fin løsning for nu, men da Resend har sendekvoter, kan det være relevant at overveje at uddelegere til en auth-platform (Clerk). Da mailbehovet udelukkende dækker brugeroprettelse og password-reset, kan det give bedre mening at lade en samlet løsning som Clerk håndtere hele flowet.
 
 ## Diagram over teknisk arkitektur
 
@@ -132,13 +142,13 @@ flowchart LR
     end
 ```
 
-Frontend og Payload CMS kører i samme Next.js-applikation på Vercel, så hele systemet deployes som én enhed med ét repo og ét sæt miljøvariabler. Payload genererer automatisk TypeScript-typer ud fra mine collections, som frontend-koden kan importere direkte — det betyder, at hvis jeg fx omdøber et felt på `events`-collectionen, fanger TypeScript med det samme de steder i frontenden, der refererer til det gamle navn. Data persisteres i MongoDB Atlas, og transaktionel mail sendes via en ekstern SMTP-udbyder.
+Frontend-delen og Payload CMS afvikles i den samme Next.js-applikation på Vercel, hvilket betyder, at hele systemet deployes som én samlet enhed fra ét fælles repository og med ét sæt miljøvariabler. Payload genererer automatisk TypeScript-typer ud fra mine collections, som frontend-koden kan importere direkte. Hvis jeg eksempelvis omdøber et felt i min `events`-collection, fanges dette med det samme af TypeScript-compileren de steder i frontenden, der refererer til det gamle navn. Applikationens data persisteres i MongoDB Atlas.
 
-Systemet har to UI-flader: den offentlige frontend, som almindelige brugere møder i browseren, og Payloads Admin UI på `/admin`, hvor redaktører opretter og redigerer indhold. Begge er en del af samme Next.js-applikation, men de fungerer som adskilte interfaces oven på den samme Payload-instans.
+Systemet har to primære brugerflader: den offentlige frontend, som almindelige brugere møder i browseren, og Payloads Admin UI på `/admin`, hvor redaktører opretter og redigerer indhold. Begge interfaces er en del af samme Next.js-applikation, men de fungerer som to adskilte lag oven på den samme Payload-instans.
 
-Uploads af billeder fra admin-UI'et går gennem Payload, som videresender filen til Vercel Blob via `@payloadcms/storage-vercel-blob`. Når et billede senere skal vises på sitet, returnerer Payload bare URL'en til Blob-filen — selve billed-bytes går ikke gennem Payload.
+Billed-uploads via administrationspanelet går igennem Payload, som videresender filen til Vercel Blob ved hjælp af `@payloadcms/storage-vercel-blob`. Når et billede efterfølgende skal vises på websitet, returnerer Payload blot URL'en til filen i Vercel Blob – selve dataoverførslen (billed-bytes) går derved udenom Payload-instansen, hvilket aflaster applikationen.
 
-## Datamodel — events knyttet til steder
+## Datamodel: Relationer mellem events og lokationer
 
 ```mermaid
 flowchart LR
@@ -161,31 +171,54 @@ flowchart LR
     USERS -->|skriver| EVENT_COMMENTS
 ```
 
-Kernen i datamodellen er, at en **Event** altid hører til ét **Location** (relationen er `required`), og at et Location omvendt eksponerer sine events via et `join`-felt. Både Locations og Events kategoriseres via en mange-til-mange relation til **Categories**, og hver Location har et adressefelt (gade, postnummer, by og region — vist samlet som `address` i diagrammet), så indhold kan filtreres geografisk.
+Kernen i datamodellen er struktureret omkring, at et `Event` altid er tilknyttet ét `Location` (hvor relationen er påkrævet/required), mens et `Location` omvendt eksponerer sine tilknyttede events via et `join`-felt. Både `Locations` og `Events` kategoriseres gennem en mange-til-mange-relation til `Categories`. Derudover indeholder hvert lokationsdokument et struktureret adressefelt (bestående af gade, postnummer, by og område – i diagrammet repræsenteret samlet som `address`), hvilket muliggør geografisk filtrering af platformens indhold.
 
-**Users** indgår i flere roller på et event: som `opretter` (én pr. event), som `deltager` og som `liker` — de tre relationer er i diagrammet slået sammen til én pil for at holde det læseligt, men i koden er det tre selvstændige felter på `events`-collectionen. **EventComments** holder kommentartråden adskilt fra event-dokumentet, så listen kan vokse uden at oppuste selve eventet.
+`Users`-collectionen indgår i flere forskellige roller i forhold til en begivenhed: som opretter (én pr. event), som deltager og i form af "likes". For at bevare diagrammets overskuelighed er disse tre relationer slået sammen til én enkelt pil, men i kildekoden er de implementeret som tre selvstændige relationsfelter på `events`-collectionen. Kommentartråde håndteres desuden i en separat `EventComments`-collection frem for direkte i event-dokumentet.
+Dette arkitektoniske valg sikrer, at mængden af kommentarer kan vokse frit, uden at det øger det enkelte events dokumentstørrelse unødigt.
 
-Diagrammet udelader **Media**-collectionen (som leverer billed-uploads til Locations, Events og Users) samt Payloads CMS-kollektioner (`Posts`, `Pages`, `Header`/`Footer`-globals), som ikke er en del af event-domænet.
+For at holde fokus skarpt på det primære event-domæne udelader diagrammet `Media`-collectionen (der håndterer billed-uploads for både `Locations`, `Events` og `Users`) samt Payloads standardiserede CMS-collections (såsom `Posts`, `Pages` og globale felter til header/footer).
 
-## Designsystem og værktøjer
+## Designsystemets principper og arkitektur
 
-Frontendens designsystem hviler på en lille håndfuld principper og værktøjer, der trækker i samme retning:
+Frontendens designsystem bygger på en række udvalgte principper og værktøjer, der trækker i samme retning og understøtter en konsistent udviklingsproces:
 
-- **Figma som mood board og udgangspunkt** — ikke som single source of truth. Jeg brugte Figma til at samle stemninger og prøve kort-kompositioner af. Men Figma-filen er bevidst ikke holdt vedlige som projektets autoritative designkilde, fordi den uundgåeligt ville komme ud af sync med koden — og det er koden brugerne reelt møder.
-- **Storybook som single source of truth for designsystemet**. Det er her komponenterne lever i deres "rene" form, dokumenteret med varianter, props og brugseksempler, og det er det biblioteket fortæller sandheden om hvordan en `SeeYouThereCard`, en `Badge` eller en `LikeButton` ser ud og opfører sig. Hvis Figma og Storybook nogensinde er uenige, er det Storybook der vinder — fordi det er der, designet faktisk bliver brugt i produktionskoden.
-- **Tailwind v4 med CSS-variabler i tre lag** som tokens-pipeline. Lag 1 er rå farveværdier i `:root` (defineret i `oklch`, som er den moderne, perceptuelt ensartede farverum, der gør det lettere at holde kontrast og lysstyrke konsistente). Lag 2 er et `[data-theme='dark']`-blok der overskriver de samme variabler med deres mørke-mode-værdier — temaskift kræver kun at ændre én attribut på `<html>`. Lag 3 er en `@theme inline`-blok der mapper `--background` → `--color-background` osv., så Tailwind-klasser som `bg-background` og `text-foreground` peger på de samme variabler. Det betyder at jeg har én kanonisk farve-definition i hele projektet, og at et farveskift kun skal laves ét sted.
-- **shadcn-stil compound components** som mønster: i stedet for store komponenter med mange props, eksponerer jeg små byggesten (Card, CardHeader, CardFooter, CardBody osv.) som det enkelte sted i koden selv kan sætte sammen, som det passer. shadcn-primitives forbruger præcis de samme CSS-variabler beskrevet ovenfor (`bg-background`, `border-border`, `text-muted-foreground` osv.), så når jeg drop'er en `Badge` eller en `Card` ind i en story eller en side, falder de automatisk på plads i forhold til resten af paletten. Det matcher også det visuelle designsprog, der i sig selv er compositional — samme kort-skelet bruges til både events og locations, men indholdet inde i hver slot er forskelligt.
+**Figma som moodboard og udgangspunkt – ikke som _Single Source of Truth_:**
+Jeg brugte Figma til at samle visuelle stemninger og prøve kort-kompositioner af. Figma-filen er dog bevidst ikke blevet vedligeholdt som projektets autoritative designkilde, da den uundgåeligt ville ende med at komme ud af synkronisering med kildekoden – og det er i sidste ende koden, som brugerne reelt møder og interagerer med.
 
-Valget om at gøre Storybook (og ikke Figma) til den autoritative kilde er en bevidst beslutning om at lade kode og dokumentation ligge så tæt på hinanden som muligt. Storybook-biblioteket er beskrevet nærmere i [04_kodeeksempler.md](./04_kodeeksempler.md#3-storybook-som-komponent-bibliotek-og-fremtidig-chromatic).
+**Storybook som systemets sandhedskilde:**
+Det er i Storybook, komponenterne lever i deres rene form, dokumenteret med tilhørende varianter, props og brugseksempler. Det er dette bibliotek, der definerer, hvordan specifikke komponenter som `SeeYouThereCard`, `Badge` eller `LikeButton` præcist ser ud og opfører sig. Skulle der opstå uoverensstemmelser mellem Figma og Storybook, er det altid Storybook, der er gældende, da det er her, designet er integreret i den faktiske produktionskode.
+
+**Tailwind v4 med CSS-variabler i en trelags _tokens-pipeline_:**
+
+1. _Lag 1 (Rå værdier):_ Globale farveværdier defineres i `:root` ved hjælp af `oklch` – et moderne, perceptuelt ensartet farverum, som gør det lettere at bevare en konsistent kontrast og lysstyrke på tværs af paletten.
+2. _Lag 2 (Tema-overstyring):_ En `[data-theme='dark']`-blok overskriver de samme variabler med deres respektive mørke-mode-værdier. Et globalt temaskift kræver derved blot en ændring af en enkelt attribut på `<html>`-elementet.
+3. _Lag 3 (Utility-mapping):_ En `@theme`-inline-blok mapper de rå værdier (f.eks. `--background` til `--color-background`), så Tailwind-klasser som `bg-background` og `text-foreground` automatisk peger på de korrekte variabler.
+
+Dette sikrer én kanonisk farvedefinition i hele projektet, hvor eventuelle farveskift kun skal håndteres ét centralt sted.
+
+**Kompositionelle mønstre via _shadcn_-inspirerede komponenter:**
+I stedet for store komponenter med mange komplekse props, eksponeres mindre byggeklodser (såsom `Card`, `CardHeader`, `CardBody` og `CardFooter`). Disse kan sammensættes fleksibelt på det enkelte anvendelsessted. Disse _primitives_ forbruger nøjagtigt de samme CSS-variabler som beskrevet ovenfor (`bg-background`, `border-border` osv.). Når en `Badge` eller et `Card` tilføjes til en _story_ eller på en app-side, tilpasser de sig automatisk projektets overordnede farvepalette. Dette understøtter det visuelle designsprog, som i sig selv er kompositionelt; det samme grundlæggende kort-skelet genbruges til både events og lokationer, mens indholdet i de enkelte komponent-slots varierer.
+
+Valget om at ophøje Storybook frem for Figma til den autoritative kilde er en bevidst arkitektonisk beslutning om at lade kode og dokumentation ligge så tæt op ad hinanden som muligt. Storybook-bibliotekets tekniske opsætning uddybes yderligere i filen [04_kodeeksempler.md](./04_kodeeksempler.md#3-storybook-som-komponent-bibliotek-og-fremtidig-chromatic).
 
 ## Hvad valgte jeg fra
 
-- **WordPress**: Selvom vi blev introduceret til WordPress i skolen, virkede det ikke som den rigtige løsning her. Meget af konfigurationen lever inde i WordPress-admin'en — temaer, plugins, custom fields — og er dermed ikke synlig i kodebasen eller i Git-historikken. Payload er en _developer first_-platform hvor collections, hooks og adgangsregler defineres i TypeScript-filer der bor i repo'et. Det gør et projekt langt lettere at overskue, at code-review, og at rulle tilbage hvis noget går galt, fordi alle ændringer ligger som commits.
-- **Andre headless CMS'er som Sanity og Strapi**: Sanity har et stærkt redaktørmiljø, men frontend og backend er adskilt på en måde, der ville have krævet mere opsætning. Strapi minder om Payload, men jeg fandt Payloads udvikleroplevelse og TypeScript-integration mere overbevisende.
-- **Custom backend i Express + separat React-frontend**: Ville give fuld fleksibilitet, men også markant mere boilerplate (auth, admin-UI, validering m.m.). På et projekt af denne størrelse er det ikke en god prioritering.
-- **Native app eller React Native**: Fravalgt for at fokusere på én kodebase. Hvis behovet opstår, kan en PWA dække mange af de samme behov uden at skulle vedligeholde to platforme.
+### Teknologiske fravalg
+
+**WordPress:** Selvom vi blev introduceret til WordPress i skolen, virkede det ikke som den rigtige løsning her. En stor del af konfigurationen i WordPress – herunder temaer, plugins og _custom fields_ – lagres direkte i databasen via administrationspanelet og er dermed ikke synlig i kildekoden eller i Git-historikken. Payload er derimod en _developer-first_-platform, hvor collections, hooks og adgangsregler defineres direkte i TypeScript-filer, som versionsstyres i repositoryet. Det gør projektet langt lettere at overskue, foretage _code reviews_ på og rulle tilbage hvis noget går galt, da alle ændringer ligger som commits.
+
+**Andre headless CMS'er (Sanity og Strapi):** Sanity tilbyder et stærkt redaktørmiljø, men frontend og backend er fuldstændig adskilt på en måde, der ville have krævet mere opsætning. Strapi minder i arkitektur meget om Payload, men jeg fandt Payloads udvikleroplevelse (_developer experience_) og dybe TypeScript-integration mere overbevisende til dette specifikke setup.
+
+**Custom backend (Express) og separat React-frontend:**
+Denne tilgang ville have givet maksimal arkitektonisk fleksibilitet, men ville også medføre en markant mængde _boilerplate_-kode til basale funktioner (såsom autentificering, administrationspanel og datavalidering). For et projekt af denne størrelse, er det ikke en hensigtsmæssig prioritering af udviklingstiden.
+
+**Native app eller React Native:** Dette blev fravalgt for udelukkende at kunne fokusere ressourcerne på én samlet kodebase. Skulle behovet for en mobil applikation opstå på sigt, vil en PWA (Progressive Web App) kunne dække mange af de samme behov, uden at jeg skal vedligeholde to separate platforme.
 
 ## Hvad skulle måske have været anderledes
 
-- **PostgreSQL i stedet for MongoDB**: Hvis datamodellen viser sig at have mange tværgående relationer (fx events ↔ steder ↔ brugere ↔ kommentarer), kunne en relationel database have gjort visse forespørgsler enklere. Payload understøtter PostgreSQL, så det er et muligt skifte senere.
-- **PWA fra starten**: Offline-funktionalitet kunne med fordel være tænkt ind tidligere, så service workers og caching-strategier kunne bygges som en del af arkitekturen frem for som en senere tilføjelse.
+### Arkitektoniske overvejelser og potentielle ændringer
+
+**PostgreSQL i stedet for MongoDB:**
+Da datamodellen indeholder flere komplekse, tværgående relationer (eksempelvis mellem `events`, `locations`, `users` og `comments`), kunne en relationel database have gjort visse forespørgsler enklere. Payload har dog indbygget understøttelse af PostgreSQL, så hvis data-kompleksiteten stiger, er det muligt at skifte senere.
+
+**PWA fra starten:** Offline-funktionalitet og mobilegenskaber kunne med fordel have været tænkt ind tidligere i processen. Det ville have gjort det muligt at opbygge _service workers_ og caching-strategier som en integreret del af den fundamentale systemarkitektur, frem for som en efterfølgende tilføjelse.

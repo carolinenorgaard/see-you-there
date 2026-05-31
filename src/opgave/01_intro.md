@@ -12,14 +12,14 @@ Projektet er **open source** og ligger frit tilgængeligt på GitHub. Ligesom pl
 
 ## Krav til løsning
 
-- Sitet skal fungere både på desktop og mobil
-- Det skal være let for brugeren at få overblik over, hvad der sker på deres favoritsteder
-- Platformen skal opleves tryg og gennemsigtig — både hvad angår data, moderation og hvem der står bag et event
-- Sitet skal på sigt kunne fungere i flere lande, men jeg starter i Danmark, da det er her, jeg har kendskab til kultur og steder
-- Det skal være nemt for kommende udviklere og administratorer at navigere i systemet og vedligeholde det
+- Sitet skal fungere på både desktop og mobil.
+- Det skal være let for brugeren at få overblik over aktiviteter, så de nemt kan filtrere dem ud fra område og præferencer. Derudover skal det være tydeligt, hvilke lokationer der allerede er oprettet begivenheder på.
+- Platformen skal opleves som tryg og gennemsigtig i forhold til datahåndtering, moderation samt information om, hvem der står bag de enkelte events og hvilke brugere der har tilmeldt sig.
+- På sigt er det hensigten, at platformen skal kunne fungere i flere lande, men udviklingen starter i Danmark, da det er her, jeg har størst kendskab til kultur og lokale steder.
+- Det skal være nemt for kommende udviklere og administratorer at navigere i systemet og vedligeholde det.
 
 ## Overvejelser
 
-Jeg har overvejet, om løsningen skulle have været en native app i stedet for en webapplikation. Valget om at bygge den som web giver mig mulighed for hurtigere at afprøve idéer og nå både mobil- og desktop-brugere uden at skulle vedligeholde to separate kodebaser.
+Jeg har overvejet, om løsningen skulle have været en native app i stedet for en webapplikation. Valget om at udvikle den som webapplikation giver mulighed for hurtigere at afprøve idéer samt nå både mobil og desktop-brugere uden at skulle vedligeholde to separate kodebaser.
 
-En relevant mellemvej er en **PWA (Progressive Web App)**, som via service workers kan tilbyde nogle af de samme fordele som en native app — fx offline-funktionalitet og mulighed for at blive installeret på hjemskærmen. Det kunne være særligt nyttigt i denne use case, hvor brugeren fx kan have brug for at se en gemt begivenhed offline for at finde adresse eller andre praktiske oplysninger, når der ikke er stabil forbindelse.
+En relevant mellemvej er en **PWA (Progressive Web App)**, som via service workers kan tilbyde nogle af de samme fordele som en native app, for eksempel offline-funktionalitet og mulighed for at blive installeret på hjemmeskærmen. Dette kunne være særligt nyttigt i denne use case, hvor brugeren for eksempel kan have behov for at tilgå gemte begivenheder offline for at finde adresser eller andre praktiske oplysninger ved manglende internetforbindelse.
