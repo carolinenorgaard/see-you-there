@@ -10,12 +10,12 @@ import { SourceToggle } from '@/components/events/SourceToggle'
 import { EventsFilterBar } from '@/components/events/filters/EventsFilterBar'
 import { eventsFilters } from '@/components/events/filters/eventsFilters'
 import { FilteredListing } from '@/components/FilteredListing'
-import { loadFilteredList } from '@/filteredList'
 import {
   normalizePerPage,
   pageParser,
   perPageParser,
 } from '@/components/filters/sharedFilterParsers'
+import { loadFilteredList } from '@/filteredList'
 import type { Event } from '@/payload-types'
 import { extractIds } from '@/utilities/extractIds'
 import { todayIsoStart } from '@/utilities/formatDateTime'
@@ -25,7 +25,7 @@ const loadPage = createLoader({ page: pageParser, perPage: perPageParser })
 
 export const dynamic = 'force-dynamic'
 
-export default async function EventsPage({
+export default async function EventsArchivePage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
@@ -43,13 +43,13 @@ export default async function EventsPage({
       payload,
       searchParams: Promise.resolve(resolved),
       filters: eventsFilters,
-      baseWhere: { endDate: { greater_than_equal: todayIsoStart() } },
+      baseWhere: { endDate: { less_than: todayIsoStart() } },
       query: {
         collection: 'events',
         depth: 2,
         limit,
         page,
-        sort: 'startDate',
+        sort: '-endDate',
       },
     }),
   ])
@@ -61,53 +61,26 @@ export default async function EventsPage({
       result={result}
       header={
         <>
-          <h1 className="text-4xl mb-6 font-bold tracking-tight">Begivenhedsvæg</h1>
+          <h1 className="text-4xl mb-6 font-bold tracking-tight">Tidligere begivenheder</h1>
           <div className="simple-text">
-            {filters.source === 'syt' ? (
-              <>
-                <h2>
-                  Begivenheder fra <span className="text-brand-teal">See You There</span>
-                </h2>
-                <p>
-                  Her finder du de begivenheder, vi på See You There har samlet til dig. Det kan
-                  være koncerter, fællesspisninger, kulturoplevelser og meget andet — alt sammen
-                  samlet ét sted, så du nemt kan finde noget at lave.
-                </p>
-                <p>
-                  Klik dig ind på en begivenhed for at se, hvor og hvornår den finder sted, og
-                  hvordan du deltager.
-                </p>
-              </>
-            ) : (
-              <>
-                <h2>
-                  Begivenheder skabt af <span className="text-brand-mint">fællesskabet</span>
-                </h2>
-                <p>
-                  Her finder du de begivenheder, som andre brugere selv har oprettet på See You
-                  There. Det kan være alt fra bogklubber og yoga-sessioner til uformelle
-                  sammenkomster — skabt af mennesker som dig.
-                </p>
-                <p>
-                  Mangler der noget på listen? Gå til <a href="/locations">Lokationer</a> og vær
-                  vært for dit eget event på et af de steder, vi har samlet.
-                </p>
-              </>
-            )}
+            <p>
+              Her finder du begivenheder, der allerede har fundet sted. Et arkiv over koncerter,
+              fællesspisninger, kulturoplevelser og alt det andet, vi har samlet på See You There.
+            </p>
           </div>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Link
-              href="/events/archive"
+              href="/events"
               className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
             >
-              ← Tidligere begivenheder
+              Kommende begivenheder →
             </Link>
             <SourceToggle active={filters.source} />
           </div>
         </>
       }
-      filterBar={<EventsFilterBar filters={filters} options={options} />}
-      empty={<EmptyEventsMessage filters={filters} />}
+      filterBar={<EventsFilterBar filters={filters} options={options} showDate={false} />}
+      empty={<EmptyEventsMessage filters={filters} variant="archive" />}
       renderItem={(event) => {
         const likeIds = extractIds(event.likes)
         const liked = !!me && likeIds.includes(me.id)

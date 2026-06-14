@@ -9,14 +9,15 @@ import { eventsFilters, hasActiveFilters, type EventsFilters } from './eventsFil
 type EventsFilterBarProps = {
   filters: EventsFilters
   options: OptionsOf<typeof eventsFilters>
+  showDate?: boolean
 }
 
-export const EventsFilterBar = ({ filters, options }: EventsFilterBarProps) => {
+export const EventsFilterBar = ({ filters, options, showDate = true }: EventsFilterBarProps) => {
   const { categories, region: regions, location: locations } = options
 
   return (
     <div className="space-y-4">
-      <DateChipRail />
+      {showDate && <DateChipRail />}
       <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
         {categories.length > 0 && <CategoryChipRow categories={categories} />}
         <div className="flex flex-wrap items-center gap-2">
