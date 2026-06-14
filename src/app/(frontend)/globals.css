@@ -61,6 +61,25 @@
     margin-top: 0;
     margin-bottom: 1.5em;
   }
+
+  .scrollbar-pretty {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .scrollbar-pretty::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+  .scrollbar-pretty::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-pretty::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 9999px;
+  }
+  .scrollbar-pretty::-webkit-scrollbar-thumb:hover {
+    background-color: var(--muted-foreground);
+  }
 }
 
 @layer utilities {
