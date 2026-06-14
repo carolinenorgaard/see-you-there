@@ -57,10 +57,45 @@ export default async function EventsPage({
     <FilteredListing<Event>
       result={result}
       header={
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-4xl font-bold tracking-tight">Begivenhedsvæg</h1>
-          <SourceToggle active={filters.source} />
-        </div>
+        <>
+          <h1 className="text-4xl mb-6 font-bold tracking-tight">Begivenhedsvæg</h1>
+          <div className="simple-text">
+            {filters.source === 'syt' ? (
+              <>
+                <h2>
+                  Begivenheder fra <span className="text-brand-teal">See You There</span>
+                </h2>
+                <p>
+                  Her finder du de begivenheder, vi på See You There har samlet til dig. Det kan
+                  være koncerter, fællesspisninger, kulturoplevelser og meget andet — alt sammen
+                  samlet ét sted, så du nemt kan finde noget at lave.
+                </p>
+                <p>
+                  Klik dig ind på en begivenhed for at se, hvor og hvornår den finder sted, og
+                  hvordan du deltager.
+                </p>
+              </>
+            ) : (
+              <>
+                <h2>
+                  Begivenheder skabt af <span className="text-brand-mint">fællesskabet</span>
+                </h2>
+                <p>
+                  Her finder du de begivenheder, som andre brugere selv har oprettet på See You
+                  There. Det kan være alt fra bogklubber og yoga-sessioner til uformelle
+                  sammenkomster — skabt af mennesker som dig.
+                </p>
+                <p>
+                  Mangler der noget på listen? Gå til <a href="/locations">Lokationer</a> og vær
+                  vært for dit eget event på et af de steder, vi har samlet.
+                </p>
+              </>
+            )}
+          </div>
+          <div className="flex items-center justify-end">
+            <SourceToggle active={filters.source} />
+          </div>
+        </>
       }
       filterBar={<EventsFilterBar filters={filters} options={options} />}
       empty={<EmptyEventsMessage filters={filters} />}

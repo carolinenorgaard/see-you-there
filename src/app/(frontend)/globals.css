@@ -53,6 +53,16 @@
   --font-sans: var(--font-plus-jakarta-sans), var(--font-geist-sans);
 }
 
+@layer components {
+  .simple-text {
+    @apply prose md:prose-md dark:prose-invert max-w-none;
+  }
+  .simple-text :where(p) {
+    margin-top: 0;
+    margin-bottom: 1.5em;
+  }
+}
+
 @layer utilities {
   .container {
     width: 100%;
