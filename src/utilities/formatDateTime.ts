@@ -45,3 +45,6 @@ export const nextIsoDay = (iso: string): string => {
   d.setUTCDate(d.getUTCDate() + 1)
   return d.toISOString().slice(0, 10)
 }
+
+export const todayIsoStart = (): string =>
+  `${new Date().toISOString().slice(0, 10)}T00:00:00.000Z`
