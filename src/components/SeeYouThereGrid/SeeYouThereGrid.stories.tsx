@@ -83,7 +83,8 @@ export const EventsGrid: Story = {
     <div className="bg-neutral-50 p-10">
       <SeeYouThereGrid {...args}>
         {events.map((e, i) => (
-          <SeeYouThereCard key={e.title}>
+          <li key={e.title} className="contents">
+          <SeeYouThereCard>
             <SeeYouThereCardImage src={eventImages[i]} alt="" />
             <SeeYouThereCardOverlay />
             <SeeYouThereCardHeader>
@@ -114,6 +115,7 @@ export const EventsGrid: Story = {
               </button>
             </SeeYouThereCardFooter>
           </SeeYouThereCard>
+          </li>
         ))}
       </SeeYouThereGrid>
     </div>
@@ -159,7 +161,8 @@ export const LocationsGrid: Story = {
     <div className="bg-neutral-50 p-10">
       <SeeYouThereGrid {...args}>
         {locations.map((l) => (
-          <SeeYouThereCard key={l.slug} href={`/locations/${l.slug}`}>
+          <li key={l.slug} className="contents">
+          <SeeYouThereCard href={`/locations/${l.slug}`}>
             <SeeYouThereCardImage src={l.image} alt="" />
             <SeeYouThereCardOverlay />
             <SeeYouThereCardHeader>
@@ -182,6 +185,7 @@ export const LocationsGrid: Story = {
               </SeeYouThereCardBody>
             </SeeYouThereCardFooter>
           </SeeYouThereCard>
+          </li>
         ))}
       </SeeYouThereGrid>
     </div>

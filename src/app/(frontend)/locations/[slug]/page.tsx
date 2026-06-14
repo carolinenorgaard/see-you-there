@@ -84,7 +84,8 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
           {events.map((event) => {
             const eventImage = populated<Media>(event.image) ?? heroImage
             return (
-              <SeeYouThereCard key={event.id} href={`/events/${event.slug}`}>
+              <li key={event.id} className="contents">
+              <SeeYouThereCard href={`/events/${event.slug}`}>
                 {eventImage?.url && (
                   <SeeYouThereCardImage src={eventImage.url} alt={eventImage.alt ?? event.title} />
                 )}
@@ -101,6 +102,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
                   </SeeYouThereCardBody>
                 </SeeYouThereCardFooter>
               </SeeYouThereCard>
+              </li>
             )
           })}
         </SeeYouThereGrid>

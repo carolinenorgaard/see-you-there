@@ -1,7 +1,7 @@
 import { cn } from '@/utilities/ui'
 import * as React from 'react'
 
-export type SeeYouThereGridProps = React.HTMLAttributes<HTMLDivElement> & {
+export type SeeYouThereGridProps = React.HTMLAttributes<HTMLUListElement> & {
   /** Maximum number of columns at the largest breakpoint. */
   columns?: 1 | 2 | 3 | 4
   /** Gap size between cards. */
@@ -28,9 +28,9 @@ export const SeeYouThereGrid: React.FC<SeeYouThereGridProps> = ({
   ...props
 }) => {
   return (
-    <div
+    <ul
       data-slot="syt-grid"
-      className={cn('grid', columnsClasses[columns], gapClasses[gap], className)}
+      className={cn('grid list-none p-0 m-0', columnsClasses[columns], gapClasses[gap], className)}
       {...props}
     />
   )

@@ -36,11 +36,9 @@ export const ProfileEventsSection: React.FC<ProfileEventsSectionProps> = ({
       ) : (
         <SeeYouThereGrid>
           {events.map((event) => (
-            <EventCard
-              key={event.id}
-              event={event}
-              action={renderAction?.(event)}
-            />
+            <li key={event.id} className="contents">
+              <EventCard event={event} action={renderAction?.(event)} />
+            </li>
           ))}
         </SeeYouThereGrid>
       )}
