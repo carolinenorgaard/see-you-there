@@ -1,9 +1,9 @@
 import configPromise from '@payload-config'
-import { CalendarDays } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
+import { EventCard } from '@/components/events/EventCard'
 import { NewEventFormServer } from '@/components/events/NewEventFormServer'
 import {
   SeeYouThereCard,
@@ -12,7 +12,6 @@ import {
   SeeYouThereCardFooter,
   SeeYouThereCardHeader,
   SeeYouThereCardImage,
-  SeeYouThereCardMeta,
   SeeYouThereCardOverlay,
   SeeYouThereCardTitle,
 } from '@/components/SeeYouThereCard'
@@ -21,7 +20,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { Event, Location, Media } from '@/payload-types'
 import { categoryColorClass } from '@/utilities/categoryColor'
-import { formatDate, formatTime } from '@/utilities/formatDateTime'
 import { getOptionalMe } from '@/utilities/getOptionalMe'
 import { populated } from '@/utilities/payloadRelations'
 
@@ -81,30 +79,11 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
         <p className="text-muted-foreground">Ingen begivenheder endnu.</p>
       ) : (
         <SeeYouThereGrid>
-          {events.map((event) => {
-            const eventImage = populated<Media>(event.image) ?? heroImage
-            return (
-              <li key={event.id} className="contents">
-              <SeeYouThereCard href={`/events/${event.slug}`}>
-                {eventImage?.url && (
-                  <SeeYouThereCardImage src={eventImage.url} alt={eventImage.alt ?? event.title} />
-                )}
-                <SeeYouThereCardOverlay intensity="soft" />
-                <SeeYouThereCardFooter>
-                  <SeeYouThereCardBody>
-                    <SeeYouThereCardTitle>{event.title}</SeeYouThereCardTitle>
-                    <SeeYouThereCardMeta>
-                      <CalendarDays className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                      <span className="truncate">
-                        {formatDate(event.startDate)} • {formatTime(event.startTime)}
-                      </span>
-                    </SeeYouThereCardMeta>
-                  </SeeYouThereCardBody>
-                </SeeYouThereCardFooter>
-              </SeeYouThereCard>
-              </li>
-            )
-          })}
+          {events.map((event) => (
+            <li key={event.id} className="contents">
+              <EventCard event={event} hideLocation fallbackImage={heroImage} />
+            </li>
+          ))}
         </SeeYouThereGrid>
       )}
 
