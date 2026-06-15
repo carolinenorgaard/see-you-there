@@ -1,6 +1,7 @@
 import { CalendarDays, MapPin, Users } from 'lucide-react'
 import * as React from 'react'
 
+import { LogoMark } from '@/components/Logo/LogoMark'
 import {
   SeeYouThereCard,
   SeeYouThereCardBadges,
@@ -76,10 +77,15 @@ export const EventCard: React.FC<EventCardProps> = ({
             </span>
           </SeeYouThereCardMeta>
         </SeeYouThereCardBody>
-        {isCommunity && (
-          <Badge color="bg-brand-mint text-foreground" className="shrink-0 gap-1">
+        {isCommunity ? (
+          <Badge color="bg-brand-mint text-cream" className="shrink-0 gap-1">
             <Users className="h-3 w-3" aria-hidden />
             Fællesskab
+          </Badge>
+        ) : (
+          <Badge color="bg-brand-teal text-cream" className="shrink-0 gap-1">
+            <LogoMark className="h-3 w-3" />
+            See You There
           </Badge>
         )}
       </SeeYouThereCardFooter>
