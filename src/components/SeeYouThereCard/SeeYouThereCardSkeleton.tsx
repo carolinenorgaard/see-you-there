@@ -47,7 +47,9 @@ type GridProps = Pick<SeeYouThereGridProps, 'columns' | 'gap'> & {
 const SeeYouThereCardSkeletonGrid = ({ count, columns, gap }: GridProps) => (
   <SeeYouThereGrid columns={columns} gap={gap}>
     {Array.from({ length: count }, (_, i) => (
-      <SeeYouThereCardSkeleton key={i} />
+      <li key={i} className="contents">
+        <SeeYouThereCardSkeleton />
+      </li>
     ))}
   </SeeYouThereGrid>
 )

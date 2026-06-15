@@ -5,15 +5,26 @@ import {
 } from '@/components/events/filters/eventsFilters'
 import RichText from '@/components/RichText'
 
-export const EmptyEventsMessage = ({ filters }: { filters: EventsFilters }) => {
+export const EmptyEventsMessage = ({
+  filters,
+  variant = 'upcoming',
+}: {
+  filters: EventsFilters
+  variant?: 'upcoming' | 'archive'
+}) => {
   if (hasActiveFilters(filters)) {
     return <RichText data={noMatchingEventsIntro} enableGutter={false} className="max-w-3xl" />
   }
 
+  const isSyt = filters.source === 'syt'
   const message =
-    filters.source === 'syt'
-      ? 'Ingen See You There begivenheder endnu.'
-      : 'Ingen fællesskabsbegivenheder endnu.'
+    variant === 'archive'
+      ? isSyt
+        ? 'Ingen tidligere See You There begivenheder.'
+        : 'Ingen tidligere fællesskabsbegivenheder.'
+      : isSyt
+        ? 'Ingen kommende See You There begivenheder endnu.'
+        : 'Ingen kommende fællesskabsbegivenheder endnu.'
 
   return <p className="text-muted-foreground">{message}</p>
 }

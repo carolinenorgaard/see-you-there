@@ -8,6 +8,7 @@ type LoadFilteredListArgs<F extends FiltersRecord, TCollection extends Collectio
   payload: Payload
   searchParams: Promise<Record<string, string | string[] | undefined>>
   filters: F
+  baseWhere?: Where
   query: {
     collection: TCollection
     depth?: number
@@ -31,6 +32,7 @@ export async function loadFilteredList<
   payload,
   searchParams,
   filters,
+  baseWhere,
   query,
 }: LoadFilteredListArgs<F, TCollection>): Promise<LoadFilteredListResult<F, T>> {
   const entries = Object.entries(filters)
@@ -57,12 +59,13 @@ export async function loadFilteredList<
     if (contribution) whereClauses.push(contribution)
   })
 
+  const allClauses = baseWhere ? [baseWhere, ...whereClauses] : whereClauses
   const where: Where | undefined =
-    whereClauses.length === 0
+    allClauses.length === 0
       ? undefined
-      : whereClauses.length === 1
-        ? whereClauses[0]
-        : { and: whereClauses }
+      : allClauses.length === 1
+        ? allClauses[0]
+        : { and: allClauses }
 
   const result = (await payload.find({
     ...query,

@@ -12,10 +12,7 @@ import {
 import { LocationCard } from '@/components/locations/LocationCard'
 import { LocationsFilterBar } from '@/components/locations/filters/LocationsFilterBar'
 import { locationsFilters } from '@/components/locations/filters/locationsFilters'
-import RichText from '@/components/RichText'
 import type { Location } from '@/payload-types'
-
-import { hostEventIntro } from './content'
 
 const loadPage = createLoader({ page: pageParser, perPage: perPageParser })
 
@@ -54,8 +51,22 @@ export default async function LocationsPage({
       result={result}
       header={
         <>
-          <h1 className="text-4xl font-bold tracking-tight">Lokationer</h1>
-          <RichText data={hostEventIntro} enableGutter={false} className="mt-6 max-w-3xl" />
+          <h1 className="text-4xl mb-6 font-bold tracking-tight">Lokationer</h1>
+          <div className="simple-text">
+            <h2>Vært for dit eget event på en lokation</h2>
+            <p>
+              Her finder du de lokationer, vi har samlet på See You There. Du kan ikke selv tilføje
+              nye lokationer, men du kan være med til at sætte gang i livet på dem, der allerede er
+              her.
+            </p>
+            <p>
+              Vælg en af lokationerne nedenfor og opret dit eget event dér — uanset om det er en
+              koncert, en bogklub, en yoga-session eller bare en uformel sammenkomst. Når du
+              opretter et event, vises det på <strong>Event Wall</strong> under Fællesskab-fanen, så
+              andre kan finde det, deltage og dele oplevelsen.
+            </p>
+            <p>Det er gratis, nemt og en god måde at samle folk omkring noget, du brænder for.</p>
+          </div>
         </>
       }
       filterBar={<LocationsFilterBar filters={filters} options={options} />}

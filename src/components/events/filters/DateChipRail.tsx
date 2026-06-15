@@ -43,7 +43,7 @@ export const DateChipRail = () => {
   const chips = buildDateRailChips()
 
   return (
-    <div className="-mx-2 flex gap-2 overflow-x-auto px-2 py-1">
+    <div className="scrollbar-pretty -mx-2 flex gap-2 overflow-x-auto px-2 pt-1 pb-3">
       <button
         type="button"
         onClick={() => setDate(null)}

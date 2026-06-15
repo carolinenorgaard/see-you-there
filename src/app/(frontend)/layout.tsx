@@ -30,7 +30,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       className={cn(GeistSans.variable, GeistMono.variable, plusJakartaSans.variable)}
-      lang="en"
+      lang="da"
       suppressHydrationWarning
     >
       <head>
@@ -48,7 +48,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             />
 
             <Header />
-            {children}
+            <main>{children}</main>
             <Footer />
           </Providers>
         </NuqsAdapter>
@@ -60,8 +60,4 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
   openGraph: mergeOpenGraph(),
-  twitter: {
-    card: 'summary_large_image',
-    creator: '@payloadcms',
-  },
 }

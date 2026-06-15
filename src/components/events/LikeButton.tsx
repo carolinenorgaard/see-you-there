@@ -1,7 +1,6 @@
 'use client'
 
 import { Heart } from 'lucide-react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -32,15 +31,22 @@ export function LikeButton({
   const shape = pillShapeClasses(iconOnly)
 
   if (!loggedIn) {
+    // Button + router.push instead of <Link>: this often renders inside a card <a>,
+    // and nested anchors are invalid HTML and cause a hydration mismatch.
     return (
-      <Link
-        href="/login"
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          router.push('/login')
+        }}
         aria-label="Log ind for at like denne begivenhed"
         className={cn(shape, togglePillClasses(false))}
       >
         <Heart className="h-4 w-4" />
         {!iconOnly && showCount && <span>{count}</span>}
-      </Link>
+      </button>
     )
   }
 

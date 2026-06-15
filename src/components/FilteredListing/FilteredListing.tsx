@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import type { PaginatedDocs } from 'payload'
 
 import { FilteredResultsArea } from '@/components/filters/FilteredResultsArea'
@@ -41,7 +41,9 @@ export function FilteredListing<Doc extends { id: string | number }>({
           {hasItems ? (
             <SeeYouThereGrid>
               {docs.map((doc) => (
-                <Fragment key={doc.id}>{renderItem(doc)}</Fragment>
+                <li key={doc.id} className="contents">
+                  {renderItem(doc)}
+                </li>
               ))}
             </SeeYouThereGrid>
           ) : (

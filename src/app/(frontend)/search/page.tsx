@@ -127,7 +127,8 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
               const typeBadge = collectionBadge[relationTo as keyof typeof collectionBadge]
 
               return (
-                <SeeYouThereCard key={result.id} href={href}>
+                <li key={result.id} className="contents">
+                <SeeYouThereCard href={href}>
                   {image?.url && (
                     <SeeYouThereCardImage
                       src={image.url}
@@ -162,6 +163,7 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
                     )}
                   </SeeYouThereCardFooter>
                 </SeeYouThereCard>
+                </li>
               )
             })}
           </SeeYouThereGrid>

@@ -10,12 +10,12 @@ const options: { value: EventSource; label: string; activeClass: string }[] = [
   {
     value: 'syt',
     label: 'See You There',
-    activeClass: 'bg-brand-teal text-foreground shadow-sm',
+    activeClass: 'bg-brand-teal text-cream shadow-sm',
   },
   {
     value: 'community',
     label: 'Fællesskab',
-    activeClass: 'bg-brand-mint text-foreground shadow-sm',
+    activeClass: 'bg-brand-mint text-cream shadow-sm',
   },
 ]
 
