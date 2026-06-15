@@ -123,8 +123,8 @@
 
 :root {
   --brand-cream: oklch(0.9822 0.011 89.72);
-  --brand-teal: oklch(0.9025 0.0903 195.67);
-  --brand-mint: oklch(0.9025 0.0903 145deg);
+  --brand-teal: oklch(0.743 0.127 195);
+  --brand-mint: oklch(0.7213 0.1749 156.23);
   --background: var(--brand-cream);
   --foreground: oklch(14.5% 0 0deg);
   --card: oklch(96.5% 0.005 265deg);
