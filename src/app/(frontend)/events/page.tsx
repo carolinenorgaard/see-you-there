@@ -89,8 +89,8 @@ export default async function EventsPage({
                   sammenkomster — skabt af mennesker som dig.
                 </p>
                 <p>
-                  Mangler der noget på listen? Gå til <a href="/locations">Lokationer</a> og vær
-                  vært for dit eget event på et af de steder, vi har samlet.
+                  Mangler der noget på listen? Gå til <Link href="/locations">Lokationer</Link> og
+                  vær vært for dit eget event på et af de steder, vi har samlet.
                 </p>
               </>
             )}
