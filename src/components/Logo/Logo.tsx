@@ -1,5 +1,7 @@
 import clsx from 'clsx'
 
+import { LogoMark } from './LogoMark'
+
 interface Props {
   className?: string
   /** Hide the "See you there" wordmark and render only the icon. */
@@ -15,9 +17,9 @@ export const Logo = ({ className, iconOnly = false, light = false }: Props) => (
       light ? 'text-white' : 'text-black dark:text-white',
       className,
     )}
+    aria-label="See you there"
   >
-    {/* eslint-disable-next-line @next/next/no-img-element */}
-    <img src="/logo.svg" alt="See you there" width={32} height={30} />
+    <LogoMark className="text-brand-teal" />
     {!iconOnly && (
       <span className="text-base font-bold tracking-tight">See you there</span>
     )}
