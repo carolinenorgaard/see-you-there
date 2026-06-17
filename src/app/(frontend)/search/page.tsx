@@ -128,41 +128,41 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
 
               return (
                 <li key={result.id} className="contents">
-                <SeeYouThereCard href={href}>
-                  {image?.url && (
-                    <SeeYouThereCardImage
-                      src={image.url}
-                      alt={image.alt ?? result.meta?.title ?? result.title ?? ''}
-                    />
-                  )}
-                  <SeeYouThereCardOverlay intensity="soft" />
-                  <SeeYouThereCardHeader>
-                    <SeeYouThereCardBadges className="flex-wrap">
-                      {categories.map((c, i) => (
-                        <Badge key={i}>{c.title}</Badge>
-                      ))}
-                    </SeeYouThereCardBadges>
-                  </SeeYouThereCardHeader>
-                  <SeeYouThereCardFooter>
-                    <SeeYouThereCardBody>
-                      <SeeYouThereCardTitle>
-                        {result.meta?.title || result.title}
-                      </SeeYouThereCardTitle>
-                      {addressLine && (
-                        <SeeYouThereCardMeta>
-                          <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                          <span className="truncate">{addressLine}</span>
-                        </SeeYouThereCardMeta>
-                      )}
-                    </SeeYouThereCardBody>
-                    {typeBadge && (
-                      <Badge variant="glass" className="shrink-0 gap-1">
-                        <typeBadge.icon className="h-3 w-3" aria-hidden />
-                        {typeBadge.label}
-                      </Badge>
+                  <SeeYouThereCard href={href}>
+                    {image?.url && (
+                      <SeeYouThereCardImage
+                        src={image.url}
+                        alt={image.alt ?? result.meta?.title ?? result.title ?? ''}
+                      />
                     )}
-                  </SeeYouThereCardFooter>
-                </SeeYouThereCard>
+                    <SeeYouThereCardOverlay intensity="soft" />
+                    <SeeYouThereCardHeader>
+                      <SeeYouThereCardBadges className="flex-wrap">
+                        {categories.map((c, i) => (
+                          <Badge key={i}>{c.title}</Badge>
+                        ))}
+                      </SeeYouThereCardBadges>
+                    </SeeYouThereCardHeader>
+                    <SeeYouThereCardFooter>
+                      <SeeYouThereCardBody>
+                        <SeeYouThereCardTitle>
+                          {result.meta?.title || result.title}
+                        </SeeYouThereCardTitle>
+                        {addressLine && (
+                          <SeeYouThereCardMeta>
+                            <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                            <span className="truncate">{addressLine}</span>
+                          </SeeYouThereCardMeta>
+                        )}
+                      </SeeYouThereCardBody>
+                      {typeBadge && (
+                        <Badge variant="glass" className="shrink-0 gap-1">
+                          <typeBadge.icon className="h-3 w-3" aria-hidden />
+                          {typeBadge.label}
+                        </Badge>
+                      )}
+                    </SeeYouThereCardFooter>
+                  </SeeYouThereCard>
                 </li>
               )
             })}
@@ -177,6 +177,6 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Payload Website Template Search`,
+    title: `See You There Search`,
   }
 }
