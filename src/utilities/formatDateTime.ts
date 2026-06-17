@@ -19,7 +19,7 @@ export const formatDateTime = (timestamp: string): string => {
   return `${MM}/${DD}/${YYYY}`
 }
 
-const COPENHAGEN_TZ = 'Europe/Copenhagen'
+export const COPENHAGEN_TZ = 'Europe/Copenhagen'
 
 export const formatDate = (value?: string | null): string =>
   value

@@ -3,7 +3,7 @@
 import { useQueryStates } from 'nuqs'
 
 import { useFilterTransition } from '@/components/filters/FilterTransitionContext'
-import { cphIsoDay, nextIsoDay } from '@/utilities/formatDateTime'
+import { COPENHAGEN_TZ, cphIsoDay, nextIsoDay } from '@/utilities/formatDateTime'
 import { togglePillClasses } from '@/utilities/togglePillClasses'
 import { cn } from '@/utilities/ui'
 import { eventsUrlParsers } from './eventsFilters'
@@ -22,7 +22,7 @@ const buildDateRailChips = (): Chip[] => {
       iso,
       weekday: d.toLocaleDateString('da-DK', {
         weekday: 'short',
-        timeZone: 'Europe/Copenhagen',
+        timeZone: COPENHAGEN_TZ,
       }),
       day: Number(iso.slice(8, 10)),
       label: i === 0 ? 'I dag' : undefined,
