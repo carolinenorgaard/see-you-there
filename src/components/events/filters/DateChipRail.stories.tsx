@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 
-import { toIsoDay } from '@/utilities/formatDateTime'
+import { cphIsoDay, nextIsoDay } from '@/utilities/formatDateTime'
 import { DateChipRail } from './DateChipRail'
 
-const todayIso = () => toIsoDay(new Date())
+const todayIso = () => cphIsoDay(new Date())
 const futureIso = (offset: number) => {
-  const d = new Date()
-  d.setDate(d.getDate() + offset)
-  return toIsoDay(d)
+  let iso = todayIso()
+  for (let i = 0; i < offset; i++) iso = nextIsoDay(iso)
+  return iso
 }
 
 const meta: Meta<typeof DateChipRail> = {

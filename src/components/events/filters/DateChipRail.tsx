@@ -3,7 +3,7 @@
 import { useQueryStates } from 'nuqs'
 
 import { useFilterTransition } from '@/components/filters/FilterTransitionContext'
-import { toIsoDay } from '@/utilities/formatDateTime'
+import { COPENHAGEN_TZ, cphIsoDay, nextIsoDay } from '@/utilities/formatDateTime'
 import { togglePillClasses } from '@/utilities/togglePillClasses'
 import { cn } from '@/utilities/ui'
 import { eventsUrlParsers } from './eventsFilters'
@@ -13,18 +13,21 @@ const DAYS_AHEAD = 14
 type Chip = { iso: string; weekday: string; day: number; label?: string }
 
 const buildDateRailChips = (): Chip[] => {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  let iso = cphIsoDay(new Date())
   const chips: Chip[] = []
   for (let i = 0; i < DAYS_AHEAD; i++) {
-    const d = new Date(today)
-    d.setDate(today.getDate() + i)
+    // Midday UTC keeps the weekday label stable across DST transitions in Copenhagen.
+    const d = new Date(`${iso}T12:00:00Z`)
     chips.push({
-      iso: toIsoDay(d),
-      weekday: d.toLocaleDateString('da-DK', { weekday: 'short' }),
-      day: d.getDate(),
+      iso,
+      weekday: d.toLocaleDateString('da-DK', {
+        weekday: 'short',
+        timeZone: COPENHAGEN_TZ,
+      }),
+      day: Number(iso.slice(8, 10)),
       label: i === 0 ? 'I dag' : undefined,
     })
+    iso = nextIsoDay(iso)
   }
   return chips
 }

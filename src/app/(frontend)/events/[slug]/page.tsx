@@ -23,7 +23,7 @@ import {
 import type { Event, EventComment, Location, Media, User } from '@/payload-types'
 import { populated } from '@/utilities/payloadRelations'
 import { extractIds } from '@/utilities/extractIds'
-import { formatDate, formatTime } from '@/utilities/formatDateTime'
+import { COPENHAGEN_TZ, formatDate, formatTime } from '@/utilities/formatDateTime'
 import { getOptionalMe } from '@/utilities/getOptionalMe'
 
 export const dynamic = 'force-dynamic'
@@ -161,7 +161,16 @@ export default async function EventPage({
               <li key={c.id} className="border-t pt-3">
                 <div className="text-sm text-muted-foreground mb-1">
                   {author?.name || author?.email || 'Nogen'} ·{' '}
-                  {c.createdAt ? new Date(c.createdAt).toLocaleString() : ''}
+                  {c.createdAt
+                    ? new Date(c.createdAt).toLocaleString('da-DK', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        timeZone: COPENHAGEN_TZ,
+                      })
+                    : ''}
                 </div>
                 <p className="whitespace-pre-wrap">{c.content}</p>
               </li>
