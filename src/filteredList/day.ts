@@ -2,7 +2,7 @@ import { parseAsString } from 'nuqs/server'
 import type { Where } from 'payload'
 
 import { serverSyncOptions } from '@/components/filters/sharedFilterParsers'
-import { nextIsoDay } from '@/utilities/formatDateTime'
+import { cphDayStartUtc, nextIsoDay } from '@/utilities/formatDateTime'
 
 import type { Filter } from './types'
 
@@ -34,8 +34,8 @@ export const dayFilter = (args: {
       if (!day) return null
       return {
         [args.payloadPath]: {
-          greater_than_equal: `${day}T00:00:00.000Z`,
-          less_than: `${nextIsoDay(day)}T00:00:00.000Z`,
+          greater_than_equal: cphDayStartUtc(day),
+          less_than: cphDayStartUtc(nextIsoDay(day)),
         },
       }
     },

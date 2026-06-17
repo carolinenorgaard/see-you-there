@@ -161,7 +161,11 @@ export default async function EventPage({
               <li key={c.id} className="border-t pt-3">
                 <div className="text-sm text-muted-foreground mb-1">
                   {author?.name || author?.email || 'Nogen'} ·{' '}
-                  {c.createdAt ? new Date(c.createdAt).toLocaleString() : ''}
+                  {c.createdAt
+                    ? new Date(c.createdAt).toLocaleString('da-DK', {
+                        timeZone: 'Europe/Copenhagen',
+                      })
+                    : ''}
                 </div>
                 <p className="whitespace-pre-wrap">{c.content}</p>
               </li>

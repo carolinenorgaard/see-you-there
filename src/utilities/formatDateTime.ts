@@ -19,18 +19,25 @@ export const formatDateTime = (timestamp: string): string => {
   return `${MM}/${DD}/${YYYY}`
 }
 
+const COPENHAGEN_TZ = 'Europe/Copenhagen'
+
 export const formatDate = (value?: string | null): string =>
   value
     ? new Date(value).toLocaleDateString('da-DK', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
+        timeZone: COPENHAGEN_TZ,
       })
     : ''
 
 export const formatTime = (value?: string | null): string =>
   value
-    ? new Date(value).toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' })
+    ? new Date(value).toLocaleTimeString('da-DK', {
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: COPENHAGEN_TZ,
+      })
     : ''
 
 export const toIsoDay = (date: Date): string => {
@@ -46,5 +53,45 @@ export const nextIsoDay = (iso: string): string => {
   return d.toISOString().slice(0, 10)
 }
 
-export const todayIsoStart = (): string =>
-  `${new Date().toISOString().slice(0, 10)}T00:00:00.000Z`
+const copenhagenOffsetMs = (instant: Date): number => {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: COPENHAGEN_TZ,
+      hour12: false,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    })
+      .formatToParts(instant)
+      .map((p) => [p.type, p.value]),
+  )
+  const asUtc = Date.UTC(
+    Number(parts.year),
+    Number(parts.month) - 1,
+    Number(parts.day),
+    Number(parts.hour) % 24,
+    Number(parts.minute),
+    Number(parts.second),
+  )
+  return asUtc - instant.getTime()
+}
+
+// Returns YYYY-MM-DD for the given instant as seen in Copenhagen.
+export const cphIsoDay = (date: Date): string =>
+  new Intl.DateTimeFormat('en-CA', {
+    timeZone: COPENHAGEN_TZ,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date)
+
+// Returns the UTC ISO timestamp of midnight in Copenhagen on the given YYYY-MM-DD.
+export const cphDayStartUtc = (yyyymmdd: string): string => {
+  const probe = new Date(`${yyyymmdd}T00:00:00Z`)
+  return new Date(probe.getTime() - copenhagenOffsetMs(probe)).toISOString()
+}
+
+export const todayIsoStart = (): string => cphDayStartUtc(cphIsoDay(new Date()))
